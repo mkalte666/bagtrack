@@ -1,5 +1,6 @@
 // licence note at the end of the file
 
+#include "messagebox.h"
 #include <SDL.h>
 
 // clang-format off
@@ -13,7 +14,7 @@ int main(int, char**)
 {
     int sdlRes = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
     if (sdlRes != 0) {
-        //messageBox(SDL_MESSAGEBOX_ERROR, "SDL ERROR", "Could not Init SDL: {}", SDL_GetError());
+        messageBox(SDL_MESSAGEBOX_ERROR, "SDL ERROR", "Could not Init SDL: {}", SDL_GetError());
         return 1;
     }
 
@@ -27,14 +28,14 @@ int main(int, char**)
     //windowpos is doing shitstuff NOLINTNEXTLINE
     auto* window = SDL_CreateWindow("Tuner", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1024, 768, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     if (window == nullptr) {
-        //messageBox(SDL_MESSAGEBOX_ERROR, "SDL ERROR", "Could not create window: {}", SDL_GetError());
+        messageBox(SDL_MESSAGEBOX_ERROR, "SDL ERROR", "Could not create window: {}", SDL_GetError());
         SDL_Quit();
         return 1;
     }
 
     auto* context = SDL_GL_CreateContext(window);
     if (context == nullptr) {
-        //messageBox(SDL_MESSAGEBOX_ERROR, "SDL ERROR", "Could not create OpenGL Context: {}", SDL_GetError());
+        messageBox(SDL_MESSAGEBOX_ERROR, "SDL ERROR", "Could not create OpenGL Context: {}", SDL_GetError());
         SDL_DestroyWindow(window);
         SDL_Quit();
         return 1;
@@ -45,7 +46,7 @@ int main(int, char**)
     // glew has a slightly different signature, but they are compatible NOLINTNEXTLINE
     auto gl3wres = gl3wInit2(reinterpret_cast<GL3WGetProcAddressProc>(&SDL_GL_GetProcAddress));
     if (gl3wres != GL3W_OK) {
-        //messageBox(SDL_MESSAGEBOX_WARNING, "GL Error", "OpenGL version not supported. App might just crash");
+        messageBox(SDL_MESSAGEBOX_WARNING, "GL Error", "OpenGL version not supported. App might just crash");
     }
 
     IMGUI_CHECKVERSION();
@@ -106,7 +107,6 @@ int main(int, char**)
         auto time = static_cast<double>(SDL_GetPerformanceCounter() - timeAtStart) / ticksPerSecond;
         static_cast<void>(time);
         // code goes here
-
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

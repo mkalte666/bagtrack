@@ -9,16 +9,24 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 find_package(SDL2 REQUIRED)
 add_subdirectory(3rdparty/imgui-cmake-blob)
 
-set(JSON_BuildTests OFF CACHE BOOL "json tests" FORCE)
-set(JSON_Install OFF CACHE BOOL "json install" FORCE)
+set(JSON_BuildTests
+    OFF
+    CACHE BOOL "json tests" FORCE)
+set(JSON_Install
+    OFF
+    CACHE BOOL "json install" FORCE)
 add_subdirectory(3rdparty/json)
 
-set(HTTPLIB_COMPILE ON CACHE BOOL "httplib compile" FORCE)
+set(HTTPLIB_COMPILE
+    ON
+    CACHE BOOL "httplib compile" FORCE)
 add_subdirectory(3rdparty/cpp-httplib)
+
+add_subdirectory(3rdparty/fmt)
 
 add_executable(bagtrack src/main.cpp src/messagebox.h)
 target_include_directories(bagtrack PRIVATE ${SDL2_INCLUDE_DIR})
-target_link_libraries(bagtrack imgui gl3w SDL2::SDL2 SDL2::SDL2main)
+target_link_libraries(bagtrack imgui gl3w SDL2::SDL2 SDL2::SDL2main fmt::fmt)
 # bagtrack CMakeLists.txt
 #
 # Copyright (C) 2020 Malte Kießling

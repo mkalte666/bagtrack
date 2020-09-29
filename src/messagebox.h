@@ -4,7 +4,37 @@
 #define REMUTE_MESSAGEBOX_H
 
 #include <SDL.h>
+#include <fmt/format.h>
 
+/**
+ * \brief Wrapper for SDL_ShowSimpleMessageBox with fmt formatting
+ * \tparam Args
+ * \param flags
+ * \param window
+ * \param title
+ * \param fmt
+ * \param args
+ */
+template <class... Args>
+void messageBox(Uint32 flags, SDL_Window* window, const std::string& title, const std::string& fmt, Args... args)
+{
+    std::string message = fmt::format(fmt, std::forward<Args>(args)...);
+    static_cast<void>(SDL_ShowSimpleMessageBox(flags, title.c_str(), message.c_str(), window));
+}
+
+/**
+ * \brief Wrapper for SDL_ShowSimpleMessageBox with fmt formatting
+ * \tparam Args
+ * \param flags
+ * \param title
+ * \param fmt
+ * \param args
+ */
+template <class... Args>
+void messageBox(Uint32 flags, const std::string& title, const std::string& fmt, Args... args)
+{
+    messageBox(flags, nullptr, title, fmt, std::forward<Args>(args)...);
+}
 
 #endif //REMUTE_MESSAGEBOX_H
 
