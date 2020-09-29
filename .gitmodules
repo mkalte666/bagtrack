@@ -7,3 +7,6 @@
 [submodule "3rdparty/cpp-httplib"]
 	path = 3rdparty/cpp-httplib
 	url = https://github.com/yhirose/cpp-httplib
+[submodule "3rdparty/fmt"]
+	path = 3rdparty/fmt
+	url = https://github.com/fmtlib/fmt
