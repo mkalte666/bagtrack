@@ -1,0 +1,9 @@
+[submodule "3rdparty/imgui-cmake-blob"]
+	path = 3rdparty/imgui-cmake-blob
+	url = https://github.com/mkalte666/imgui-cmake-blob
+[submodule "3rdparty/json"]
+	path = 3rdparty/json
+	url = https://github.com/nlohmann/json
+[submodule "3rdparty/cpp-httplib"]
+	path = 3rdparty/cpp-httplib
+	url = https://github.com/yhirose/cpp-httplib
