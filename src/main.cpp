@@ -10,6 +10,10 @@
 #include <GL/gl3w.h>
 // clang-format on
 
+#include <vector>
+
+#include "windows/apikeyeditor.h"
+
 int main(int, char**)
 {
     int sdlRes = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
@@ -63,7 +67,10 @@ int main(int, char**)
     Uint64 timeAtStart = SDL_GetPerformanceCounter();
     auto ticksPerSecond = static_cast<double>(SDL_GetPerformanceFrequency());
 
-    //Views views;
+    Settings settings;
+    std::vector<std::unique_ptr<Window>> windows;
+    windows.emplace_back(std::make_unique<ApiKeyEditor>());
+
     while (running) {
         SDL_Event e;
         while (SDL_PollEvent(&e) != 0) {
@@ -107,6 +114,18 @@ int main(int, char**)
         auto time = static_cast<double>(SDL_GetPerformanceCounter() - timeAtStart) / ticksPerSecond;
         static_cast<void>(time);
         // code goes here
+
+        // draw menus in all of the windows
+        ImGui::BeginMainMenuBar();
+        for (auto& w : windows) {
+            w->drawMainMenu();
+        }
+        ImGui::EndMainMenuBar();
+
+        // draw all of the windows
+        for (auto& w : windows) {
+            w->update(settings);
+        }
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

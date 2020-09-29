@@ -24,9 +24,26 @@ add_subdirectory(3rdparty/cpp-httplib)
 
 add_subdirectory(3rdparty/fmt)
 
-add_executable(bagtrack src/main.cpp src/messagebox.h)
+add_executable(
+    bagtrack
+    src/main.cpp
+    src/messagebox.h
+    src/settings.cpp
+    src/settings.h
+    src/windows/apikeyeditor.cpp
+    src/windows/apikeyeditor.h
+    src/windows/window.cpp
+    src/windows/window.h)
 target_include_directories(bagtrack PRIVATE ${SDL2_INCLUDE_DIR})
-target_link_libraries(bagtrack imgui gl3w SDL2::SDL2 SDL2::SDL2main fmt::fmt)
+target_link_libraries(
+    bagtrack
+    imgui
+    gl3w
+    SDL2::SDL2
+    SDL2::SDL2main
+    fmt::fmt
+    nlohmann_json::nlohmann_json
+    httplib::httplib)
 # bagtrack CMakeLists.txt
 #
 # Copyright (C) 2020 Malte Kießling
