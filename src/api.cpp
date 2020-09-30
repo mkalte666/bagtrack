@@ -18,11 +18,15 @@ httplib::Result makeRequest(const std::string& key, const std::string& endpoint,
         endpointWithParams += separator + pair.first + '=' + pair.second;
         separator = '&'; // set the seperator to & for the rest of the parameters
     }
+    fmt::print(stderr, "Getting {}\n", endpointWithParams);
     return client.Get(endpointWithParams.c_str());
 }
 
 bool checkResponseForValidToken(const httplib::Result& result)
 {
+    if (!result) {
+        fmt::print(stderr, "result is broken!");
+    }
     if (result->status == 200) {
         fmt::print(stderr, "Token valid check success\n");
         return true;
@@ -124,7 +128,7 @@ ItemIdMap getMaterialStorageContents(const std::string& key) noexcept
 
 ItemInfoMap getItemInfos(const std::set<ItemId>& ids) noexcept
 {
-    constexpr size_t maxIds = 100;
+    constexpr size_t maxIds = 50;
     ItemInfoMap results;
     std::string idString;
     size_t count = 0;
@@ -138,25 +142,27 @@ ItemInfoMap getItemInfos(const std::set<ItemId>& ids) noexcept
 
     std::map<std::string, std::string> params;
     params["ids"] = idString;
-    auto res = makeRequest("", "/v2/items/", params);
+    auto res = makeRequest("", "/v2/items", params);
     // small guard against failures
-    if (res->status != 200) {
+    if (!res || res->status != 200 && res->status != 206) {
         return results;
     }
     auto j = json::parse(res->body);
     if (!j.is_array()) {
         fmt::print(stderr, "Item endpoint returned wrong type - array expected, got shit\n");
-        for (const auto& itemJson : j) {
-            if (!itemJson.is_object()) {
-                continue;
-            }
-            ItemInfo item;
-            from_json(itemJson, item);
-            results[item.id] = item;
-        }
         return results;
     }
+
+    for (const auto& itemJson : j) {
+        if (!itemJson.is_object()) {
+            continue;
+        }
+        ItemInfo item;
+        from_json(itemJson, item);
+        results[item.id] = item;
+    }
     return results;
+
 }
 
 /*

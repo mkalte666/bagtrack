@@ -23,6 +23,7 @@ void InfoCache::threadFun()
             triedLoadingItemCache = true;
             readInfoCache();
         }
+        // get all the new items
         if (!itemsToCache.empty()) {
             const auto toCacheCopy = itemsToCache;
             lock.unlock();
