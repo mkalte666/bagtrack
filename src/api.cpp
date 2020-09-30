@@ -95,8 +95,8 @@ ItemIdMap getBankContents(const std::string& key) noexcept
         if (item.is_null()) { // no worries, null just means the slot es empty
             continue;
         }
-        uint64_t id = item.value("id", 0);
-        uint64_t count = item.value("count", 0);
+        ItemId id = item.value("id", static_cast<ItemId>(0));
+        int64_t count = item.value("count", 0);
         items[id] += count;
     }
     return items;
@@ -119,8 +119,8 @@ ItemIdMap getMaterialStorageContents(const std::string& key) noexcept
         if (item.is_null()) { // no worries, null just means the slot es empty
             continue;
         }
-        uint64_t id = item.value("id", 0);
-        uint64_t count = item.value("count", 0);
+        ItemId id = item.value("id", static_cast<ItemId>(0));
+        int64_t count = item.value("count", 0);
         items[id] += count;
     }
     return items;
@@ -144,7 +144,7 @@ ItemInfoMap getItemInfos(const std::set<ItemId>& ids) noexcept
     params["ids"] = idString;
     auto res = makeRequest("", "/v2/items", params);
     // small guard against failures
-    if (!res || res->status != 200 && res->status != 206) {
+    if (!res || (res->status != 200 && res->status != 206)) {
         return results;
     }
     auto j = json::parse(res->body);
@@ -162,7 +162,6 @@ ItemInfoMap getItemInfos(const std::set<ItemId>& ids) noexcept
         results[item.id] = item;
     }
     return results;
-
 }
 
 /*

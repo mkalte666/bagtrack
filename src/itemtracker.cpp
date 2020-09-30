@@ -27,6 +27,10 @@ void ItemTracker::updateFunc(const Settings& settings) noexcept
         auto newItems = collectAllItemSources(apiKey);
         std::lock_guard lockGuard(mutex);
         std::swap(newItems, currentState);
+        // also make sure we have some reference state
+        if (referenceState.empty()) {
+            referenceState = currentState;
+        }
     } while (killer.wait_for(30s));
 }
 
@@ -49,6 +53,25 @@ ItemIdMap ItemTracker::getCurrentState() const noexcept
     std::lock_guard lockGuard(mutex);
     ItemIdMap stateCopy = currentState;
     return stateCopy;
+}
+
+void ItemTracker::resetReferenceState() noexcept
+{
+    std::lock_guard lockGuard(mutex);
+    referenceState = currentState;
+}
+ItemIdMap ItemTracker::getFilteredDelta() const noexcept
+{
+    std::lock_guard lockGuard(mutex);
+    ItemIdMap delta = currentState;
+    for (const auto& pair : referenceState) {
+        delta[pair.first] -= pair.second;
+        if (delta[pair.first] == 0) {
+            delta.erase(pair.first);
+        }
+    }
+
+    return delta;
 }
 
 /*

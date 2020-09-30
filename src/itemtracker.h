@@ -20,12 +20,15 @@ public:
     ItemTracker& operator=(ItemTracker const&) = delete;
 
     ItemIdMap getCurrentState() const noexcept;
+    void resetReferenceState() noexcept;
+    ItemIdMap getFilteredDelta() const noexcept;
 
 private:
     void updateFunc(const Settings& settings) noexcept;
     static ItemIdMap collectAllItemSources(const std::string& apiKey) noexcept;
     std::thread updateThread = {};
     ItemIdMap currentState = {};
+    ItemIdMap referenceState = {};
     mutable std::mutex mutex = {};
     timer_killer killer = {};
 };

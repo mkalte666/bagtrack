@@ -18,7 +18,7 @@ void ItemSelector::update(Settings&, ItemTracker& tracker, InfoCache& cache) noe
     ImGui::Begin(name.c_str(), &shown);
     ImGui::Columns(2);
     auto items = tracker.getCurrentState();
-    for (const auto& pair: items) {
+    for (const auto& pair : items) {
         const ItemInfo& info = cache.getItemInfo(pair.first);
         ImGui::Text("%s", info.name.c_str());
         ImGui::NextColumn();

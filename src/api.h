@@ -8,7 +8,7 @@
 #include <map>
 #include <set>
 
-using ItemIdMap = std::map<ItemId, uint64_t>;
+using ItemIdMap = std::map<ItemId, int64_t>;
 using ItemInfoMap = std::map<ItemId, ItemInfo>;
 
 bool checkApiKey(const std::string& key) noexcept;

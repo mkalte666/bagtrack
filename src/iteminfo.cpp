@@ -3,15 +3,15 @@
 
 void from_json(const nlohmann::json& j, ItemInfo& itemInfo)
 {
-    itemInfo.id = j.value("id", 0);
+    itemInfo.id = j.value("id", static_cast<ItemId>(0));
     itemInfo.name = j.value("name", "");
     itemInfo.description = j.value("description", "");
     itemInfo.chatLink = j.value("chat_link", "");
     itemInfo.iconUrl = j.value("icon", "");
     itemInfo.type = j.value("type", "");
     itemInfo.rarity = j.value("rarity", "");
-    itemInfo.level = j.value("level", 0);
-    itemInfo.vendorValue = j.value("vendor_value", 0);
+    itemInfo.level = j.value("level", 0UL);
+    itemInfo.vendorValue = j.value("vendor_value", 0UL);
 }
 
 void to_json(nlohmann::json& j, const ItemInfo& itemInfo)

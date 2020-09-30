@@ -58,7 +58,9 @@ target_link_libraries(
     fmt::fmt
     nlohmann_json::nlohmann_json
     httplib::httplib)
-# bagtrack CMakeLists.txt
+
+# fmt breaks strict options enableStrictOptions(bagtrack) bagtrack
+# CMakeLists.txt
 #
 # Copyright (C) 2020 Malte Kießling
 #
