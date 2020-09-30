@@ -9,7 +9,7 @@ public:
     using Window::Window;
     ApiKeyEditor();
 
-    void update(Settings& settings) noexcept override;
+    void update(Settings& settings, ItemTracker&, InfoCache&) noexcept override;
     void drawMainMenu() noexcept override;
 
 private:

@@ -9,7 +9,7 @@ ItemSelector::ItemSelector()
 {
 }
 
-void ItemSelector::update(Settings& settings) noexcept
+void ItemSelector::update(Settings&, ItemTracker&, InfoCache&) noexcept
 {
     if (!shown) {
         return;

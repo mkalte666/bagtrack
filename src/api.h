@@ -3,16 +3,21 @@
 #ifndef BAGTRACK_API_H
 #define BAGTRACK_API_H
 
+#include "iteminfo.h"
 #include "settings.h"
 #include <map>
+#include <set>
 
-using ItemIdMap = std::map<uint64_t, uint64_t>;
+using ItemIdMap = std::map<ItemId, uint64_t>;
+using ItemInfoMap = std::map<ItemId, ItemInfo>;
 
 bool checkApiKey(const std::string& key) noexcept;
 
 ItemIdMap getBankContents(const std::string& key) noexcept;
 ItemIdMap getMaterialStorageContents(const std::string& key) noexcept;
 //ItemIdMap getCharacterContents(const std::string& key) noexcept;
+
+ItemInfoMap getItemInfos(const std::set<ItemId>& ids) noexcept;
 
 #endif //BAGTRACK_API_H
 /*

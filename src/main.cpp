@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "itemtracker.h"
+#include "infocache.h"
 
 #include "windows/apikeyeditor.h"
 #include "windows/itemselector.h"
@@ -72,6 +73,7 @@ int main(int, char**)
 
     Settings settings;
     ItemTracker tracker(settings);
+    InfoCache infoCache;
     std::vector<std::unique_ptr<Window>> windows;
     windows.emplace_back(std::make_unique<ApiKeyEditor>());
     windows.emplace_back(std::make_unique<ItemSelector>());
@@ -129,7 +131,7 @@ int main(int, char**)
 
         // draw all of the windows
         for (auto& w : windows) {
-            w->update(settings);
+            w->update(settings, tracker, infoCache);
         }
 
         ImGui::Render();

@@ -30,12 +30,17 @@ add_executable(
     bagtrack
     src/api.cpp
     src/api.h
+    src/infocache.cpp
+    src/infocache.h
+    src/iteminfo.cpp
+    src/iteminfo.h
     src/itemtracker.cpp
     src/itemtracker.h
     src/main.cpp
     src/messagebox.h
     src/settings.cpp
     src/settings.h
+    src/time_killer.h
     src/windows/apikeyeditor.cpp
     src/windows/apikeyeditor.h
     src/windows/itemselector.cpp

@@ -27,7 +27,7 @@ Window::Window(std::string name) noexcept
 {
 }
 
-void Window::update(Settings&) noexcept
+void Window::update(Settings&, ItemTracker&, InfoCache&) noexcept
 {
 }
 

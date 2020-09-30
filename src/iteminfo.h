@@ -1,20 +1,29 @@
 // licence note at the end of the file
 
-#ifndef BAGTRACK_ITEMSELECTOR_H
-#define BAGTRACK_ITEMSELECTOR_H
+#ifndef BAGTRACK_ITEMINFO_H
+#define BAGTRACK_ITEMINFO_H
 
-#include "window.h"
+#include <nlohmann/json.hpp>
+#include <string>
 
-class ItemSelector : public Window {
-public:
-    using Window::Window;
-    ItemSelector();
+using ItemId = uint64_t;
 
-    void update(Settings&, ItemTracker&, InfoCache&) noexcept override;
-    void drawMainMenu() noexcept override;
+struct ItemInfo {
+    ItemId id = 0;
+    std::string name = "Loading...";
+    std::string description = {};
+    std::string chatLink = {};
+    std::string iconUrl = {};
+    std::string type = {};
+    std::string rarity = {};
+    size_t level = {};
+    size_t vendorValue = {};
 };
 
-#endif //BAGTRACK_ITEMSELECTOR_H
+void from_json(const nlohmann::json& j, ItemInfo& itemInfo);
+void to_json(nlohmann::json& j, const ItemInfo& itemInfo);
+
+#endif //BAGTRACK_ITEMINFO_H
 /*
  * This file is part bagtrack
  * Copyright (c) 2020 Malte Kießling

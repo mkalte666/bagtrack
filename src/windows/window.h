@@ -2,6 +2,8 @@
 #ifndef REMUTE_WINDOW_H
 #define REMUTE_WINDOW_H
 
+#include "../infocache.h"
+#include "../itemtracker.h"
 #include "../settings.h"
 #include <string>
 
@@ -17,7 +19,7 @@ public:
     Window& operator=(const Window&) = delete;
     Window& operator=(Window&&) = default;
     virtual ~Window() noexcept = default;
-    virtual void update(Settings&) noexcept;
+    virtual void update(Settings&, ItemTracker&, InfoCache&) noexcept;
     virtual void drawMainMenu() noexcept;
 
 protected:

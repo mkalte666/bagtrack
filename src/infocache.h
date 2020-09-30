@@ -1,36 +1,37 @@
 // licence note at the end of the file
 
-#ifndef BAGTRACK_ITEMTRACKER_H
-#define BAGTRACK_ITEMTRACKER_H
+#ifndef BAGTRACK_INFOCACHE_H
+#define BAGTRACK_INFOCACHE_H
 
 #include "api.h"
 #include "time_killer.h"
-#include <chrono>
-#include <condition_variable>
-#include <mutex>
+#include <set>
 #include <thread>
 
-class ItemTracker {
+class InfoCache {
 public:
-    ItemTracker(const Settings& settings) noexcept;
-    ~ItemTracker() noexcept;
-    ItemTracker(ItemTracker&&) = delete;
-    ItemTracker(ItemTracker const&) = delete;
-    ItemTracker& operator=(ItemTracker&&) = delete;
-    ItemTracker& operator=(ItemTracker const&) = delete;
+    InfoCache() noexcept;
+    ~InfoCache() noexcept;
+    InfoCache(const InfoCache&) = delete;
+    InfoCache(InfoCache&&) = delete;
+    InfoCache& operator=(const InfoCache&) = delete;
+    InfoCache& operator=(InfoCache&&) = delete;
 
-    ItemIdMap getCurrentState() const noexcept;
+    const ItemInfo& getItemInfo(ItemId id) noexcept;
 
 private:
-    void updateFunc(const Settings& settings) noexcept;
-    static ItemIdMap collectAllItemSources(const std::string& apiKey) noexcept;
-    std::thread updateThread = {};
-    ItemIdMap currentState = {};
+    void threadFun();
+    void readInfoCache();
+    void writeInfoCache() const;
+    std::thread fetchThread = {};
     mutable std::mutex mutex = {};
     timer_killer killer = {};
+    bool triedLoadingItemCache = false;
+    ItemInfoMap itemInfoCache = {};
+    std::set<ItemId> itemsToCache = {};
 };
 
-#endif //BAGTRACK_ITEMTRACKER_H
+#endif //BAGTRACK_INFOCACHE_H
 /*
  * This file is part bagtrack
  * Copyright (c) 2020 Malte Kießling

@@ -122,6 +122,43 @@ ItemIdMap getMaterialStorageContents(const std::string& key) noexcept
     return items;
 }
 
+ItemInfoMap getItemInfos(const std::set<ItemId>& ids) noexcept
+{
+    constexpr size_t maxIds = 100;
+    ItemInfoMap results;
+    std::string idString;
+    size_t count = 0;
+    for (const auto& id : ids) {
+        idString += std::to_string(id) + ",";
+        ++count;
+        if (count > maxIds) {
+            break;
+        }
+    }
+
+    std::map<std::string, std::string> params;
+    params["ids"] = idString;
+    auto res = makeRequest("", "/v2/items/", params);
+    // small guard against failures
+    if (res->status != 200) {
+        return results;
+    }
+    auto j = json::parse(res->body);
+    if (!j.is_array()) {
+        fmt::print(stderr, "Item endpoint returned wrong type - array expected, got shit\n");
+        for (const auto& itemJson : j) {
+            if (!itemJson.is_object()) {
+                continue;
+            }
+            ItemInfo item;
+            from_json(itemJson, item);
+            results[item.id] = item;
+        }
+        return results;
+    }
+    return results;
+}
+
 /*
  * This file is part bagtrack
  * Copyright (c) 2020 Malte Kießling

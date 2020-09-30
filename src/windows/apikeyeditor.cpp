@@ -10,7 +10,7 @@ ApiKeyEditor::ApiKeyEditor()
 {
 }
 
-void ApiKeyEditor::update(Settings& settings) noexcept
+void ApiKeyEditor::update(Settings& settings, ItemTracker&, InfoCache&) noexcept
 {
     // force show the window if there is no key set. Only apply if the key is checked
     if (apiKey.empty()) {
