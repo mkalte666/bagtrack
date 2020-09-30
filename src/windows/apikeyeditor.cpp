@@ -55,8 +55,11 @@ ApiKeyEditor::ApiKeyEditor()
 void ApiKeyEditor::update(Settings& settings) noexcept
 {
     // force show the window if there is no key set. Only apply if the key is checked
-    if (apiKey.empty() || apiKey == Settings::DefaultApiKey) {
+    if (apiKey.empty()) {
         apiKey = settings.getApiKey();
+    }
+
+    if (apiKey == Settings::DefaultApiKey) {
         shown = true;
         keyChecked = false;
         ImGui::SetNextWindowFocus();
@@ -68,6 +71,8 @@ void ApiKeyEditor::update(Settings& settings) noexcept
     }
 
     ImGui::Begin(name.c_str(), &shown);
+    ImGui::BeginChild("contents", ImVec2(0, -50.0F));
+
     ImGui::SetNextItemWidth(120.0F);
     if (ImGui::InputText("GW2 Api Key", &apiKey, ImGuiInputTextFlags_Password)) {
         keyChecked = false;
@@ -77,7 +82,8 @@ void ApiKeyEditor::update(Settings& settings) noexcept
         keyChecked = checkGw2ApiKey(apiKey);
     }
 
-    ImGui::Text("You need 'account', 'inventories' and 'wallet' enabled for this key!"); // NOLINT
+    ImGui::TextWrapped("You need 'account', 'inventories' and 'wallet' enabled for this key!"); // NOLINT
+    ImGui::EndChild();
 
     if (ImGui::Button("Cancel")) {
         apiKey = settings.getApiKey();
