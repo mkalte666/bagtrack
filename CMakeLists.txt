@@ -28,12 +28,18 @@ add_subdirectory(3rdparty/fmt)
 
 add_executable(
     bagtrack
+    src/api.cpp
+    src/api.h
+    src/itemtracker.cpp
+    src/itemtracker.h
     src/main.cpp
     src/messagebox.h
     src/settings.cpp
     src/settings.h
     src/windows/apikeyeditor.cpp
     src/windows/apikeyeditor.h
+    src/windows/itemselector.cpp
+    src/windows/itemselector.h
     src/windows/window.cpp
     src/windows/window.h)
 target_include_directories(bagtrack PRIVATE ${SDL2_INCLUDE_DIR})

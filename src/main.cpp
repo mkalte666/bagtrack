@@ -12,7 +12,10 @@
 
 #include <vector>
 
+#include "itemtracker.h"
+
 #include "windows/apikeyeditor.h"
+#include "windows/itemselector.h"
 
 int main(int, char**)
 {
@@ -68,8 +71,10 @@ int main(int, char**)
     auto ticksPerSecond = static_cast<double>(SDL_GetPerformanceFrequency());
 
     Settings settings;
+    ItemTracker tracker(settings);
     std::vector<std::unique_ptr<Window>> windows;
     windows.emplace_back(std::make_unique<ApiKeyEditor>());
+    windows.emplace_back(std::make_unique<ItemSelector>());
 
     while (running) {
         SDL_Event e;
