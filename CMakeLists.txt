@@ -1,12 +1,14 @@
 # Licence note is at the end of the file
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
-project(remute)
+project(bagtrack)
 include(cmake/funcEnableStrictOptions.cmake)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
 find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
 add_subdirectory(3rdparty/imgui-cmake-blob)
 
 set(JSON_BuildTests
@@ -39,6 +41,7 @@ target_link_libraries(
     bagtrack
     imgui
     gl3w
+    SDL2::SDL2_image
     SDL2::SDL2
     SDL2::SDL2main
     fmt::fmt
