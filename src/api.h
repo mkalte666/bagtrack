@@ -15,7 +15,7 @@ bool checkApiKey(const std::string& key) noexcept;
 
 ItemIdMap getBankContents(const std::string& key) noexcept;
 ItemIdMap getMaterialStorageContents(const std::string& key) noexcept;
-//ItemIdMap getCharacterContents(const std::string& key) noexcept;
+ItemIdMap getCharacterContents(const std::string& key) noexcept;
 
 ItemInfoMap getItemInfos(const std::set<ItemId>& ids) noexcept;
 

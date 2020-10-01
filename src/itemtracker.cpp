@@ -44,7 +44,7 @@ ItemIdMap ItemTracker::collectAllItemSources(const std::string& apiKey) noexcept
 
     ItemIdMap items = getMaterialStorageContents(apiKey);
     mergeMap(items, getBankContents(apiKey));
-
+    mergeMap(items, getCharacterContents(apiKey));
     return items;
 }
 

@@ -126,6 +126,60 @@ ItemIdMap getMaterialStorageContents(const std::string& key) noexcept
     return items;
 }
 
+ItemIdMap getCharacterContents(const std::string& key) noexcept
+{
+    ItemIdMap items;
+    auto charResult = makeRequest(key, "/v2/characters?ids=all");
+    if (!checkResponseForValidToken(charResult)) {
+        fmt::print(stderr, "Cannot get character list");
+        return items;
+    }
+
+    json charList = json::parse(charResult->body);
+    if (!charList.is_array()) {
+        fmt::print(stderr, "Unexpected character result tyoe");
+        return items;
+    }
+
+    for (const auto& jsonChar : charList) {
+        json equipmentList = jsonChar.value("equipment", json());
+        if (equipmentList.is_array()) {
+            for (const auto& item : equipmentList) {
+                if (!item.is_object()) {
+                    continue;
+                }
+                ItemId id = item.value("id", static_cast<ItemId>(0));
+                ++items[id];
+            }
+        }
+        json bagList = jsonChar.value("bags", json());
+        if (bagList.is_array()) {
+            for (const auto& bag : bagList) {
+                if (!bag.is_object()) {
+                    continue;
+                }
+                ItemId bagId = bag.value("id", static_cast<ItemId>(0));
+                ++items[bagId];
+
+                json bagInventory = bag.value("inventory", json());
+                if (!bagInventory.is_array()) {
+                    continue;
+                }
+                for (const auto& item : bagInventory) {
+                    if (!item.is_object()) {
+                        continue;
+                    }
+                    ItemId itemId = item.value("id", static_cast<ItemId>(0));
+                    int64_t count = item.value("count", 0);
+                    items[itemId] += count;
+                }
+            }
+        }
+    }
+
+    return items;
+}
+
 ItemInfoMap getItemInfos(const std::set<ItemId>& ids) noexcept
 {
     constexpr size_t maxIds = 50;
