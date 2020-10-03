@@ -69,7 +69,11 @@ ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cach
                 resultId = id;
             }
             ImGui::NextColumn();
-            ImGui::Text("%s", fmt::format("{}", items.at(id)).c_str());
+            int64_t count = 0;
+            if (const auto iter = items.find(id); iter != items.end()) {
+                count = iter->second;
+            }
+            ImGui::Text("%s", fmt::format("{}", count).c_str());
             ImGui::NextColumn();
             if (info.checkIfBound()) {
                 ImGui::Text("Bound Item");

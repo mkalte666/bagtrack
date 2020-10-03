@@ -13,7 +13,12 @@ void sortName(std::vector<ItemId>& itemIds, InfoCache& cache)
 void sortCount(std::vector<ItemId>& itemIds, const ItemIdMap& items)
 {
     std::sort(itemIds.begin(), itemIds.end(), [&items](ItemId a, ItemId b) {
-        return items.at(a) > items.at(b);
+        const auto iterA = items.find(a);
+        const auto iterB = items.find(b);
+        if (iterA == items.end() || iterB == items.end()) {
+            return false;
+        }
+        return iterA->second > iterB->second;
     });
 }
 
