@@ -6,6 +6,7 @@
 #include "iteminfo.h"
 #include "settings.h"
 #include <map>
+#include <optional>
 #include <set>
 
 using ItemIdMap = std::map<ItemId, int64_t>;
@@ -13,9 +14,9 @@ using ItemInfoMap = std::map<ItemId, ItemInfo>;
 
 bool checkApiKey(const std::string& key) noexcept;
 
-ItemIdMap getBankContents(const std::string& key) noexcept;
-ItemIdMap getMaterialStorageContents(const std::string& key) noexcept;
-ItemIdMap getCharacterContents(const std::string& key) noexcept;
+std::optional<ItemIdMap> getBankContents(const std::string& key) noexcept;
+std::optional<ItemIdMap> getMaterialStorageContents(const std::string& key) noexcept;
+std::optional<ItemIdMap> getCharacterContents(const std::string& key) noexcept;
 
 ItemInfoMap getItemInfos(const std::set<ItemId>& ids) noexcept;
 

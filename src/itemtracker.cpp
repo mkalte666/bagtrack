@@ -25,6 +25,10 @@ void ItemTracker::updateFunc(const Settings& settings) noexcept
             continue;
         }
         auto newItems = collectAllItemSources(apiKey);
+        // error somewhere, or actually no items? move along
+        if (newItems.empty()) {
+            continue;
+        }
         std::lock_guard lockGuard(mutex);
         std::swap(newItems, currentState);
         // also make sure we have some reference state
@@ -43,9 +47,16 @@ ItemIdMap ItemTracker::collectAllItemSources(const std::string& apiKey) noexcept
         }
     };
 
-    ItemIdMap items = getMaterialStorageContents(apiKey);
-    mergeMap(items, getBankContents(apiKey));
-    mergeMap(items, getCharacterContents(apiKey));
+    auto maybeMaterials = getMaterialStorageContents(apiKey);
+    auto maybeBank = getBankContents(apiKey);
+    auto maybeChars = getCharacterContents(apiKey);
+    if (!maybeMaterials.has_value() || !maybeMaterials.has_value() || !maybeChars.has_value()) {
+        return ItemIdMap();
+    }
+
+    ItemIdMap items = maybeMaterials.value();
+    mergeMap(items, maybeBank.value());
+    mergeMap(items, maybeChars.value());
     return items;
 }
 

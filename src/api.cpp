@@ -82,19 +82,22 @@ bool checkApiKey(const std::string& key) noexcept
     return true;
 }
 
-ItemIdMap getBankContents(const std::string& key) noexcept
+std::optional<ItemIdMap> getBankContents(const std::string& key) noexcept
 {
-    ItemIdMap items;
     auto result = makeRequest(key, "/v2/account/bank");
     if (!checkResponseForValidToken(result)) {
         fmt::print(stderr, "Cannot get bank contents!\n");
-        return items;
+        return std::nullopt;
     }
 
     auto j = json::parse(result->body);
     if (!j.is_array()) {
         fmt::print(stderr, "Got unexpected contents from bank endpoint\n{}", j);
+        return std::nullopt;
     }
+
+    ItemIdMap items;
+
     for (const auto& item : j) {
         if (item.is_null()) { // no worries, null just means the slot es empty
             continue;
@@ -103,22 +106,26 @@ ItemIdMap getBankContents(const std::string& key) noexcept
         int64_t count = item.value("count", 0);
         items[id] += count;
     }
+
     return items;
 }
 
-ItemIdMap getMaterialStorageContents(const std::string& key) noexcept
+std::optional<ItemIdMap> getMaterialStorageContents(const std::string& key) noexcept
 {
-    ItemIdMap items;
+
     auto result = makeRequest(key, "/v2/account/materials");
     if (!checkResponseForValidToken(result)) {
         fmt::print(stderr, "Cannot get material storage!\n");
-        return items;
+        return std::nullopt;
     }
 
     auto j = json::parse(result->body);
     if (!j.is_array()) {
         fmt::print(stderr, "Got unexpected contents from materials endpoint\n{}", j);
+        return std::nullopt;
     }
+
+    ItemIdMap items;
     for (const auto& item : j) {
         if (item.is_null()) { // no worries, null just means the slot es empty
             continue;
@@ -130,21 +137,21 @@ ItemIdMap getMaterialStorageContents(const std::string& key) noexcept
     return items;
 }
 
-ItemIdMap getCharacterContents(const std::string& key) noexcept
+std::optional<ItemIdMap> getCharacterContents(const std::string& key) noexcept
 {
-    ItemIdMap items;
     auto charResult = makeRequest(key, "/v2/characters?ids=all");
     if (!checkResponseForValidToken(charResult)) {
         fmt::print(stderr, "Cannot get character list");
-        return items;
+        return std::nullopt;
     }
 
     json charList = json::parse(charResult->body);
     if (!charList.is_array()) {
         fmt::print(stderr, "Unexpected character result tyoe");
-        return items;
+        return std::nullopt;
     }
 
+    ItemIdMap items;
     for (const auto& jsonChar : charList) {
         json equipmentList = jsonChar.value("equipment", json());
         if (equipmentList.is_array()) {
