@@ -116,7 +116,7 @@ void InfoCache::writeInfoCache() const
     }
 }
 
-uint64_t InfoCache::estimateItemValue(ItemId id) noexcept
+int64_t InfoCache::estimateItemValue(ItemId id) noexcept
 {
     const auto& info = getItemInfo(id);
     if (info.checkIfBound()) {

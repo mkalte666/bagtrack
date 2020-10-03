@@ -87,10 +87,10 @@ void GoldTracker::fullValueUpdate(ItemTracker& tracker, InfoCache& cache) noexce
     const auto& referenceItems = tracker.getReferenceState();
     const auto& currentItems = tracker.getCurrentState();
 
-    auto calcFun = [&cache](const ItemIdMap& items) -> uint64_t {
-        uint64_t value = 0;
+    auto calcFun = [&cache](const ItemIdMap& items) -> int64_t {
+        int64_t value = 0;
         for (const auto& item : items) {
-            value += cache.estimateItemValue(item.first) * static_cast<uint64_t>(item.second);
+            value += cache.estimateItemValue(item.first) * static_cast<int64_t>(item.second);
         }
         return value;
     };

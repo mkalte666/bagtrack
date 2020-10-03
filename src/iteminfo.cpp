@@ -18,7 +18,7 @@ void from_json(const nlohmann::json& j, ItemInfo& itemInfo)
     itemInfo.type = j.value("type", "");
     itemInfo.rarity = j.value("rarity", "");
     itemInfo.level = j.value("level", 0UL);
-    itemInfo.vendorValue = j.value("vendor_value", 0UL);
+    itemInfo.vendorValue = j.value("vendor_value", 0L);
     itemInfo.flags = j.value("flags", std::vector<std::string>());
 }
 

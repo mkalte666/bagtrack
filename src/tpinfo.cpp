@@ -5,12 +5,12 @@
 
 using json = nlohmann::json;
 
-std::string prettyGoldValue(uint64_t value) noexcept
+std::string prettyGoldValue(int64_t value) noexcept
 {
     std::string result;
-    uint64_t silver = value / 100U % 100U;
-    uint64_t copper = value % 100U;
-    uint64_t gold = value / 10000;
+    int64_t silver = value / 100 % 100;
+    int64_t copper = value % 100;
+    int64_t gold = value / 10000;
     return fmt::format("{}G {}S {}C", gold, silver, copper);
 }
 
@@ -18,9 +18,9 @@ void from_json(const nlohmann::json& j, TpInfo& tpInfo)
 {
     tpInfo.id = j.value("id", static_cast<ItemId>(0));
     json buys = j.value("buys", json());
-    tpInfo.buyValue = buys.value("unit_price", static_cast<uint64_t>(0));
+    tpInfo.buyValue = buys.value("unit_price", static_cast<int64_t>(0));
     json sells = j.value("sells", json());
-    tpInfo.sellValue = sells.value("unit_price", static_cast<uint64_t>(0));
+    tpInfo.sellValue = sells.value("unit_price", static_cast<int64_t>(0));
 }
 
 /*

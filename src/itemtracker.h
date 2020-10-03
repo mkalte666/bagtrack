@@ -24,9 +24,9 @@ public:
     void resetReferenceState() noexcept;
     ItemIdMap getFilteredDelta() const noexcept;
 
-    uint64_t getCurrentCoins() const noexcept;
-    uint64_t getReferenceCoins() const noexcept;
-    uint64_t getCoinDelta() const noexcept;
+    int64_t getCurrentCoins() const noexcept;
+    int64_t getReferenceCoins() const noexcept;
+    int64_t getCoinDelta() const noexcept;
 
 private:
     void updateFunc(const Settings& settings) noexcept;
@@ -34,8 +34,8 @@ private:
     std::thread updateThread = {};
     ItemIdMap currentState = {};
     ItemIdMap referenceState = {};
-    uint64_t currentCoins = {};
-    uint64_t referenceCoins = {};
+    int64_t currentCoins = {};
+    int64_t referenceCoins = {};
     bool isReferenceStateValid = false;
     mutable std::mutex mutex = {};
     timer_killer killer = {};

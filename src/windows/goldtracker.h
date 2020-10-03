@@ -16,8 +16,8 @@ public:
 
 private:
     void fullValueUpdate(ItemTracker& tracker, InfoCache& cache) noexcept;
-    uint64_t currentValue = 0;
-    uint64_t referenceValue = 0;
+    int64_t currentValue = 0;
+    int64_t referenceValue = 0;
     std::chrono::steady_clock::time_point lastFullUpdate = {};
 };
 

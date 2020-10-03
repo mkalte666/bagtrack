@@ -8,14 +8,14 @@
 
 struct TpInfo {
     ItemId id = {};
-    uint64_t buyValue = 0;
-    uint64_t sellValue = 0;
+    int64_t buyValue = 0;
+    int64_t sellValue = 0;
     std::chrono::steady_clock::time_point age = {};
 };
 
 using TpInfoMap = std::map<ItemId, TpInfo>;
 
-std::string prettyGoldValue(uint64_t value) noexcept;
+std::string prettyGoldValue(int64_t value) noexcept;
 void from_json(const nlohmann::json& j, TpInfo& tpInfo);
 #endif //BAGTRACK_TPINFO_H
 /*

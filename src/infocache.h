@@ -19,7 +19,7 @@ public:
 
     const ItemInfo& getItemInfo(ItemId id) noexcept;
     const TpInfo& getTpInfo(ItemId id) noexcept;
-    uint64_t estimateItemValue(ItemId id) noexcept;
+    int64_t estimateItemValue(ItemId id) noexcept;
 
 private:
     void threadFun();

@@ -24,7 +24,7 @@ void ItemTracker::updateFunc(const Settings& settings) noexcept
             fmt::print(stderr, "Api Key Invalid, tracker in pause");
             continue;
         }
-        uint64_t newCoins = getAccountCoins(apiKey);
+        int64_t newCoins = getAccountCoins(apiKey);
         std::unique_lock lock(mutex);
         currentCoins = newCoins;
         lock.unlock();
@@ -110,19 +110,19 @@ ItemIdMap ItemTracker::getFilteredDelta() const noexcept
     return delta;
 }
 
-uint64_t ItemTracker::getCurrentCoins() const noexcept
+int64_t ItemTracker::getCurrentCoins() const noexcept
 {
     std::lock_guard lockGuard(mutex);
     return currentCoins;
 }
 
-uint64_t ItemTracker::getReferenceCoins() const noexcept
+int64_t ItemTracker::getReferenceCoins() const noexcept
 {
     std::lock_guard lockGuard(mutex);
     return referenceCoins;
 }
 
-uint64_t ItemTracker::getCoinDelta() const noexcept
+int64_t ItemTracker::getCoinDelta() const noexcept
 {
     std::lock_guard lockGuard(mutex);
     return currentCoins - referenceCoins;

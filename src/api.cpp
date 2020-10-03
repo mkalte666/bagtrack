@@ -191,7 +191,7 @@ std::optional<ItemIdMap> getCharacterContents(const std::string& key) noexcept
     return items;
 }
 
-uint64_t getAccountCoins(const std::string& key) noexcept
+int64_t getAccountCoins(const std::string& key) noexcept
 {
     auto charResult = makeRequest(key, "/v2/account/wallet");
     if (!checkResponseForValidToken(charResult)) {
@@ -211,7 +211,7 @@ uint64_t getAccountCoins(const std::string& key) noexcept
         }
 
         if (currency.value("id", 0) == 1) { // 1 is gold coins
-            return currency.value("value", static_cast<uint64_t>(0));
+            return currency.value("value", static_cast<int64_t>(0));
         }
     }
 

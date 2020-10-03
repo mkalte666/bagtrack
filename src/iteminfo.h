@@ -17,7 +17,7 @@ struct ItemInfo {
     std::string type = {};
     std::string rarity = {};
     size_t level = {};
-    size_t vendorValue = {};
+    int64_t vendorValue = {};
     std::vector<std::string> flags = {};
 
     bool checkIfBound() const noexcept;
