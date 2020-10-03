@@ -1,31 +1,24 @@
 // licence note at the end of the file
+#include "filteritems.h"
 
-#ifndef BAGTRACK_SORTITEMS_H
-#define BAGTRACK_SORTITEMS_H
+std::vector<ItemId> filterItems(const std::vector<ItemId>& items, InfoCache& cache, const std::string& filter) noexcept
+{
+    if (filter.empty()) {
+        return items;
+    }
 
-#include "infocache.h"
+    std::vector<ItemId> filteredItems;
+    filteredItems.reserve(items.size());
+    for (const auto& item : items) {
+        const auto& info = cache.getItemInfo(item);
+        if (info.name.find(filter) != std::string::npos || info.description.find(filter) != std::string::npos) {
+            filteredItems.push_back(item);
+        }
+    }
 
-enum class SortStrategy {
-    SortNone,
-    SortName,
-    SortCount,
-    // edit before here, this one always the last!
-    SortStrategyCount
-};
+    return filteredItems;
+}
 
-/**
- * \brief Sort items by the given sorting strategy
- * \param items
- * \param tracker
- * \param cache
- * \param sortStrategy
- * \return
- */
-std::vector<ItemId> sortItems(const ItemIdMap& items, InfoCache& cache, const SortStrategy& sortStrategy) noexcept;
-
-std::vector<std::string> getSortStrategies() noexcept;
-
-#endif //BAGTRACK_SORTITEMS_H
 /*
  * This file is part bagtrack
  * Copyright (c) 2020 Malte Kießling

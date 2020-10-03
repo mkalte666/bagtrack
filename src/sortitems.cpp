@@ -8,9 +8,15 @@ void sortName(std::vector<ItemId>& itemIds, InfoCache& cache)
     });
 }
 
-std::vector<ItemId> sortItems(const ItemIdMap& items, ItemTracker& tracker, InfoCache& cache, const SortStrategy& sortStrategy) noexcept
+void sortCount(std::vector<ItemId>& itemIds, const ItemIdMap& items)
 {
-    static_cast<void>(tracker);
+    std::sort(itemIds.begin(), itemIds.end(), [&items](ItemId a, ItemId b) {
+        return items.at(a) > items.at(b);
+    });
+}
+
+std::vector<ItemId> sortItems(const ItemIdMap& items, InfoCache& cache, const SortStrategy& sortStrategy) noexcept
+{
     std::vector<ItemId> itemIds;
     for (const auto& pair : items) {
         itemIds.push_back(pair.first);
@@ -23,6 +29,9 @@ std::vector<ItemId> sortItems(const ItemIdMap& items, ItemTracker& tracker, Info
         sortName(itemIds, cache);
         break;
     case SortStrategy::SortStrategyCount:
+        sortCount(itemIds, items);
+        break;
+    case SortStrategy::SortCount:
         break;
     }
 
@@ -42,6 +51,9 @@ std::vector<std::string> getSortStrategies() noexcept
             strats.emplace_back("By Name");
             break;
         case SortStrategy::SortStrategyCount:
+            strats.emplace_back("By Count");
+            break;
+        case SortStrategy::SortCount:
             break;
         }
     }

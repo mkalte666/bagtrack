@@ -30,6 +30,8 @@ add_executable(
     bagtrack
     src/api.cpp
     src/api.h
+    src/filteritems.cpp
+    src/filteritems.h
     src/fixfmt.h
     src/infocache.cpp
     src/infocache.h
