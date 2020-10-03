@@ -2,7 +2,7 @@
 
 #include "itemselector.h"
 
-#include <fmt/format.h>
+#include "../fixfmt.h"
 #include <imgui.h>
 ItemSelector::ItemSelector()
     : Window("Select Items")

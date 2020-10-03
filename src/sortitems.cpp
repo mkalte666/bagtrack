@@ -10,6 +10,7 @@ void sortName(std::vector<ItemId>& itemIds, InfoCache& cache)
 
 std::vector<ItemId> sortItems(const ItemIdMap& items, ItemTracker& tracker, InfoCache& cache, const SortStrategy& sortStrategy) noexcept
 {
+    static_cast<void>(tracker);
     std::vector<ItemId> itemIds;
     for (const auto& pair : items) {
         itemIds.push_back(pair.first);

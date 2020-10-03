@@ -1,7 +1,7 @@
 // licence note at the end of the file
 
 #include "itemtracker.h"
-#include <fmt/format.h>
+#include "fixfmt.h"
 
 using namespace std::chrono_literals;
 

@@ -1,8 +1,8 @@
 // licence note at the end of the file
 
 #include "trackereverything.h"
+#include "../fixfmt.h"
 #include "imgui.h"
-#include <fmt/format.h>
 
 TrackerEverything::TrackerEverything() noexcept
     : Window("Track Everything")

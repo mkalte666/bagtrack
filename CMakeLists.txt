@@ -30,6 +30,7 @@ add_executable(
     bagtrack
     src/api.cpp
     src/api.h
+    src/fixfmt.h
     src/infocache.cpp
     src/infocache.h
     src/iteminfo.cpp
@@ -63,8 +64,9 @@ target_link_libraries(
     nlohmann_json::nlohmann_json
     httplib::httplib)
 
-# fmt breaks strict options enableStrictOptions(bagtrack) bagtrack
-# CMakeLists.txt
+# fmt breaks strict options
+enablestrictoptions(bagtrack)
+# bagtrack CMakeLists.txt
 #
 # Copyright (C) 2020 Malte Kießling
 #

@@ -3,8 +3,8 @@
 #ifndef REMUTE_MESSAGEBOX_H
 #define REMUTE_MESSAGEBOX_H
 
+#include "fixfmt.h"
 #include <SDL.h>
-#include <fmt/format.h>
 
 /**
  * \brief Wrapper for SDL_ShowSimpleMessageBox with fmt formatting
