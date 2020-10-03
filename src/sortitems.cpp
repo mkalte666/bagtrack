@@ -17,6 +17,20 @@ void sortCount(std::vector<ItemId>& itemIds, const ItemIdMap& items)
     });
 }
 
+void sortSellValue(std::vector<ItemId>& itemIds, InfoCache& cache)
+{
+    std::sort(itemIds.begin(), itemIds.end(), [&cache](ItemId a, ItemId b) {
+        return cache.getTpInfo(a).sellValue > cache.getTpInfo(b).sellValue;
+    });
+}
+
+void sortBuyValue(std::vector<ItemId>& itemIds, InfoCache& cache)
+{
+    std::sort(itemIds.begin(), itemIds.end(), [&cache](ItemId a, ItemId b) {
+        return cache.getTpInfo(a).buyValue > cache.getTpInfo(b).buyValue;
+    });
+}
+
 std::vector<ItemId> sortItems(const ItemIdMap& items, InfoCache& cache, const SortStrategy& sortStrategy) noexcept
 {
     std::vector<ItemId> itemIds;
@@ -32,6 +46,12 @@ std::vector<ItemId> sortItems(const ItemIdMap& items, InfoCache& cache, const So
         break;
     case SortStrategy::Count:
         sortCount(itemIds, items);
+        break;
+    case SortStrategy::SellValue:
+        sortBuyValue(itemIds, cache);
+        break;
+    case SortStrategy::BuyValue:
+        sortSellValue(itemIds, cache);
         break;
     case SortStrategy::SortStrategyCount:
         break;
@@ -54,6 +74,12 @@ std::vector<std::string> getSortStrategies() noexcept
             break;
         case SortStrategy::Count:
             strats.emplace_back("By Count");
+            break;
+        case SortStrategy::SellValue:
+            strats.emplace_back("By Sell Value");
+            break;
+        case SortStrategy::BuyValue:
+            strats.emplace_back("By Buy Value");
             break;
         case SortStrategy::SortStrategyCount:
             break;

@@ -1,6 +1,17 @@
 // licence note at the end of the file
 #include "filteritems.h"
 
+std::string toLower(const std::string& in)
+{
+    std::string result = in;
+    for (char& c : result) {
+        if (c >= 'A' && c <= 'Z') {
+            c += 32;
+        }
+    }
+    return result;
+}
+
 std::vector<ItemId> filterItems(const std::vector<ItemId>& items, InfoCache& cache, const std::string& filter) noexcept
 {
     if (filter.empty()) {
@@ -11,7 +22,7 @@ std::vector<ItemId> filterItems(const std::vector<ItemId>& items, InfoCache& cac
     filteredItems.reserve(items.size());
     for (const auto& item : items) {
         const auto& info = cache.getItemInfo(item);
-        if (info.name.find(filter) != std::string::npos || info.description.find(filter) != std::string::npos) {
+        if (toLower(info.name).find(toLower(filter)) != std::string::npos || toLower(info.description).find(toLower(filter)) != std::string::npos) {
             filteredItems.push_back(item);
         }
     }

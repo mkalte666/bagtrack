@@ -76,6 +76,7 @@ void ItemTracker::resetReferenceState() noexcept
     }
     referenceState = currentState;
 }
+
 ItemIdMap ItemTracker::getFilteredDelta() const noexcept
 {
     std::lock_guard lockGuard(mutex);

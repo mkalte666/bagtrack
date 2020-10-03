@@ -9,6 +9,8 @@ enum class SortStrategy : size_t {
     None,
     Name,
     Count,
+    SellValue,
+    BuyValue,
     // edit before here, this one always the last!
     SortStrategyCount
 };

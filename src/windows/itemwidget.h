@@ -11,9 +11,11 @@
 struct ItemWidgetState {
     std::string filter = {};
     SortStrategy sortStrategy = SortStrategy::Name;
+    std::vector<ItemId> sorted = {};
+    std::vector<ItemId> filtered = {};
 };
 
-ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cache);
+ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cache, size_t minFilterLetters = 0);
 
 #endif //BAGTRACK_ITEMWIDGET_H
 /*
