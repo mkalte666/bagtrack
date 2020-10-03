@@ -4,7 +4,9 @@
 void sortName(std::vector<ItemId>& itemIds, InfoCache& cache)
 {
     std::sort(itemIds.begin(), itemIds.end(), [&cache](ItemId a, ItemId b) {
-        return cache.getItemInfo(a).name.compare(cache.getItemInfo(b).name);
+        const std::string aName = cache.getItemInfo(a).name;
+        const std::string bName = cache.getItemInfo(b).name;
+        return aName < bName;
     });
 }
 
@@ -23,15 +25,15 @@ std::vector<ItemId> sortItems(const ItemIdMap& items, InfoCache& cache, const So
     }
 
     switch (sortStrategy) {
-    case SortStrategy::SortNone:
+    case SortStrategy::None:
         break;
-    case SortStrategy::SortName:
+    case SortStrategy::Name:
         sortName(itemIds, cache);
         break;
-    case SortStrategy::SortStrategyCount:
+    case SortStrategy::Count:
         sortCount(itemIds, items);
         break;
-    case SortStrategy::SortCount:
+    case SortStrategy::SortStrategyCount:
         break;
     }
 
@@ -44,16 +46,16 @@ std::vector<std::string> getSortStrategies() noexcept
     for (size_t i = 0; i < static_cast<size_t>(SortStrategy::SortStrategyCount); ++i) {
         auto strat = static_cast<SortStrategy>(i);
         switch (strat) {
-        case SortStrategy::SortNone:
+        case SortStrategy::None:
             strats.emplace_back("Dont Sort");
             break;
-        case SortStrategy::SortName:
+        case SortStrategy::Name:
             strats.emplace_back("By Name");
             break;
-        case SortStrategy::SortStrategyCount:
+        case SortStrategy::Count:
             strats.emplace_back("By Count");
             break;
-        case SortStrategy::SortCount:
+        case SortStrategy::SortStrategyCount:
             break;
         }
     }

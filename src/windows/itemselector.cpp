@@ -4,6 +4,7 @@
 
 #include "../fixfmt.h"
 #include <imgui.h>
+
 ItemSelector::ItemSelector()
     : Window("Select Items")
 {
@@ -15,17 +16,9 @@ void ItemSelector::update(Settings&, ItemTracker& tracker, InfoCache& cache) noe
         return;
     }
 
+    const auto items = tracker.getCurrentState();
     ImGui::Begin(name.c_str(), &shown);
-    ImGui::Columns(2);
-    auto items = tracker.getCurrentState();
-    for (const auto& pair : items) {
-        const ItemInfo& info = cache.getItemInfo(pair.first);
-        ImGui::Text("%s", info.name.c_str());
-        ImGui::NextColumn();
-        ImGui::Text("%s", fmt::format("{}", pair.second).c_str());
-        ImGui::NextColumn();
-    }
-    ImGui::Columns(1);
+    listItems(widgetState, items, cache);
     ImGui::End();
 }
 

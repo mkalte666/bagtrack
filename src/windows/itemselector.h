@@ -3,6 +3,7 @@
 #ifndef BAGTRACK_ITEMSELECTOR_H
 #define BAGTRACK_ITEMSELECTOR_H
 
+#include "itemwidget.h"
 #include "window.h"
 
 class ItemSelector : public Window {
@@ -12,6 +13,9 @@ public:
 
     void update(Settings&, ItemTracker&, InfoCache&) noexcept override;
     void drawMainMenu() noexcept override;
+
+private:
+    ItemWidgetState widgetState = {};
 };
 
 #endif //BAGTRACK_ITEMSELECTOR_H

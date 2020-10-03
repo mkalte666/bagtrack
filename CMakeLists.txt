@@ -50,6 +50,8 @@ add_executable(
     src/windows/apikeyeditor.h
     src/windows/itemselector.cpp
     src/windows/itemselector.h
+    src/windows/itemwidget.cpp
+    src/windows/itemwidget.h
     src/windows/trackereverything.cpp
     src/windows/trackereverything.h
     src/windows/window.cpp
