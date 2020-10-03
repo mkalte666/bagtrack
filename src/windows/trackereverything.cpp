@@ -19,18 +19,8 @@ void TrackerEverything::update(Settings&, ItemTracker& tracker, InfoCache& cache
     if (ImGui::Button("Reset Tracking")) {
         tracker.resetReferenceState();
     }
-    ImGui::BeginChild("Tracker Contents");
-    ImGui::Columns(2);
-    auto items = tracker.getFilteredDelta();
-    for (const auto& pair : items) {
-        const ItemInfo& info = cache.getItemInfo(pair.first);
-        ImGui::Text("%s", info.name.c_str());
-        ImGui::NextColumn();
-        ImGui::Text("%s", fmt::format("{}", pair.second).c_str());
-        ImGui::NextColumn();
-    }
-    ImGui::Columns(1);
-    ImGui::EndChild();
+    const auto items = tracker.getFilteredDelta();
+    listItems(widgetState, items, cache);
     ImGui::End();
 }
 

@@ -126,6 +126,12 @@ int main(int, char**)
 
         // draw menus in all of the windows
         ImGui::BeginMainMenuBar();
+        if (ImGui::BeginMenu("File")) {
+            if (ImGui::MenuItem("Exit")) {
+                running = false;
+            }
+            ImGui::EndMenu();
+        }
         for (auto& w : windows) {
             w->drawMainMenu();
         }

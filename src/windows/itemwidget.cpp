@@ -7,6 +7,7 @@
 
 ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cache)
 {
+    ItemId resultId = 0;
     ImGui::SetNextItemWidth(200);
     ImGui::InputText("Filter", &state.filter);
     ImGui::SameLine();
@@ -27,7 +28,9 @@ ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cach
     ImGui::Columns(2);
     for (const auto& id : filtered) {
         const ItemInfo& info = cache.getItemInfo(id);
-        ImGui::Text("%s", info.name.c_str());
+        if (ImGui::Selectable(fmt::format("{}", info.name).c_str(), false)) {
+            resultId = id;
+        }
         ImGui::NextColumn();
         ImGui::Text("%s", fmt::format("{}", items.at(id)).c_str());
         ImGui::NextColumn();
@@ -35,7 +38,7 @@ ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cach
     ImGui::Columns(1);
     ImGui::EndChild();
 
-    return 0;
+    return resultId;
 }
 
 /*

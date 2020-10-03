@@ -3,6 +3,7 @@
 #ifndef BAGTRACK_TRACKEREVERYTHING_H
 #define BAGTRACK_TRACKEREVERYTHING_H
 
+#include "itemwidget.h"
 #include "window.h"
 
 class TrackerEverything : public Window {
@@ -12,6 +13,9 @@ public:
 
     void update(Settings&, ItemTracker&, InfoCache&) noexcept override;
     void drawMainMenu() noexcept override;
+
+private:
+    ItemWidgetState widgetState;
 };
 
 #endif //BAGTRACK_TRACKEREVERYTHING_H
