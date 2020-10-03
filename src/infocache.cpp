@@ -35,6 +35,18 @@ void InfoCache::threadFun()
             }
             writeInfoCache();
         }
+
+        // check for the trading post infos
+        if (!tpInfosToCache.empty()) {
+            const auto toCacheCopy = tpInfosToCache;
+            lock.unlock();
+            const auto newInfos = getItemTpInfos(toCacheCopy);
+            lock.lock();
+            for (const auto& pair : newInfos) {
+                tpInfosToCache.erase(pair.first);
+                tpInfoCache[pair.first] = pair.second;
+            }
+        }
     }
 }
 
@@ -50,6 +62,36 @@ const ItemInfo& InfoCache::getItemInfo(ItemId id) noexcept
     itemsToCache.emplace(id);
     return fallbackInfo;
 }
+
+const TpInfo& InfoCache::getTpInfo(ItemId id) noexcept
+{
+    static const TpInfo fallbackInfo = {};
+    using namespace std::chrono_literals;
+
+    std::lock_guard lockGuard(mutex);
+
+    // check if we have infos on the item
+    if (const auto itemInfoIter = itemInfoCache.find(id); itemInfoIter != itemInfoCache.end()) {
+        // ok we know it. make sure it has no binding
+        if (itemInfoIter->second.checkIfBound()) {
+            return fallbackInfo;
+        }
+
+        if (const auto iter = tpInfoCache.find(id); iter != tpInfoCache.end()) {
+            const TpInfo& info = iter->second;
+            if (std::chrono::steady_clock::now() - info.age > 60s) {
+                tpInfosToCache.emplace(id);
+            }
+            return info;
+        }
+
+        tpInfosToCache.emplace(id);
+    }
+
+    // we dont know the item yet so do not fetch it
+    return fallbackInfo;
+}
+
 void InfoCache::readInfoCache()
 {
     auto cacheFileName = Settings::getPrefPath();

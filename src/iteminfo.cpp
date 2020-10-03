@@ -1,6 +1,13 @@
 // licence note at the end of the file
 #include "iteminfo.h"
 
+bool ItemInfo::checkIfBound() const noexcept
+{
+    return std::find(flags.begin(), flags.end(), "AccountBindOnUse") != flags.end()
+        || std::find(flags.begin(), flags.end(), "AccountBound") != flags.end()
+        || std::find(flags.begin(), flags.end(), "SoulbindOnAcquire") != flags.end();
+}
+
 void from_json(const nlohmann::json& j, ItemInfo& itemInfo)
 {
     itemInfo.id = j.value("id", static_cast<ItemId>(0));
@@ -12,6 +19,7 @@ void from_json(const nlohmann::json& j, ItemInfo& itemInfo)
     itemInfo.rarity = j.value("rarity", "");
     itemInfo.level = j.value("level", 0UL);
     itemInfo.vendorValue = j.value("vendor_value", 0UL);
+    itemInfo.flags = j.value("flags", std::vector<std::string>());
 }
 
 void to_json(nlohmann::json& j, const ItemInfo& itemInfo)
@@ -25,6 +33,7 @@ void to_json(nlohmann::json& j, const ItemInfo& itemInfo)
     j["rarity"] = itemInfo.rarity;
     j["level"] = itemInfo.level;
     j["vendor_value"] = itemInfo.vendorValue;
+    j["flags"] = itemInfo.flags;
 }
 
 /*

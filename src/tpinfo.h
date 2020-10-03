@@ -1,28 +1,23 @@
 // licence note at the end of the file
 
-#ifndef BAGTRACK_API_H
-#define BAGTRACK_API_H
+#ifndef BAGTRACK_TPINFO_H
+#define BAGTRACK_TPINFO_H
 
 #include "iteminfo.h"
-#include "settings.h"
-#include "tpinfo.h"
-#include <map>
-#include <optional>
-#include <set>
+#include <chrono>
 
-using ItemIdMap = std::map<ItemId, int64_t>;
-using ItemInfoMap = std::map<ItemId, ItemInfo>;
+struct TpInfo {
+    ItemId id = {};
+    uint64_t buyValue = 0;
+    uint64_t sellValue = 0;
+    std::chrono::steady_clock::time_point age = {};
+};
 
-bool checkApiKey(const std::string& key) noexcept;
+using TpInfoMap = std::map<ItemId, TpInfo>;
 
-std::optional<ItemIdMap> getBankContents(const std::string& key) noexcept;
-std::optional<ItemIdMap> getMaterialStorageContents(const std::string& key) noexcept;
-std::optional<ItemIdMap> getCharacterContents(const std::string& key) noexcept;
-
-ItemInfoMap getItemInfos(const std::set<ItemId>& ids) noexcept;
-TpInfoMap getItemTpInfos(const std::set<ItemId>& ids) noexcept;
-
-#endif //BAGTRACK_API_H
+std::string prettyGoldValue(uint64_t value) noexcept;
+void from_json(const nlohmann::json& j, TpInfo& tpInfo);
+#endif //BAGTRACK_TPINFO_H
 /*
  * This file is part bagtrack
  * Copyright (c) 2020 Malte Kießling

@@ -18,6 +18,7 @@ public:
     InfoCache& operator=(InfoCache&&) = delete;
 
     const ItemInfo& getItemInfo(ItemId id) noexcept;
+    const TpInfo& getTpInfo(ItemId id) noexcept;
 
 private:
     void threadFun();
@@ -29,6 +30,8 @@ private:
     bool triedLoadingItemCache = false;
     ItemInfoMap itemInfoCache = {};
     std::set<ItemId> itemsToCache = {};
+    TpInfoMap tpInfoCache = {};
+    std::set<ItemId> tpInfosToCache = {};
 };
 
 #endif //BAGTRACK_INFOCACHE_H

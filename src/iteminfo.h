@@ -18,6 +18,9 @@ struct ItemInfo {
     std::string rarity = {};
     size_t level = {};
     size_t vendorValue = {};
+    std::vector<std::string> flags = {};
+
+    bool checkIfBound() const noexcept;
 };
 
 void from_json(const nlohmann::json& j, ItemInfo& itemInfo);

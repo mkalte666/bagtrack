@@ -8,7 +8,7 @@
 ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cache)
 {
     ItemId resultId = 0;
-    ImGui::SetNextItemWidth(200);
+    ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.6F);
     ImGui::InputText("Filter", &state.filter);
     ImGui::SameLine();
     const auto sortStrats = getSortStrategies();
@@ -24,15 +24,42 @@ ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cach
     const auto sorted = sortItems(items, cache, state.sortStrategy);
     const auto filtered = filterItems(sorted, cache, state.filter);
 
+    ImGui::Columns(4);
+    ImGui::SetColumnWidth(-1, ImGui::GetWindowWidth() / 4.0F);
+    ImGui::Text("Name");
+    ImGui::NextColumn();
+    ImGui::Text("Count");
+    ImGui::NextColumn();
+    ImGui::Text("Sell Value");
+    ImGui::NextColumn();
+    ImGui::Text("Buy Value");
+    ImGui::NextColumn();
+
+    ImGui::Columns(1);
     ImGui::BeginChild("##itemwidget");
-    ImGui::Columns(2);
+    ImGui::Columns(4);
+    ImGui::SetColumnWidth(-1, ImGui::GetWindowWidth() / 4.0F);
     for (const auto& id : filtered) {
         const ItemInfo& info = cache.getItemInfo(id);
+        const TpInfo& tpInfo = cache.getTpInfo(id);
         if (ImGui::Selectable(fmt::format("{}", info.name).c_str(), false)) {
             resultId = id;
         }
         ImGui::NextColumn();
         ImGui::Text("%s", fmt::format("{}", items.at(id)).c_str());
+        ImGui::NextColumn();
+        if (info.checkIfBound()) {
+            ImGui::Text("Bound Item");
+        } else {
+            ImGui::Text("%s", fmt::format("{}", prettyGoldValue(tpInfo.sellValue)).c_str());
+        }
+        ImGui::NextColumn();
+        if (info.checkIfBound()) {
+            ImGui::Text("Bound Item");
+        } else {
+            ImGui::Text("%s", fmt::format("{}", prettyGoldValue(tpInfo.buyValue)).c_str());
+        }
+
         ImGui::NextColumn();
     }
     ImGui::Columns(1);
