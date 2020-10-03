@@ -57,7 +57,7 @@ ItemIdMap ItemTracker::collectAllItemSources(const std::string& apiKey) noexcept
     auto maybeMaterials = getMaterialStorageContents(apiKey);
     auto maybeBank = getBankContents(apiKey);
     auto maybeChars = getCharacterContents(apiKey);
-    if (!maybeMaterials.has_value() || !maybeMaterials.has_value() || !maybeChars.has_value()) {
+    if (!maybeMaterials.has_value() || !maybeBank.has_value() || !maybeChars.has_value()) {
         return ItemIdMap();
     }
 
