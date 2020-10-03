@@ -6,6 +6,8 @@
 #include <string>
 namespace fs = std::filesystem;
 
+#include "iteminfo.h"
+
 /**
  * \brief Settings persisting across sessions
  */
@@ -41,11 +43,23 @@ public:
      */
     void setApiKey(std::string key) noexcept;
 
+    /**
+     * \brief Return list of currently tracked items
+     * \return
+     */
+    [[nodiscard]] const std::vector<ItemId>& getTrackedItems() const noexcept;
+
+    /**
+     * \brief Set the list of currently tracked items
+     */
+    void setTrackedItems(const std::vector<ItemId>& items) noexcept;
+
 private:
     static fs::path settingsFileName() noexcept;
     void read();
     void write() const;
     std::string apiKey = DefaultApiKey;
+    std::vector<ItemId> trackedItems = {};
 };
 
 #endif //REMUTE_SETTINGS_H

@@ -61,7 +61,7 @@ ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cach
     ImGui::Columns(4);
     ImGui::SetColumnWidth(-1, ImGui::GetWindowWidth() / 4.0F);
     // only display when we have something in the filter
-    if (state.filter.size() > minFilterLetters) {
+    if (state.filter.size() >= minFilterLetters) {
         for (const auto& id : state.filtered) {
             const ItemInfo& info = cache.getItemInfo(id);
             const TpInfo& tpInfo = cache.getTpInfo(id);

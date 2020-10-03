@@ -18,6 +18,7 @@
 #include "windows/apikeyeditor.h"
 #include "windows/itemselector.h"
 #include "windows/trackereverything.h"
+#include "windows/goldtracker.h"
 
 int main(int, char**)
 {
@@ -79,6 +80,7 @@ int main(int, char**)
     windows.emplace_back(std::make_unique<ApiKeyEditor>());
     windows.emplace_back(std::make_unique<ItemSelector>());
     windows.emplace_back(std::make_unique<TrackerEverything>());
+    windows.emplace_back(std::make_unique<GoldTracker>());
 
     while (running) {
         SDL_Event e;
@@ -117,7 +119,6 @@ int main(int, char**)
         ImGuiID dockspace_id = ImGui::GetID("Dock windows here");
         ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode | ImGuiDockNodeFlags_AutoHideTabBar;
         ImGui::DockSpace(dockspace_id, ImVec2(0.0F, 0.0F), dockspace_flags);
-
         ImGui::End();
 
         auto time = static_cast<double>(SDL_GetPerformanceCounter() - timeAtStart) / ticksPerSecond;

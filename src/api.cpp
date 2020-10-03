@@ -191,6 +191,33 @@ std::optional<ItemIdMap> getCharacterContents(const std::string& key) noexcept
     return items;
 }
 
+uint64_t getAccountCoins(const std::string& key) noexcept
+{
+    auto charResult = makeRequest(key, "/v2/account/wallet");
+    if (!checkResponseForValidToken(charResult)) {
+        fmt::print(stderr, "Cannot get character wallet");
+        return 0;
+    }
+
+    json currencyList = json::parse(charResult->body);
+    if (!currencyList.is_array()) {
+        fmt::print(stderr, "Wallet endpoint gave unexpected result");
+        return 0;
+    }
+
+    for (const auto& currency : currencyList) {
+        if (!currency.is_object()) {
+            continue;
+        }
+
+        if (currency.value("id", 0) == 1) { // 1 is gold coins
+            return currency.value("value", static_cast<uint64_t>(0));
+        }
+    }
+
+    return 0;
+}
+
 ItemInfoMap getItemInfos(const std::set<ItemId>& ids) noexcept
 {
     constexpr size_t maxIds = 150;

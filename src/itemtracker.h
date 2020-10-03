@@ -20,8 +20,13 @@ public:
     ItemTracker& operator=(ItemTracker const&) = delete;
 
     ItemIdMap getCurrentState() const noexcept;
+    ItemIdMap getReferenceState() const noexcept;
     void resetReferenceState() noexcept;
     ItemIdMap getFilteredDelta() const noexcept;
+
+    uint64_t getCurrentCoins() const noexcept;
+    uint64_t getReferenceCoins() const noexcept;
+    uint64_t getCoinDelta() const noexcept;
 
 private:
     void updateFunc(const Settings& settings) noexcept;
@@ -29,6 +34,8 @@ private:
     std::thread updateThread = {};
     ItemIdMap currentState = {};
     ItemIdMap referenceState = {};
+    uint64_t currentCoins = {};
+    uint64_t referenceCoins = {};
     bool isReferenceStateValid = false;
     mutable std::mutex mutex = {};
     timer_killer killer = {};

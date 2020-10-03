@@ -24,17 +24,24 @@ void ItemTracker::updateFunc(const Settings& settings) noexcept
             fmt::print(stderr, "Api Key Invalid, tracker in pause");
             continue;
         }
+        uint64_t newCoins = getAccountCoins(apiKey);
+        std::unique_lock lock(mutex);
+        currentCoins = newCoins;
+        lock.unlock();
+
         auto newItems = collectAllItemSources(apiKey);
         // error somewhere, or actually no items? move along
         if (newItems.empty()) {
             continue;
         }
-        std::lock_guard lockGuard(mutex);
+
+        lock.lock();
         std::swap(newItems, currentState);
         // also make sure we have some reference state
         isReferenceStateValid = true;
         if (referenceState.empty()) {
             referenceState = currentState;
+            referenceCoins = currentCoins;
         }
     } while (killer.wait_for(30s));
 }
@@ -67,6 +74,13 @@ ItemIdMap ItemTracker::getCurrentState() const noexcept
     return stateCopy;
 }
 
+ItemIdMap ItemTracker::getReferenceState() const noexcept
+{
+    std::lock_guard lockGuard(mutex);
+    ItemIdMap stateCopy = referenceState;
+    return stateCopy;
+}
+
 void ItemTracker::resetReferenceState() noexcept
 {
     std::lock_guard lockGuard(mutex);
@@ -75,6 +89,7 @@ void ItemTracker::resetReferenceState() noexcept
         return;
     }
     referenceState = currentState;
+    referenceCoins = currentCoins;
 }
 
 ItemIdMap ItemTracker::getFilteredDelta() const noexcept
@@ -93,6 +108,24 @@ ItemIdMap ItemTracker::getFilteredDelta() const noexcept
     }
 
     return delta;
+}
+
+uint64_t ItemTracker::getCurrentCoins() const noexcept
+{
+    std::lock_guard lockGuard(mutex);
+    return currentCoins;
+}
+
+uint64_t ItemTracker::getReferenceCoins() const noexcept
+{
+    std::lock_guard lockGuard(mutex);
+    return referenceCoins;
+}
+
+uint64_t ItemTracker::getCoinDelta() const noexcept
+{
+    std::lock_guard lockGuard(mutex);
+    return currentCoins - referenceCoins;
 }
 
 /*

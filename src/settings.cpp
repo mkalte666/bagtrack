@@ -39,6 +39,17 @@ void Settings::setApiKey(std::string key) noexcept
     write();
 }
 
+const std::vector<ItemId>& Settings::getTrackedItems() const noexcept
+{
+    return trackedItems;
+}
+
+void Settings::setTrackedItems(const std::vector<ItemId>& items) noexcept
+{
+    trackedItems = items;
+    write();
+}
+
 void Settings::read()
 {
     std::ifstream i(settingsFileName());
@@ -55,12 +66,14 @@ void Settings::read()
     json j;
     i >> j;
     apiKey = j.value("apikey", DefaultApiKey);
+    trackedItems = j.value("trackedItems", std::vector<ItemId>());
 }
 
 void Settings::write() const
 {
     json j;
     j["apikey"] = apiKey;
+    j["trackedItems"] = trackedItems;
 
     std::ofstream o(settingsFileName());
     if (!o.good()) {

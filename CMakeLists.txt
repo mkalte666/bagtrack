@@ -50,6 +50,8 @@ add_executable(
     src/tpinfo.h
     src/windows/apikeyeditor.cpp
     src/windows/apikeyeditor.h
+    src/windows/goldtracker.cpp
+    src/windows/goldtracker.h
     src/windows/itemselector.cpp
     src/windows/itemselector.h
     src/windows/itemwidget.cpp
