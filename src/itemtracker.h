@@ -29,6 +29,7 @@ private:
     std::thread updateThread = {};
     ItemIdMap currentState = {};
     ItemIdMap referenceState = {};
+    bool isReferenceStateValid = false;
     mutable std::mutex mutex = {};
     timer_killer killer = {};
 };

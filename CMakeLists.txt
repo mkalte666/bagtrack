@@ -45,6 +45,8 @@ add_executable(
     src/windows/apikeyeditor.h
     src/windows/itemselector.cpp
     src/windows/itemselector.h
+    src/windows/trackereverything.cpp
+    src/windows/trackereverything.h
     src/windows/window.cpp
     src/windows/window.h)
 target_include_directories(bagtrack PRIVATE ${SDL2_INCLUDE_DIR})

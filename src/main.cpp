@@ -17,6 +17,7 @@
 
 #include "windows/apikeyeditor.h"
 #include "windows/itemselector.h"
+#include "windows/trackereverything.h"
 
 int main(int, char**)
 {
@@ -77,6 +78,7 @@ int main(int, char**)
     std::vector<std::unique_ptr<Window>> windows;
     windows.emplace_back(std::make_unique<ApiKeyEditor>());
     windows.emplace_back(std::make_unique<ItemSelector>());
+    windows.emplace_back(std::make_unique<TrackerEverything>());
 
     while (running) {
         SDL_Event e;

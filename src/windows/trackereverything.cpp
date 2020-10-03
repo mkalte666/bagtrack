@@ -1,23 +1,27 @@
 // licence note at the end of the file
 
-#include "itemselector.h"
-
+#include "trackereverything.h"
+#include "imgui.h"
 #include <fmt/format.h>
-#include <imgui.h>
-ItemSelector::ItemSelector()
-    : Window("Select Items")
+
+TrackerEverything::TrackerEverything() noexcept
+    : Window("Track Everything")
 {
 }
 
-void ItemSelector::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexcept
+void TrackerEverything::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexcept
 {
     if (!shown) {
         return;
     }
 
     ImGui::Begin(name.c_str(), &shown);
+    if (ImGui::Button("Reset Tracking")) {
+        tracker.resetReferenceState();
+    }
+    ImGui::BeginChild("Tracker Contents");
     ImGui::Columns(2);
-    auto items = tracker.getCurrentState();
+    auto items = tracker.getFilteredDelta();
     for (const auto& pair : items) {
         const ItemInfo& info = cache.getItemInfo(pair.first);
         ImGui::Text("%s", info.name.c_str());
@@ -26,13 +30,14 @@ void ItemSelector::update(Settings&, ItemTracker& tracker, InfoCache& cache) noe
         ImGui::NextColumn();
     }
     ImGui::Columns(1);
+    ImGui::EndChild();
     ImGui::End();
 }
 
-void ItemSelector::drawMainMenu() noexcept
+void TrackerEverything::drawMainMenu() noexcept
 {
-    if (ImGui::BeginMenu("GW2")) {
-        if (ImGui::MenuItem("Select Items to track...")) {
+    if (ImGui::BeginMenu("Trackers")) {
+        if (ImGui::MenuItem("Track Everything")) {
             shown = true;
         }
         ImGui::EndMenu();

@@ -10,6 +10,9 @@ using json = nlohmann::json;
 httplib::Result makeRequest(const std::string& key, const std::string& endpoint, std::map<std::string, std::string> paramters = {})
 {
     httplib::Client client("https://api.guildwars2.com");
+    client.set_connection_timeout(10, 0);
+    client.set_read_timeout(10, 0);
+    client.set_write_timeout(10, 0);
     client.set_bearer_token_auth(key.c_str());
     std::string endpointWithParams = endpoint;
     // normal get paramters, endpoint?key1=value1&key2=value2 etc.
@@ -26,6 +29,7 @@ bool checkResponseForValidToken(const httplib::Result& result)
 {
     if (!result) {
         fmt::print(stderr, "result is broken!");
+        return false;
     }
     if (result->status == 200) {
         fmt::print(stderr, "Token valid check success\n");
