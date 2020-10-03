@@ -40,6 +40,8 @@ add_executable(
     src/messagebox.h
     src/settings.cpp
     src/settings.h
+    src/sortitems.cpp
+    src/sortitems.h
     src/time_killer.h
     src/windows/apikeyeditor.cpp
     src/windows/apikeyeditor.h
