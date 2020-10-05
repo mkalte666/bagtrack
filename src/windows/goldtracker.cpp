@@ -15,6 +15,10 @@ GoldTracker::GoldTracker()
 void GoldTracker::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexcept
 {
     using namespace std::chrono_literals;
+    if (referenceId == 0) {
+        referenceId = tracker.getCurrentStateId();
+    }
+
     if (std::chrono::steady_clock::now() - lastFullUpdate > 10s || currentValue == 0) {
         fullValueUpdate(tracker, cache);
         lastFullUpdate = std::chrono::steady_clock::now();
@@ -23,6 +27,10 @@ void GoldTracker::update(Settings&, ItemTracker& tracker, InfoCache& cache) noex
     if (!shown) {
         return;
     }
+
+    const TrackerState currentState = tracker.getCurrentState();
+    const TrackerState referenceState = tracker.getState(referenceId);
+    const TrackerState deltaState = tracker.getDeltaState(referenceId, tracker.getCurrentStateId());
 
     ImGui::Begin(name.c_str(), &shown);
     // table header
@@ -40,11 +48,11 @@ void GoldTracker::update(Settings&, ItemTracker& tracker, InfoCache& cache) noex
     // account coins
     ImGui::Text("Coins");
     ImGui::NextColumn();
-    ImGui::Text("%s", prettyGoldValue(tracker.getReferenceCoins()).c_str());
+    ImGui::Text("%s", prettyGoldValue(referenceState.coins).c_str());
     ImGui::NextColumn();
-    ImGui::Text("%s", prettyGoldValue(tracker.getCurrentCoins()).c_str());
+    ImGui::Text("%s", prettyGoldValue(currentState.coins).c_str());
     ImGui::NextColumn();
-    ImGui::Text("%s", prettyGoldValue(tracker.getCoinDelta()).c_str());
+    ImGui::Text("%s", prettyGoldValue(deltaState.coins).c_str());
     ImGui::NextColumn();
 
     // collected value of items
@@ -61,11 +69,11 @@ void GoldTracker::update(Settings&, ItemTracker& tracker, InfoCache& cache) noex
     // total values
     ImGui::Text("Total");
     ImGui::NextColumn();
-    ImGui::Text("%s", prettyGoldValue(referenceValue + tracker.getReferenceCoins()).c_str());
+    ImGui::Text("%s", prettyGoldValue(referenceValue + referenceState.coins).c_str());
     ImGui::NextColumn();
-    ImGui::Text("%s", prettyGoldValue(currentValue + tracker.getCurrentCoins()).c_str());
+    ImGui::Text("%s", prettyGoldValue(currentValue + currentState.coins).c_str());
     ImGui::NextColumn();
-    ImGui::Text("%s", prettyGoldValue((currentValue - referenceValue) + tracker.getCoinDelta()).c_str());
+    ImGui::Text("%s", prettyGoldValue((currentValue - referenceValue) + deltaState.coins).c_str());
     ImGui::NextColumn();
 
     // done
@@ -84,8 +92,8 @@ void GoldTracker::drawMainMenu() noexcept
 
 void GoldTracker::fullValueUpdate(ItemTracker& tracker, InfoCache& cache) noexcept
 {
-    const auto& referenceItems = tracker.getReferenceState();
-    const auto& currentItems = tracker.getCurrentState();
+    const auto referenceState = tracker.getState(referenceId);
+    const auto currentState = tracker.getCurrentState();
 
     auto calcFun = [&cache](const ItemIdMap& items) -> int64_t {
         int64_t value = 0;
@@ -95,8 +103,8 @@ void GoldTracker::fullValueUpdate(ItemTracker& tracker, InfoCache& cache) noexce
         return value;
     };
 
-    referenceValue = calcFun(referenceItems);
-    currentValue = calcFun(currentItems);
+    referenceValue = calcFun(referenceState.items);
+    currentValue = calcFun(currentState.items);
 }
 
 /*

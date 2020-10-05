@@ -10,6 +10,8 @@
 #include <mutex>
 #include <thread>
 
+#include "trackerstate.h"
+
 class ItemTracker {
 public:
     ItemTracker(const Settings& settings) noexcept;
@@ -19,24 +21,17 @@ public:
     ItemTracker& operator=(ItemTracker&&) = delete;
     ItemTracker& operator=(ItemTracker const&) = delete;
 
-    ItemIdMap getCurrentState() const noexcept;
-    ItemIdMap getReferenceState() const noexcept;
-    void resetReferenceState() noexcept;
-    ItemIdMap getFilteredDelta() const noexcept;
-
-    int64_t getCurrentCoins() const noexcept;
-    int64_t getReferenceCoins() const noexcept;
-    int64_t getCoinDelta() const noexcept;
+    TrackerState getCurrentState() const noexcept;
+    TrackerState getState(int64_t id) const noexcept;
+    TrackerState getDeltaState(int64_t oldId, int64_t newId) const noexcept;
+    int64_t getCurrentStateId() const noexcept;
+    std::vector<int64_t> getStateIds() const noexcept;
 
 private:
     void updateFunc(const Settings& settings) noexcept;
     static ItemIdMap collectAllItemSources(const std::string& apiKey) noexcept;
     std::thread updateThread = {};
-    ItemIdMap currentState = {};
-    ItemIdMap referenceState = {};
-    int64_t currentCoins = {};
-    int64_t referenceCoins = {};
-    bool isReferenceStateValid = false;
+    std::map<int64_t, TrackerState> states = {};
     mutable std::mutex mutex = {};
     timer_killer killer = {};
 };

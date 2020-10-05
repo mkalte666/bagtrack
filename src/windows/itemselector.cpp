@@ -16,9 +16,9 @@ void ItemSelector::update(Settings&, ItemTracker& tracker, InfoCache& cache) noe
         return;
     }
 
-    const auto items = tracker.getCurrentState();
+    const auto state = tracker.getCurrentState();
     ImGui::Begin(name.c_str(), &shown);
-    listItems(widgetState, items, cache, 3);
+    listItems(widgetState, state.items, cache, 3);
     ImGui::End();
 }
 

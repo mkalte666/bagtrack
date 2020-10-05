@@ -16,11 +16,12 @@ void TrackerEverything::update(Settings&, ItemTracker& tracker, InfoCache& cache
     }
 
     ImGui::Begin(name.c_str(), &shown);
-    if (ImGui::Button("Reset Tracking")) {
-        tracker.resetReferenceState();
+    if (ImGui::Button("Reset Tracking") || referenceId == 0) {
+        referenceId = tracker.getCurrentStateId();
     }
-    const auto items = tracker.getFilteredDelta();
-    listItems(widgetState, items, cache);
+
+    const auto deltaState = tracker.getDeltaState(referenceId, tracker.getCurrentStateId());
+    listItems(widgetState, deltaState.items, cache);
     ImGui::End();
 }
 

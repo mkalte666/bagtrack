@@ -16,6 +16,7 @@ public:
 
 private:
     ItemWidgetState widgetState;
+    int64_t referenceId = 0;
 };
 
 #endif //BAGTRACK_TRACKEREVERYTHING_H
