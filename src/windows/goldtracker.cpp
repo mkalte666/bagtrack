@@ -16,18 +16,19 @@ void GoldTracker::update(Settings&, ItemTracker& tracker, InfoCache& cache) noex
 {
     using namespace std::chrono_literals;
 
-    if (std::chrono::steady_clock::now() - lastFullUpdate > 10s || currentValue == 0) {
-        fullValueUpdate(tracker, cache);
-        lastFullUpdate = std::chrono::steady_clock::now();
-    }
-
     if (!shown) {
         return;
     }
 
     ImGui::Begin(name.c_str(), &shown);
 
+    auto oldRefId = referenceId;
     referenceId = timeSelector(tracker, referenceId);
+
+    if (std::chrono::steady_clock::now() - lastFullUpdate > 10s || currentValue == 0 || oldRefId != referenceId) {
+        fullValueUpdate(tracker, cache);
+        lastFullUpdate = std::chrono::steady_clock::now();
+    }
 
     const TrackerState currentState = tracker.getCurrentState();
     const TrackerState referenceState = tracker.getState(referenceId);

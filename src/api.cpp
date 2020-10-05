@@ -58,7 +58,13 @@ bool checkApiKey(const std::string& key) noexcept
         return false;
     }
 
-    auto keyInfo = json::parse(res->body);
+    json keyInfo;
+    try {
+        keyInfo = json::parse(res->body);
+    } catch (json::exception& e) {
+        fmt::print(stderr, "Json parsing failed: {}", e.what());
+        return false;
+    }
     if (!keyInfo.contains("permissions")) {
         fmt::print(stderr, "Token check failed - invalid token information\n");
         return false;
@@ -90,7 +96,13 @@ std::optional<ItemIdMap> getBankContents(const std::string& key) noexcept
         return std::nullopt;
     }
 
-    auto j = json::parse(result->body);
+    json j;
+    try {
+        j = json::parse(result->body);
+    } catch (json::exception& e) {
+        fmt::print(stderr, "Json parsing failed: {}", e.what());
+        return std::nullopt;
+    }
     if (!j.is_array()) {
         fmt::print(stderr, "Got unexpected contents from bank endpoint\n{}", j);
         return std::nullopt;
@@ -119,7 +131,13 @@ std::optional<ItemIdMap> getMaterialStorageContents(const std::string& key) noex
         return std::nullopt;
     }
 
-    auto j = json::parse(result->body);
+    json j;
+    try {
+        j = json::parse(result->body);
+    } catch (json::exception& e) {
+        fmt::print(stderr, "Json parsing failed: {}", e.what());
+        return std::nullopt;
+    }
     if (!j.is_array()) {
         fmt::print(stderr, "Got unexpected contents from materials endpoint\n{}", j);
         return std::nullopt;
@@ -145,7 +163,14 @@ std::optional<ItemIdMap> getCharacterContents(const std::string& key) noexcept
         return std::nullopt;
     }
 
-    json charList = json::parse(charResult->body);
+    json charList;
+    try {
+        charList = json::parse(charResult->body);
+    } catch (json::exception& e) {
+        fmt::print(stderr, "Json parsing failed: {}", e.what());
+        return std::nullopt;
+    }
+
     if (!charList.is_array()) {
         fmt::print(stderr, "Unexpected character result tyoe");
         return std::nullopt;
@@ -199,7 +224,14 @@ int64_t getAccountCoins(const std::string& key) noexcept
         return 0;
     }
 
-    json currencyList = json::parse(charResult->body);
+    json currencyList;
+    try {
+        currencyList = json::parse(charResult->body);
+    } catch (json::exception& e) {
+        fmt::print(stderr, "Json parsing failed: {}", e.what());
+        return 0;
+    }
+
     if (!currencyList.is_array()) {
         fmt::print(stderr, "Wallet endpoint gave unexpected result");
         return 0;
@@ -239,7 +271,13 @@ ItemInfoMap getItemInfos(const std::set<ItemId>& ids) noexcept
     if (!res || (res->status != 200 && res->status != 206)) {
         return results;
     }
-    auto j = json::parse(res->body);
+    json j;
+    try {
+        j = json::parse(res->body);
+    } catch (json::exception& e) {
+        fmt::print(stderr, "Json parsing failed: {}", e.what());
+        return results;
+    }
     if (!j.is_array()) {
         fmt::print(stderr, "Item endpoint returned wrong type - array expected, got shit\n");
         return results;
@@ -278,7 +316,13 @@ TpInfoMap getItemTpInfos(const std::set<ItemId>& ids) noexcept
         fmt::print(stderr, "TP endpoint connection failed\n");
         return results;
     }
-    auto j = json::parse(res->body);
+    json j;
+    try {
+        j = json::parse(res->body);
+    } catch (json::exception& e) {
+        fmt::print(stderr, "Json parsing failed: {}", e.what());
+        return results;
+    }
     if (!j.is_array()) {
         fmt::print(stderr, "TP endpoint returned wrong type - array expected, got shit\n");
         return results;
