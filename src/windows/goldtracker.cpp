@@ -2,9 +2,9 @@
 
 #include <imgui.h>
 
-#include "../fixfmt.h"
 #include "../tpinfo.h"
 #include "goldtracker.h"
+#include "timeselector.h"
 
 GoldTracker::GoldTracker()
     : Window("Gold Tracker")
@@ -15,9 +15,6 @@ GoldTracker::GoldTracker()
 void GoldTracker::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexcept
 {
     using namespace std::chrono_literals;
-    if (referenceId == 0) {
-        referenceId = tracker.getCurrentStateId();
-    }
 
     if (std::chrono::steady_clock::now() - lastFullUpdate > 10s || currentValue == 0) {
         fullValueUpdate(tracker, cache);
@@ -28,11 +25,14 @@ void GoldTracker::update(Settings&, ItemTracker& tracker, InfoCache& cache) noex
         return;
     }
 
+    ImGui::Begin(name.c_str(), &shown);
+
+    referenceId = timeSelector(tracker, referenceId);
+
     const TrackerState currentState = tracker.getCurrentState();
     const TrackerState referenceState = tracker.getState(referenceId);
     const TrackerState deltaState = tracker.getDeltaState(referenceId, tracker.getCurrentStateId());
 
-    ImGui::Begin(name.c_str(), &shown);
     // table header
     ImGui::Columns(4);
     ImGui::Text("What?");

@@ -45,7 +45,7 @@ void ItemTracker::updateFunc(const Settings& settings) noexcept
         }
 
         writeCache();
-    } while (killer.wait_for(30s));
+    } while (killer.wait_for(60s));
 }
 
 ItemIdMap ItemTracker::collectAllItemSources(const std::string& apiKey) noexcept
@@ -89,6 +89,13 @@ TrackerState ItemTracker::getDeltaState(int64_t oldId, int64_t newId) const noex
 {
     TrackerState delta = getState(newId);
     TrackerState oldState = getState(oldId);
+    // no new state or no old state? no delta!
+    if (delta.items.empty()) {
+        return TrackerState();
+    }
+    if (oldState.items.empty()) {
+        return TrackerState();
+    }
 
     // calculate the item delta, dropping empty rows
     for (const auto& pair : oldState.items) {
@@ -130,7 +137,8 @@ void ItemTracker::writeCache() const noexcept
         copy = states;
     }
 
-    nlohmann::json j = copy;
+    nlohmann::json j;
+    nlohmann::to_json(j, states);
     const auto filename = Settings::getPrefPath() /= "history.json";
     std::ofstream file(filename);
     if (file.good()) {
@@ -144,11 +152,12 @@ void ItemTracker::readCache() noexcept
     const auto filename = Settings::getPrefPath() /= "history.json";
     std::ifstream file(filename);
     if (file.good()) {
-        file >> j;
-        std::unique_lock lock(mutex);
         try {
-            nlohmann::to_json(j, states);
-        } catch (nlohmann::json::exception&) {
+            file >> j;
+            std::unique_lock lock(mutex);
+            nlohmann::from_json(j, states);
+        } catch (nlohmann::json::exception& e) {
+            fmt::print(stderr, "Cannot read json history! {}", e.what());
             // valid state, invalid file, we dont care
         }
     }

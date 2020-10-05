@@ -3,6 +3,7 @@
 #include "trackereverything.h"
 #include "../fixfmt.h"
 #include "imgui.h"
+#include "timeselector.h"
 
 TrackerEverything::TrackerEverything() noexcept
     : Window("Track Everything")
@@ -16,9 +17,7 @@ void TrackerEverything::update(Settings&, ItemTracker& tracker, InfoCache& cache
     }
 
     ImGui::Begin(name.c_str(), &shown);
-    if (ImGui::Button("Reset Tracking") || referenceId == 0) {
-        referenceId = tracker.getCurrentStateId();
-    }
+    referenceId = timeSelector(tracker, referenceId);
 
     const auto deltaState = tracker.getDeltaState(referenceId, tracker.getCurrentStateId());
     listItems(widgetState, deltaState.items, cache);

@@ -58,6 +58,8 @@ add_executable(
     src/windows/itemselector.h
     src/windows/itemwidget.cpp
     src/windows/itemwidget.h
+    src/windows/timeselector.cpp
+    src/windows/timeselector.h
     src/windows/trackereverything.cpp
     src/windows/trackereverything.h
     src/windows/window.cpp
