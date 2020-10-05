@@ -48,6 +48,8 @@ add_executable(
     src/time_killer.h
     src/tpinfo.cpp
     src/tpinfo.h
+    src/trackerstate.cpp
+    src/trackerstate.h
     src/windows/apikeyeditor.cpp
     src/windows/apikeyeditor.h
     src/windows/goldtracker.cpp
