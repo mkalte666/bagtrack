@@ -111,13 +111,12 @@ int64_t ItemTracker::getCurrentStateId() const noexcept
     return id;
 }
 
-std::vector<int64_t> ItemTracker::getStateIds() const noexcept
+std::set<int64_t> ItemTracker::getStateIds() const noexcept
 {
     std::lock_guard lockGuard(mutex);
-    std::vector<int64_t> ids;
-    ids.reserve(states.size());
+    std::set<int64_t> ids;
     for (const auto& pair : states) {
-        ids.emplace_back(pair.first);
+        ids.emplace(pair.first);
     }
 
     return ids;

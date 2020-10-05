@@ -25,7 +25,7 @@ public:
     TrackerState getState(int64_t id) const noexcept;
     TrackerState getDeltaState(int64_t oldId, int64_t newId) const noexcept;
     int64_t getCurrentStateId() const noexcept;
-    std::vector<int64_t> getStateIds() const noexcept;
+    std::set<int64_t> getStateIds() const noexcept;
 
 private:
     void updateFunc(const Settings& settings) noexcept;
