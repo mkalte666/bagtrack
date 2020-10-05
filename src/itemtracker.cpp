@@ -3,6 +3,7 @@
 #include "itemtracker.h"
 #include "fixfmt.h"
 #include <ctime>
+#include <fstream>
 
 using namespace std::chrono_literals;
 
@@ -19,8 +20,11 @@ ItemTracker::~ItemTracker() noexcept
 void ItemTracker::updateFunc(const Settings& settings) noexcept
 {
     do {
-        auto apiKey = settings.getApiKey();
+        if (states.empty()) {
+            readCache();
+        }
 
+        auto apiKey = settings.getApiKey();
         if (!checkApiKey(apiKey)) {
             fmt::print(stderr, "Api Key Invalid, tracker in pause");
             continue;
@@ -35,8 +39,12 @@ void ItemTracker::updateFunc(const Settings& settings) noexcept
             continue;
         }
 
-        std::unique_lock lock(mutex);
-        states[newState.stateId] = newState;
+        {
+            std::unique_lock lock(mutex);
+            states[newState.stateId] = newState;
+        }
+
+        writeCache();
     } while (killer.wait_for(30s));
 }
 
@@ -113,6 +121,38 @@ std::vector<int64_t> ItemTracker::getStateIds() const noexcept
     }
 
     return ids;
+}
+
+void ItemTracker::writeCache() const noexcept
+{
+    std::map<int64_t, TrackerState> copy;
+    {
+        std::unique_lock lock(mutex);
+        copy = states;
+    }
+
+    nlohmann::json j = copy;
+    const auto filename = Settings::getPrefPath() /= "history.json";
+    std::ofstream file(filename);
+    if (file.good()) {
+        file << j;
+    }
+}
+
+void ItemTracker::readCache() noexcept
+{
+    nlohmann::json j;
+    const auto filename = Settings::getPrefPath() /= "history.json";
+    std::ifstream file(filename);
+    if (file.good()) {
+        file >> j;
+        std::unique_lock lock(mutex);
+        try {
+            nlohmann::to_json(j, states);
+        } catch (nlohmann::json::exception&) {
+            // valid state, invalid file, we dont care
+        }
+    }
 }
 
 /*

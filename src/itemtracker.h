@@ -29,6 +29,8 @@ public:
 
 private:
     void updateFunc(const Settings& settings) noexcept;
+    void writeCache() const noexcept;
+    void readCache() noexcept;
     static ItemIdMap collectAllItemSources(const std::string& apiKey) noexcept;
     std::thread updateThread = {};
     std::map<int64_t, TrackerState> states = {};
