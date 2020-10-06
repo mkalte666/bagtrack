@@ -37,7 +37,7 @@ int main(int, char**)
     const char* glsl_version = "#version 130";
 
     //windowpos is doing shitstuff NOLINTNEXTLINE
-    auto* window = SDL_CreateWindow("Tuner", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1024, 768, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    auto* window = SDL_CreateWindow("Bag Track", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1024, 768, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     if (window == nullptr) {
         messageBox(SDL_MESSAGEBOX_ERROR, "SDL ERROR", "Could not create window: {}", SDL_GetError());
         SDL_Quit();
