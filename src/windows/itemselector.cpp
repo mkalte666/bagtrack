@@ -2,9 +2,35 @@
 
 #include "itemselector.h"
 
+#include "../base64/base64.h"
 #include "../fixfmt.h"
 #include "timeselector.h"
 #include <imgui.h>
+#include <misc/cpp/imgui_stdlib.h>
+
+ItemId decodeChatLink(const std::string& link)
+{
+    if (link.size() < 11) {
+        return 0;
+    }
+
+    if (link.substr(0, 2) != "[&" || *link.rbegin() != ']') {
+        return 0;
+    }
+
+    // skip '[&' and ]
+    auto decoded = base64_decode(link.substr(2, link.size() - 3));
+    auto type = static_cast<uint8_t>(decoded[0]);
+    if (type != 0x02 || decoded.size() < 5) {
+        return 0;
+    }
+
+    ItemId id = 0;
+    id |= (0xFFU & static_cast<ItemId>(decoded[2]));
+    id |= (0xFFU & static_cast<ItemId>(decoded[3])) << 8U;
+    id |= (0xFFU & static_cast<ItemId>(decoded[4])) << 16U;
+    return id;
+}
 
 ItemSelector::ItemSelector()
     : Window("Track with Filter")
@@ -46,11 +72,20 @@ void ItemSelector::editFilter(Settings& settings, ItemTracker& tracker, InfoCach
     if (!selectorWidgetShown) {
         return;
     }
+    auto trackedItems = settings.getTrackedItems();
     ImGui::Begin("Edit Filter", &selectorWidgetShown);
     ImGui::Columns(2);
+    ImGui::SetNextItemWidth(ImGui::GetColumnWidth(1) / 2.0F);
+
+    ImGui::InputText("<-Chat Links here", &chatLink);
+    if (ItemId id = decodeChatLink(chatLink); id != 0) {
+        chatLink.clear();
+        trackedItems.insert(id);
+        settings.setTrackedItems(trackedItems);
+    }
     ImGui::BeginChild("SelectorList");
     const auto state = tracker.getCurrentState();
-    auto trackedItems = settings.getTrackedItems();
+
     if (auto id = listItems(selectorWidgetState, state.items, cache, 3, std::set<ItemId>(), false); id != 0) {
         trackedItems.insert(id);
         settings.setTrackedItems(trackedItems);

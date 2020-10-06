@@ -43,6 +43,8 @@ add_executable(
     bagtrack
     src/api.cpp
     src/api.h
+    src/base64/base64.cpp
+    src/base64/base64.h
     src/filteritems.cpp
     src/filteritems.h
     src/fixfmt.h

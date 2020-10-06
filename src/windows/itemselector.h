@@ -20,6 +20,7 @@ private:
     ItemWidgetState selectorWidgetState = {};
     int64_t referenceId = 0;
     bool selectorWidgetShown = false;
+    std::string chatLink = "";
 };
 
 #endif //BAGTRACK_ITEMSELECTOR_H

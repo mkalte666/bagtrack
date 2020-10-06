@@ -43,7 +43,6 @@ void InfoCache::threadFun()
             const auto newInfos = getItemTpInfos(toCacheCopy);
             lock.lock();
             for (const auto& pair : newInfos) {
-                tpInfosToCache.erase(pair.first);
                 tpInfoCache[pair.first] = pair.second;
             }
         }
