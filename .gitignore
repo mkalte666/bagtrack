@@ -603,3 +603,9 @@ FodyWeavers.xsd
 
 # root build dir
 /build/
+
+/windows/build
+/windows/deps
+/windows/package
+/windows/*.tar.gz
+/windows/*.zip

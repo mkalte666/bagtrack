@@ -8,6 +8,7 @@
 class FileDialog : public Window {
 public:
     using Window::Window;
+    FileDialog() noexcept;
     void update(Settings&, ItemTracker&, InfoCache&) noexcept override;
     void drawMainMenu() noexcept override;
 

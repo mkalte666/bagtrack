@@ -13,7 +13,7 @@ void FileDialog::update(Settings& settings, ItemTracker& tracker, InfoCache&) no
         break;
     case NextAction::New: {
         nfdchar_t* outPath = nullptr;
-        nfdresult_t result = NFD_SaveDialog("bagtrack", settings.getLastHistoryFile().remove_filename().c_str(), &outPath);
+        nfdresult_t result = NFD_SaveDialog("bagtrack", reinterpret_cast<const char*>(settings.getLastHistoryFile().remove_filename().c_str()), &outPath);
         if (result == NFD_OKAY) {
             fs::path p = outPath;
             free(outPath); // NOLINT api does that
@@ -29,7 +29,7 @@ void FileDialog::update(Settings& settings, ItemTracker& tracker, InfoCache&) no
     }
     case NextAction::Open: {
         nfdchar_t* outPath = nullptr;
-        nfdresult_t result = NFD_OpenDialog("bagtrack", settings.getLastHistoryFile().remove_filename().c_str(), &outPath);
+        nfdresult_t result = NFD_OpenDialog("bagtrack", reinterpret_cast<const char*>(settings.getLastHistoryFile().remove_filename().c_str()), &outPath);
         if (result == NFD_OKAY) {
             fs::path p = outPath;
             free(outPath); // NOLINT api does that
@@ -41,7 +41,7 @@ void FileDialog::update(Settings& settings, ItemTracker& tracker, InfoCache&) no
     }
     case NextAction::SaveAs: {
         nfdchar_t* outPath = nullptr;
-        nfdresult_t result = NFD_SaveDialog("bagtrack", settings.getLastHistoryFile().remove_filename().c_str(), &outPath);
+        nfdresult_t result = NFD_SaveDialog("bagtrack", reinterpret_cast<const char*>(settings.getLastHistoryFile().remove_filename().c_str()), &outPath);
         if (result == NFD_OKAY) {
             fs::path p = outPath;
             free(outPath); // NOLINT api does that
@@ -74,6 +74,11 @@ void FileDialog::drawMainMenu() noexcept
         ImGui::Separator();
         ImGui::EndMenu();
     }
+}
+
+FileDialog::FileDialog() noexcept
+    : Window("file dialog")
+{
 }
 
 /*

@@ -7,8 +7,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
+cmake_policy(SET CMP0072 NEW)
+find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
 add_subdirectory(3rdparty/imgui-cmake-blob)
 
 set(JSON_BuildTests
@@ -19,15 +20,22 @@ set(JSON_Install
     CACHE BOOL "json install" FORCE)
 add_subdirectory(3rdparty/json)
 
-set(HTTPLIB_COMPILE
+set(HTTPLIB_REQUIRE_OPENSSL
     ON
     CACHE BOOL "httplib compile" FORCE)
 add_subdirectory(3rdparty/cpp-httplib)
 
 add_subdirectory(3rdparty/fmt)
 
-if(WIN32)
-    message(FATAL_ERROR "fix nfd for win32!")
+if(MINGW)
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
+    find_package(GTK REQUIRED)
+    add_library(nfd STATIC 3rdparty/nativefiledialog/src/nfd_common.c
+            3rdparty/nativefiledialog/src/nfd_win.cpp)
+    target_include_directories(nfd PUBLIC 3rdparty/nativefiledialog/src/include
+            ${GTK3_INCLUDE_DIRS})
+    target_link_libraries(nfd PUBLIC comctl32)
 else()
     find_package(PkgConfig REQUIRED)
     pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
@@ -82,20 +90,58 @@ add_executable(
     src/windows/window.cpp
     src/windows/window.h)
 target_include_directories(bagtrack PRIVATE ${SDL2_INCLUDE_DIR})
-target_link_libraries(
-    bagtrack
-    imgui
-    gl3w
-    nfd
-    SDL2::SDL2_image
-    SDL2::SDL2
-    SDL2::SDL2main
-    fmt::fmt
-    nlohmann_json::nlohmann_json
-    httplib::httplib)
 
-# fmt breaks strict options
-enablestrictoptions(bagtrack)
+if (MINGW)
+    find_library(sdl2mainlib "SDL2main")
+    add_definitions(-DNOMINMAX)
+    target_link_libraries(
+            bagtrack
+            PRIVATE mingw32
+            imgui
+            gl3w
+            nfd
+            ${sdl2mainlib}
+            SDL2::SDL2
+            OpenGL::GL
+            fmt::fmt
+            nlohmann_json::nlohmann_json
+            httplib::httplib
+            m
+            stdc++
+            ole32
+            winmm
+            ksuser
+            mfplat
+            mfuuid
+            wmcodecdspuuid
+            dsound
+            comctl32)
+    target_compile_options(bagtrack PRIVATE -mwindows)
+else()
+    target_link_libraries(
+        bagtrack
+            PRIVATE
+        imgui
+        gl3w
+        nfd
+        SDL2::SDL2
+        SDL2::SDL2main
+        OpenGL::GL
+        m
+        stdc++
+        pthread
+        fmt::fmt
+        nlohmann_json::nlohmann_json
+        httplib::httplib)
+    # fmt, httplib, .. break strict options on windows
+    enableStrictOptions(bagtrack)
+endif()
+
+install(
+        TARGETS bagtrack
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib)
+
 # bagtrack CMakeLists.txt
 #
 # Copyright (C) 2020 Malte Kießling

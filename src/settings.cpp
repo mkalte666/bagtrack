@@ -62,12 +62,19 @@ void Settings::read()
         messageBox(SDL_MESSAGEBOX_ERROR, "Settings file", "Cannot read settings file!");
         std::terminate();
     }
-
-    json j;
-    i >> j;
-    apiKey = j.value("apikey", DefaultApiKey);
-    trackedItems = j.value("trackedItems", std::set<ItemId>());
-    lastHistoryFile = j.value("lastHistoryFile", "");
+    try {
+        json j;
+        i >> j;
+        apiKey = j.value("apikey", DefaultApiKey);
+        trackedItems = j.value("trackedItems", std::set<ItemId>());
+        lastHistoryFile = j.value("lastHistoryFile", "");
+    }
+    catch (const json::exception& e) {
+        fmt::print(stderr, "cannot read settings file! Defaulting values.\n{}\n", e.what());
+        apiKey = DefaultApiKey;
+        trackedItems = std::set<ItemId>();
+        lastHistoryFile = getPrefPath() / DefaultHistoryFileName;
+    }
 }
 
 void Settings::write() const
@@ -75,7 +82,7 @@ void Settings::write() const
     json j;
     j["apikey"] = apiKey;
     j["trackedItems"] = trackedItems;
-    j["lastHistoryFile"] = lastHistoryFile;
+    j["lastHistoryFile"] = lastHistoryFile.string();
 
     std::ofstream o(settingsFileName());
     if (!o.good()) {
