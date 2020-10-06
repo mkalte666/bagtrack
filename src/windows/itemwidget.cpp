@@ -5,7 +5,7 @@
 #include <imgui.h>
 #include <misc/cpp/imgui_stdlib.h>
 
-ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cache, size_t minFilterLetters)
+ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cache, size_t minFilterLetters, const std::set<ItemId>& idFilter, bool showInfos)
 {
     ItemId resultId = 0; // needed for later
     bool needsResort = false; // set to true if we want to sort again (expensive!)
@@ -45,24 +45,32 @@ ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cach
     if (needsRefilter) {
         state.filtered = filterItems(state.sorted, cache, state.filter);
     }
-    ImGui::Columns(4);
-    ImGui::SetColumnWidth(-1, ImGui::GetWindowWidth() / 4.0F);
+    int cols = 4;
+    if (!showInfos) {
+        cols = 2;
+    }
+    ImGui::Columns(cols);
+    ImGui::SetColumnWidth(-1, ImGui::GetWindowWidth() / static_cast<float>(cols));
     ImGui::Text("Name");
     ImGui::NextColumn();
     ImGui::Text("Count");
     ImGui::NextColumn();
-    ImGui::Text("Sell Value");
-    ImGui::NextColumn();
-    ImGui::Text("Buy Value");
-    ImGui::NextColumn();
-
+    if (showInfos) {
+        ImGui::Text("Sell Value");
+        ImGui::NextColumn();
+        ImGui::Text("Buy Value");
+        ImGui::NextColumn();
+    }
     ImGui::Columns(1);
     ImGui::BeginChild("##itemwidget");
-    ImGui::Columns(4);
-    ImGui::SetColumnWidth(-1, ImGui::GetWindowWidth() / 4.0F);
+    ImGui::Columns(cols);
+    ImGui::SetColumnWidth(-1, ImGui::GetWindowWidth() / static_cast<float>(cols));
     // only display when we have something in the filter
     if (state.filter.size() >= minFilterLetters) {
         for (const auto& id : state.filtered) {
+            if (!idFilter.empty() && idFilter.count(id) == 0) {
+                continue;
+            }
             const ItemInfo& info = cache.getItemInfo(id);
             const TpInfo& tpInfo = cache.getTpInfo(id);
             if (ImGui::Selectable(fmt::format("{}", info.name).c_str(), false)) {
@@ -75,19 +83,20 @@ ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cach
             }
             ImGui::Text("%s", fmt::format("{}", count).c_str());
             ImGui::NextColumn();
-            if (info.checkIfBound()) {
-                ImGui::Text("Bound Item");
-            } else {
-                ImGui::Text("%s", fmt::format("{}", prettyGoldValue(tpInfo.sellValue)).c_str());
+            if (showInfos) {
+                if (info.checkIfBound()) {
+                    ImGui::Text("Bound Item");
+                } else {
+                    ImGui::Text("%s", fmt::format("{}", prettyGoldValue(tpInfo.sellValue)).c_str());
+                }
+                ImGui::NextColumn();
+                if (info.checkIfBound()) {
+                    ImGui::Text("Bound Item");
+                } else {
+                    ImGui::Text("%s", fmt::format("{}", prettyGoldValue(tpInfo.buyValue)).c_str());
+                }
+                ImGui::NextColumn();
             }
-            ImGui::NextColumn();
-            if (info.checkIfBound()) {
-                ImGui::Text("Bound Item");
-            } else {
-                ImGui::Text("%s", fmt::format("{}", prettyGoldValue(tpInfo.buyValue)).c_str());
-            }
-
-            ImGui::NextColumn();
         }
     } else {
         ImGui::Text("Type something to search for items!");

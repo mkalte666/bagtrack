@@ -15,7 +15,11 @@ public:
     void drawMainMenu() noexcept override;
 
 private:
+    void editFilter(Settings& settings, ItemTracker& tracker, InfoCache& cache) noexcept;
     ItemWidgetState widgetState = {};
+    ItemWidgetState selectorWidgetState = {};
+    int64_t referenceId = 0;
+    bool selectorWidgetShown = false;
 };
 
 #endif //BAGTRACK_ITEMSELECTOR_H

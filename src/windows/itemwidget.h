@@ -7,6 +7,7 @@
 #include "../infocache.h"
 #include "../iteminfo.h"
 #include "../sortitems.h"
+#include <set>
 
 struct ItemWidgetState {
     std::string filter = {};
@@ -15,7 +16,7 @@ struct ItemWidgetState {
     std::vector<ItemId> filtered = {};
 };
 
-ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cache, size_t minFilterLetters = 0);
+ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cache, size_t minFilterLetters = 0, const std::set<ItemId>& idFilter = std::set<ItemId>(), bool showInfos = true);
 
 #endif //BAGTRACK_ITEMWIDGET_H
 /*

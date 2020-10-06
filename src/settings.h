@@ -3,6 +3,7 @@
 #define REMUTE_SETTINGS_H
 
 #include <filesystem>
+#include <set>
 #include <string>
 namespace fs = std::filesystem;
 
@@ -51,12 +52,12 @@ public:
      * \brief Return list of currently tracked items
      * \return
      */
-    [[nodiscard]] const std::vector<ItemId>& getTrackedItems() const noexcept;
+    [[nodiscard]] const std::set<ItemId>& getTrackedItems() const noexcept;
 
     /**
      * \brief Set the list of currently tracked items
      */
-    void setTrackedItems(const std::vector<ItemId>& items) noexcept;
+    void setTrackedItems(const std::set<ItemId>& items) noexcept;
 
 private:
     static fs::path settingsFileName() noexcept;
@@ -64,7 +65,7 @@ private:
     void write() const;
     std::string apiKey = DefaultApiKey;
     fs::path lastHistoryFile = {};
-    std::vector<ItemId> trackedItems = {};
+    std::set<ItemId> trackedItems = {};
 };
 
 #endif //REMUTE_SETTINGS_H
