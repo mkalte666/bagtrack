@@ -19,6 +19,7 @@
 #include "windows/itemselector.h"
 #include "windows/trackereverything.h"
 #include "windows/goldtracker.h"
+#include "windows/filedialog.h"
 
 int main(int, char**)
 {
@@ -77,6 +78,7 @@ int main(int, char**)
     ItemTracker tracker(settings);
     InfoCache infoCache;
     std::vector<std::unique_ptr<Window>> windows;
+    windows.emplace_back(std::make_unique<FileDialog>());
     windows.emplace_back(std::make_unique<ApiKeyEditor>());
     windows.emplace_back(std::make_unique<ItemSelector>());
     windows.emplace_back(std::make_unique<TrackerEverything>());
@@ -127,15 +129,16 @@ int main(int, char**)
 
         // draw menus in all of the windows
         ImGui::BeginMainMenuBar();
+        for (auto& w : windows) {
+            w->drawMainMenu();
+        }
         if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("Exit")) {
                 running = false;
             }
             ImGui::EndMenu();
         }
-        for (auto& w : windows) {
-            w->drawMainMenu();
-        }
+
         ImGui::EndMainMenuBar();
 
         // draw all of the windows

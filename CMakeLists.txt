@@ -65,6 +65,8 @@ add_executable(
     src/trackerstate.h
     src/windows/apikeyeditor.cpp
     src/windows/apikeyeditor.h
+    src/windows/filedialog.cpp
+    src/windows/filedialog.h
     src/windows/goldtracker.cpp
     src/windows/goldtracker.h
     src/windows/itemselector.cpp

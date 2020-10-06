@@ -27,10 +27,12 @@ public:
     int64_t getCurrentStateId() const noexcept;
     std::set<int64_t> getStateIds() const noexcept;
 
+    void clearHistory() noexcept;
+    void writeCache(const fs::path& filename) const noexcept;
+    void readCache(const fs::path& filename) noexcept;
+
 private:
     void updateFunc(const Settings& settings) noexcept;
-    void writeCache() const noexcept;
-    void readCache() noexcept;
     static int64_t stateIdFromCurrentTime() noexcept;
 
     static ItemIdMap collectAllItemSources(const std::string& apiKey) noexcept;

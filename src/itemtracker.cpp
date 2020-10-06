@@ -21,7 +21,7 @@ void ItemTracker::updateFunc(const Settings& settings) noexcept
 {
     do {
         if (states.empty()) {
-            readCache();
+            readCache(settings.getLastHistoryFile());
         }
 
         auto apiKey = settings.getApiKey();
@@ -44,7 +44,7 @@ void ItemTracker::updateFunc(const Settings& settings) noexcept
             states[newState.stateId] = newState;
         }
 
-        writeCache();
+        writeCache(settings.getLastHistoryFile());
     } while (killer.wait_for(60s));
 }
 
@@ -132,7 +132,7 @@ std::set<int64_t> ItemTracker::getStateIds() const noexcept
     return ids;
 }
 
-void ItemTracker::writeCache() const noexcept
+void ItemTracker::writeCache(const fs::path& filename) const noexcept
 {
     std::map<int64_t, TrackerState> copy;
     {
@@ -142,17 +142,15 @@ void ItemTracker::writeCache() const noexcept
 
     nlohmann::json j;
     nlohmann::to_json(j, states);
-    const auto filename = Settings::getPrefPath() /= "history.json";
     std::ofstream file(filename);
     if (file.good()) {
         file << j;
     }
 }
 
-void ItemTracker::readCache() noexcept
+void ItemTracker::readCache(const fs::path& filename) noexcept
 {
     nlohmann::json j;
-    const auto filename = Settings::getPrefPath() /= "history.json";
     std::ifstream file(filename);
     if (file.good()) {
         try {
@@ -171,6 +169,12 @@ int64_t ItemTracker::stateIdFromCurrentTime() noexcept
     auto id = static_cast<int64_t>(std::time(nullptr));
     id /= 300; // divide by 300 to make one unit equal 5 minutes
     return id;
+}
+
+void ItemTracker::clearHistory() noexcept
+{
+    std::lock_guard lockGuard(mutex);
+    states.clear();
 }
 
 /*

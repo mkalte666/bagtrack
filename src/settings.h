@@ -14,6 +14,7 @@ namespace fs = std::filesystem;
 class Settings {
 public:
     static constexpr const char* DefaultApiKey = "";
+    static constexpr const char* DefaultHistoryFileName = "history.bagtrack";
 
     /**
      * \brief Equivalent to calling SDL_GetPrefPath("mkalte", "bagtrack")
@@ -43,6 +44,9 @@ public:
      */
     void setApiKey(std::string key) noexcept;
 
+    [[nodiscard]] fs::path getLastHistoryFile() const noexcept;
+    void setLastHistoryFile(const fs::path& filename) noexcept;
+
     /**
      * \brief Return list of currently tracked items
      * \return
@@ -59,6 +63,7 @@ private:
     void read();
     void write() const;
     std::string apiKey = DefaultApiKey;
+    fs::path lastHistoryFile = {};
     std::vector<ItemId> trackedItems = {};
 };
 

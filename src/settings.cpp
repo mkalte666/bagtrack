@@ -67,6 +67,7 @@ void Settings::read()
     i >> j;
     apiKey = j.value("apikey", DefaultApiKey);
     trackedItems = j.value("trackedItems", std::vector<ItemId>());
+    lastHistoryFile = j.value("lastHistoryFile", "");
 }
 
 void Settings::write() const
@@ -74,6 +75,7 @@ void Settings::write() const
     json j;
     j["apikey"] = apiKey;
     j["trackedItems"] = trackedItems;
+    j["lastHistoryFile"] = lastHistoryFile;
 
     std::ofstream o(settingsFileName());
     if (!o.good()) {
@@ -82,6 +84,21 @@ void Settings::write() const
     }
 
     o << std::setw(4) << j << std::endl;
+}
+
+fs::path Settings::getLastHistoryFile() const noexcept
+{
+    if (lastHistoryFile.empty()) {
+        return getPrefPath() / DefaultHistoryFileName;
+    }
+
+    return lastHistoryFile;
+}
+
+void Settings::setLastHistoryFile(const fs::path& filename) noexcept
+{
+    lastHistoryFile = filename;
+    write();
 }
 
 /*
