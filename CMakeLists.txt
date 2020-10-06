@@ -26,6 +26,19 @@ add_subdirectory(3rdparty/cpp-httplib)
 
 add_subdirectory(3rdparty/fmt)
 
+if(WIN32)
+    message(FATAL_ERROR "fix nfd for win32!")
+else()
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(GTK3 REQUIRED gtk+-3.0)
+    find_package(GTK REQUIRED)
+    add_library(nfd STATIC 3rdparty/nativefiledialog/src/nfd_common.c
+                           3rdparty/nativefiledialog/src/nfd_gtk.c)
+    target_include_directories(nfd PUBLIC 3rdparty/nativefiledialog/src/include
+                                          ${GTK3_INCLUDE_DIRS})
+    target_link_libraries(nfd PUBLIC ${GTK3_LIBRARIES})
+endif()
+
 add_executable(
     bagtrack
     src/api.cpp
@@ -69,6 +82,7 @@ target_link_libraries(
     bagtrack
     imgui
     gl3w
+    nfd
     SDL2::SDL2_image
     SDL2::SDL2
     SDL2::SDL2main
