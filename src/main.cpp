@@ -11,6 +11,7 @@
 // clang-format on
 
 #include <vector>
+#include <fstream>
 
 #include "itemtracker.h"
 #include "infocache.h"
@@ -21,6 +22,13 @@
 #include "windows/goldtracker.h"
 #include "windows/filedialog.h"
 
+void debugToFile(const std::string& str)
+{
+    static std::ofstream out(Settings::getPrefPath() / "log.txt");
+    out << str;
+    out.flush();
+}
+
 int main(int, char**)
 {
     int sdlRes = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
@@ -28,7 +36,8 @@ int main(int, char**)
         messageBox(SDL_MESSAGEBOX_ERROR, "SDL ERROR", "Could not Init SDL: {}", SDL_GetError());
         return 1;
     }
-
+    // write something to the logfile super early (after sdl init) to get the outfile stream to be there
+    debugToFile("logfile opened\n");
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);

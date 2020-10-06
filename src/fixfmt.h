@@ -14,16 +14,22 @@
 #pragma GCC diagnostic pop
 #endif
 
+void debugToFile(const std::string& str);
+
 #ifndef NDEBUG
 template <class StringT, class... Args>
 void printDebug(const StringT& fmt, Args... args)
 {
-    fmt::print(stderr, fmt, std::forward<Args>(args)...);
+    const std::string str = fmt::format(fmt, std::forward<Args>(args)...);
+    fmt::print(stderr, str);
+    debugToFile(str);
 }
 #else
 template <class StringT, class... Args>
-void printDebug(const StringT&, Args...)
+void printDebug(const StringT& fmt, Args... args)
 {
+    const std::string str = fmt::format(fmt, std::forward<Args>(args)...);
+    debugToFile(str);
 }
 #endif
 
