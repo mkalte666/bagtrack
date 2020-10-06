@@ -8,6 +8,11 @@ bool ItemInfo::checkIfBound() const noexcept
         || std::find(flags.begin(), flags.end(), "SoulbindOnAcquire") != flags.end();
 }
 
+bool ItemInfo::checkIfPrecursor() const noexcept
+{
+    return description.find("used to craft the legendary") != std::string::npos; // NOLINT absl
+}
+
 void from_json(const nlohmann::json& j, ItemInfo& itemInfo)
 {
     itemInfo.id = j.value("id", static_cast<ItemId>(0));

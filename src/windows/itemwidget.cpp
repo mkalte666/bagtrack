@@ -68,13 +68,19 @@ ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cach
     // only display when we have something in the filter
     if (state.filter.size() >= minFilterLetters) {
         for (const auto& id : state.filtered) {
-            if (!idFilter.empty() && idFilter.count(id) == 0) {
+            const ItemInfo& info = cache.getItemInfo(id);
+            if (!idFilter.empty() && idFilter.count(id) == 0 && !info.checkIfPrecursor()) {
                 continue;
             }
-            const ItemInfo& info = cache.getItemInfo(id);
+            if (info.checkIfPrecursor()) {
+                ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0x8FU, 0xFFU, 0xF8U, 0xFFU));
+            }
             const TpInfo& tpInfo = cache.getTpInfo(id);
             if (ImGui::Selectable(fmt::format("{}", info.name).c_str(), false)) {
                 resultId = id;
+            }
+            if (info.checkIfPrecursor()) {
+                ImGui::PopStyleColor();
             }
             ImGui::NextColumn();
             int64_t count = 0;
