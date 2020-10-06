@@ -30,9 +30,9 @@ void InfoCache::threadFun()
             const auto newItems = getItemInfos(toCacheCopy);
             lock.lock();
             for (const auto& pair : newItems) {
-                itemsToCache.erase(pair.first);
                 itemInfoCache[pair.first] = pair.second;
             }
+            itemsToCache.clear();
             writeInfoCache();
         }
 
@@ -45,6 +45,7 @@ void InfoCache::threadFun()
             for (const auto& pair : newInfos) {
                 tpInfoCache[pair.first] = pair.second;
             }
+            tpInfosToCache.clear();
         }
     }
 }
