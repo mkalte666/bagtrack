@@ -31,7 +31,7 @@ void ItemTracker::updateFunc(const Settings& settings) noexcept
         }
 
         TrackerState newState;
-        newState.stateId = getCurrentStateId();
+        newState.stateId = stateIdFromCurrentTime();
         newState.coins = getAccountCoins(apiKey);
         newState.items = collectAllItemSources(apiKey);
         // error somewhere, or actually no items? move along
@@ -113,8 +113,11 @@ TrackerState ItemTracker::getDeltaState(int64_t oldId, int64_t newId) const noex
 
 int64_t ItemTracker::getCurrentStateId() const noexcept
 {
-    auto id = static_cast<int64_t>(std::time(nullptr));
-    id /= 300; // divide by 300 to make one unit equal 5 minutes
+    auto id = stateIdFromCurrentTime();
+    if (states.count(id) == 0) {
+        return id - 1;
+    }
+
     return id;
 }
 
@@ -161,6 +164,13 @@ void ItemTracker::readCache() noexcept
             // valid state, invalid file, we dont care
         }
     }
+}
+
+int64_t ItemTracker::stateIdFromCurrentTime() noexcept
+{
+    auto id = static_cast<int64_t>(std::time(nullptr));
+    id /= 300; // divide by 300 to make one unit equal 5 minutes
+    return id;
 }
 
 /*
