@@ -14,6 +14,19 @@
 #pragma GCC diagnostic pop
 #endif
 
+#ifndef NDEBUG
+template <class StringT, class... Args>
+void printDebug(const StringT& fmt, Args... args)
+{
+    fmt::print(stderr, fmt, std::forward<Args>(args)...);
+}
+#else
+template <class StringT, class... Args>
+void printDebug(const StringT&, Args...)
+{
+}
+#endif
+
 #endif //BAGTRACK_FIXFMT_H
 /*
  * This file is part bagtrack

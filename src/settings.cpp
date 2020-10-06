@@ -68,9 +68,8 @@ void Settings::read()
         apiKey = j.value("apikey", DefaultApiKey);
         trackedItems = j.value("trackedItems", std::set<ItemId>());
         lastHistoryFile = j.value("lastHistoryFile", "");
-    }
-    catch (const json::exception& e) {
-        fmt::print(stderr, "cannot read settings file! Defaulting values.\n{}\n", e.what());
+    } catch (const json::exception& e) {
+        printDebug("cannot read settings file! Defaulting values.\n{}\n", e.what());
         apiKey = DefaultApiKey;
         trackedItems = std::set<ItemId>();
         lastHistoryFile = getPrefPath() / DefaultHistoryFileName;

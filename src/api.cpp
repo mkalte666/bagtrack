@@ -21,33 +21,33 @@ httplib::Result makeRequest(const std::string& key, const std::string& endpoint,
         endpointWithParams += separator + pair.first + '=' + pair.second;
         separator = '&'; // set the seperator to & for the rest of the parameters
     }
-    fmt::print(stderr, "Getting {}\n", endpointWithParams);
+    printDebug("Getting {}\n", endpointWithParams);
     return client.Get(endpointWithParams.c_str());
 }
 
 bool checkResponseForValidToken(const httplib::Result& result)
 {
     if (!result) {
-        fmt::print(stderr, "result is broken!");
+        printDebug("result is broken!");
         return false;
     }
     if (result->status == 200) {
-        fmt::print(stderr, "Token valid check success\n");
+        printDebug("Token valid check success\n");
         return true;
     }
 
     if (result->status == 401) {
-        fmt::print(stderr, "Token valid check failed - invalid token\n");
+        printDebug("Token valid check failed - invalid token\n");
         return false;
     }
 
     auto keyInfo = json::parse(result->body);
     if (keyInfo.contains("text") && keyInfo["text"] == "Invalid access token") {
-        fmt::print(stderr, "Token valid check failed - invalid token, but i also got a weird response id: {}\n", result->status);
+        printDebug("Token valid check failed - invalid token, but i also got a weird response id: {}\n", result->status);
         return false;
     }
 
-    fmt::print(stderr, "Token valid check unknown, assuming valid for response id: {}\n", result->status);
+    printDebug("Token valid check unknown, assuming valid for response id: {}\n", result->status);
     return true;
 }
 
@@ -62,11 +62,11 @@ bool checkApiKey(const std::string& key) noexcept
     try {
         keyInfo = json::parse(res->body);
     } catch (json::exception& e) {
-        fmt::print(stderr, "Json parsing failed: {}", e.what());
+        printDebug("Json parsing failed: {}", e.what());
         return false;
     }
     if (!keyInfo.contains("permissions")) {
-        fmt::print(stderr, "Token check failed - invalid token information\n");
+        printDebug("Token check failed - invalid token information\n");
         return false;
     }
 
@@ -76,15 +76,15 @@ bool checkApiKey(const std::string& key) noexcept
             || std::find(permissions.begin(), permissions.end(), "inventories") == permissions.end()
             || std::find(permissions.begin(), permissions.end(), "characters") == permissions.end()
             || std::find(permissions.begin(), permissions.end(), "wallet") == permissions.end()) {
-            fmt::print(stderr, "Token is missing permissions\n");
+            printDebug("Token is missing permissions\n");
             return false;
         }
     } catch (const json::exception& e) {
-        fmt::print(stderr, "Token info parsing failed, {}\n", e.what());
+        printDebug("Token info parsing failed, {}\n", e.what());
         return false;
     }
 
-    fmt::print(stderr, "Token check successfull\n");
+    printDebug("Token check successfull\n");
     return true;
 }
 
@@ -92,7 +92,7 @@ std::optional<ItemIdMap> getBankContents(const std::string& key) noexcept
 {
     auto result = makeRequest(key, "/v2/account/bank");
     if (!checkResponseForValidToken(result)) {
-        fmt::print(stderr, "Cannot get bank contents!\n");
+        printDebug("Cannot get bank contents!\n");
         return std::nullopt;
     }
 
@@ -100,11 +100,11 @@ std::optional<ItemIdMap> getBankContents(const std::string& key) noexcept
     try {
         j = json::parse(result->body);
     } catch (json::exception& e) {
-        fmt::print(stderr, "Json parsing failed: {}", e.what());
+        printDebug("Json parsing failed: {}", e.what());
         return std::nullopt;
     }
     if (!j.is_array()) {
-        fmt::print(stderr, "Got unexpected contents from bank endpoint\n{}", j);
+        printDebug("Got unexpected contents from bank endpoint\n{}", j);
         return std::nullopt;
     }
 
@@ -127,7 +127,7 @@ std::optional<ItemIdMap> getMaterialStorageContents(const std::string& key) noex
 
     auto result = makeRequest(key, "/v2/account/materials");
     if (!checkResponseForValidToken(result)) {
-        fmt::print(stderr, "Cannot get material storage!\n");
+        printDebug("Cannot get material storage!\n");
         return std::nullopt;
     }
 
@@ -135,11 +135,11 @@ std::optional<ItemIdMap> getMaterialStorageContents(const std::string& key) noex
     try {
         j = json::parse(result->body);
     } catch (json::exception& e) {
-        fmt::print(stderr, "Json parsing failed: {}", e.what());
+        printDebug("Json parsing failed: {}", e.what());
         return std::nullopt;
     }
     if (!j.is_array()) {
-        fmt::print(stderr, "Got unexpected contents from materials endpoint\n{}", j);
+        printDebug("Got unexpected contents from materials endpoint\n{}", j);
         return std::nullopt;
     }
 
@@ -159,7 +159,7 @@ std::optional<ItemIdMap> getCharacterContents(const std::string& key) noexcept
 {
     auto charResult = makeRequest(key, "/v2/characters?ids=all");
     if (!checkResponseForValidToken(charResult)) {
-        fmt::print(stderr, "Cannot get character list");
+        printDebug("Cannot get character list");
         return std::nullopt;
     }
 
@@ -167,12 +167,12 @@ std::optional<ItemIdMap> getCharacterContents(const std::string& key) noexcept
     try {
         charList = json::parse(charResult->body);
     } catch (json::exception& e) {
-        fmt::print(stderr, "Json parsing failed: {}", e.what());
+        printDebug("Json parsing failed: {}", e.what());
         return std::nullopt;
     }
 
     if (!charList.is_array()) {
-        fmt::print(stderr, "Unexpected character result tyoe");
+        printDebug("Unexpected character result tyoe");
         return std::nullopt;
     }
 
@@ -220,7 +220,7 @@ int64_t getAccountCoins(const std::string& key) noexcept
 {
     auto charResult = makeRequest(key, "/v2/account/wallet");
     if (!checkResponseForValidToken(charResult)) {
-        fmt::print(stderr, "Cannot get character wallet");
+        printDebug("Cannot get character wallet");
         return 0;
     }
 
@@ -228,12 +228,12 @@ int64_t getAccountCoins(const std::string& key) noexcept
     try {
         currencyList = json::parse(charResult->body);
     } catch (json::exception& e) {
-        fmt::print(stderr, "Json parsing failed: {}", e.what());
+        printDebug("Json parsing failed: {}", e.what());
         return 0;
     }
 
     if (!currencyList.is_array()) {
-        fmt::print(stderr, "Wallet endpoint gave unexpected result");
+        printDebug("Wallet endpoint gave unexpected result");
         return 0;
     }
 
@@ -275,11 +275,11 @@ ItemInfoMap getItemInfos(const std::set<ItemId>& ids) noexcept
     try {
         j = json::parse(res->body);
     } catch (json::exception& e) {
-        fmt::print(stderr, "Json parsing failed: {}", e.what());
+        printDebug("Json parsing failed: {}", e.what());
         return results;
     }
     if (!j.is_array()) {
-        fmt::print(stderr, "Item endpoint returned wrong type - array expected, got shit\n");
+        printDebug("Item endpoint returned wrong type - array expected, got shit\n");
         return results;
     }
 
@@ -313,18 +313,18 @@ TpInfoMap getItemTpInfos(const std::set<ItemId>& ids) noexcept
     auto res = makeRequest("", "/v2/commerce/prices", params);
     // small guard against failures
     if (!res || (res->status != 200 && res->status != 206)) {
-        fmt::print(stderr, "TP endpoint connection failed\n");
+        printDebug("TP endpoint connection failed\n");
         return results;
     }
     json j;
     try {
         j = json::parse(res->body);
     } catch (json::exception& e) {
-        fmt::print(stderr, "Json parsing failed: {}", e.what());
+        printDebug("Json parsing failed: {}", e.what());
         return results;
     }
     if (!j.is_array()) {
-        fmt::print(stderr, "TP endpoint returned wrong type - array expected, got shit\n");
+        printDebug("TP endpoint returned wrong type - array expected, got shit\n");
         return results;
     }
 

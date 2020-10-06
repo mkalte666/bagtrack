@@ -26,7 +26,7 @@ void ItemTracker::updateFunc(const Settings& settings) noexcept
 
         auto apiKey = settings.getApiKey();
         if (!checkApiKey(apiKey)) {
-            fmt::print(stderr, "Api Key Invalid, tracker in pause");
+            printDebug("Api Key Invalid, tracker in pause");
             continue;
         }
 
@@ -158,7 +158,7 @@ void ItemTracker::readCache(const fs::path& filename) noexcept
             std::unique_lock lock(mutex);
             nlohmann::from_json(j, states);
         } catch (nlohmann::json::exception& e) {
-            fmt::print(stderr, "Cannot read json history! {}", e.what());
+            printDebug("Cannot read json history! {}", e.what());
             // valid state, invalid file, we dont care
         }
     }
