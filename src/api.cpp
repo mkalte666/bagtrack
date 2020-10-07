@@ -41,7 +41,13 @@ bool checkResponseForValidToken(const httplib::Result& result)
         return false;
     }
 
-    auto keyInfo = json::parse(result->body);
+    json keyInfo;
+    try {
+        keyInfo = json::parse(result->body);
+    } catch (const json::exception& e) {
+        printDebug("Token valid check failed - response is not json. {}", e.what());
+        return false;
+    }
     if (keyInfo.contains("text") && keyInfo["text"] == "Invalid access token") {
         printDebug("Token valid check failed - invalid token, but i also got a weird response id: {}\n", result->status);
         return false;

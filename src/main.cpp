@@ -38,6 +38,10 @@ int main(int, char**)
     }
     // write something to the logfile super early (after sdl init) to get the outfile stream to be there
     debugToFile("logfile opened\n");
+    std::set_terminate([]() {
+        debugToFile("\n!!!Unhandled Exception! dying now\n");
+        std::abort();
+    });
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
