@@ -64,6 +64,8 @@ add_executable(
     src/itemtracker.h
     src/main.cpp
     src/messagebox.h
+    src/sdlhelpers.cpp
+    src/sdlhelpers.h
     src/settings.cpp
     src/settings.h
     src/sortitems.cpp

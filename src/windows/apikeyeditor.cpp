@@ -1,6 +1,7 @@
 // licence note at the end of the file
 #include "apikeyeditor.h"
 #include "../api.h"
+#include "../sdlhelpers.h"
 #include <cstdio>
 #include <imgui.h>
 #include <misc/cpp/imgui_stdlib.h>
@@ -34,6 +35,13 @@ void ApiKeyEditor::update(Settings& settings, ItemTracker&, InfoCache&) noexcept
     ImGui::SetNextItemWidth(120.0F);
     if (ImGui::InputText("GW2 Api Key", &apiKey, ImGuiInputTextFlags_Password)) {
         keyChecked = false;
+    }
+    if (ImGui::BeginPopupContextItem()) {
+        if (ImGui::Selectable("Paste")) {
+            keyChecked = false;
+            apiKey = getClipboard();
+        }
+        ImGui::EndPopup();
     }
     ImGui::SameLine();
     if (ImGui::Button("Check Key")) {

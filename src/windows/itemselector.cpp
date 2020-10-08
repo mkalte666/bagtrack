@@ -4,6 +4,7 @@
 
 #include "../base64/base64.h"
 #include "../fixfmt.h"
+#include "../sdlhelpers.h"
 #include "timeselector.h"
 #include <imgui.h>
 #include <misc/cpp/imgui_stdlib.h>
@@ -78,6 +79,12 @@ void ItemSelector::editFilter(Settings& settings, ItemTracker& tracker, InfoCach
     ImGui::SetNextItemWidth(ImGui::GetColumnWidth(1) / 2.0F);
 
     ImGui::InputText("<-Chat Links here", &chatLink);
+    if (ImGui::BeginPopupContextItem()) {
+        if (ImGui::Selectable("Paste")) {
+            chatLink = getClipboard();
+        }
+        ImGui::EndPopup();
+    }
     if (ItemId id = decodeChatLink(chatLink); id != 0) {
         chatLink.clear();
         trackedItems.insert(id);

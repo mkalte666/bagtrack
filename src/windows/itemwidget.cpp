@@ -2,6 +2,7 @@
 
 #include "itemwidget.h"
 #include "../filteritems.h"
+#include "../sdlhelpers.h"
 #include <imgui.h>
 #include <misc/cpp/imgui_stdlib.h>
 
@@ -14,6 +15,12 @@ ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cach
     std::string newFilter = state.filter;
     ImGui::SetNextItemWidth(ImGui::GetWindowWidth() * 0.6F);
     ImGui::InputText("Filter", &newFilter);
+    if (ImGui::BeginPopupContextItem()) {
+        if (ImGui::Selectable("Paste")) {
+            newFilter = getClipboard();
+        }
+        ImGui::EndPopup();
+    }
     if (newFilter != state.filter) {
         state.filter = newFilter;
         needsRefilter = true;
