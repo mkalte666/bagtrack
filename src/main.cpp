@@ -88,6 +88,8 @@ int main(int, char**)
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
     ImGuiIO& io = ImGui::GetIO();
+    std::string iniFileName = (Settings::getPrefPath() / "imgui.ini").string();
+    io.IniFilename = iniFileName.c_str();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // NOLINT
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable; // NOLINT
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable; // NOLINT
