@@ -16,6 +16,7 @@ void TrackerEverything::update(Settings&, ItemTracker& tracker, InfoCache& cache
         return;
     }
 
+    ImGui::SetNextWindowSize(ImVec2(400.0F, 400.0F), ImGuiCond_FirstUseEver);
     ImGui::Begin(name.c_str(), &shown);
     referenceId = timeSelector(tracker, referenceId);
 

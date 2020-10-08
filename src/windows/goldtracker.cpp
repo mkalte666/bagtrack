@@ -20,6 +20,7 @@ void GoldTracker::update(Settings&, ItemTracker& tracker, InfoCache& cache) noex
         return;
     }
 
+    ImGui::SetNextWindowSize(ImVec2(400.0F, 400.0F), ImGuiCond_FirstUseEver);
     ImGui::Begin(name.c_str(), &shown);
 
     auto oldRefId = referenceId;
