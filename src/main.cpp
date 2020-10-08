@@ -21,6 +21,7 @@
 #include "windows/trackereverything.h"
 #include "windows/goldtracker.h"
 #include "windows/filedialog.h"
+#include "../assets/bootleg_baggie.bmp.cpp"
 
 void debugToFile(const std::string& str)
 {
@@ -55,6 +56,16 @@ int main(int, char**)
         messageBox(SDL_MESSAGEBOX_ERROR, "SDL ERROR", "Could not create window: {}", SDL_GetError());
         SDL_Quit();
         return 1;
+    }
+
+    // load icon. this is annoying
+    SDL_RWops* icon = SDL_RWFromMem(assets_bootleg_baggie_bmp, static_cast<int>(assets_bootleg_baggie_bmp_len));
+    if (icon != nullptr) {
+        SDL_Surface* iconSurface = SDL_LoadBMP_RW(icon, 1); // free the rw
+        if (iconSurface != nullptr) {
+            SDL_SetWindowIcon(window, iconSurface);
+            SDL_FreeSurface(iconSurface);
+        }
     }
 
     auto* context = SDL_GL_CreateContext(window);
