@@ -29,9 +29,7 @@ void ApiKeyEditor::update(Settings& settings, ItemTracker&, InfoCache&) noexcept
         return;
     }
 
-    ImGui::Begin(name.c_str(), &shown);
-    ImGui::BeginChild("contents", ImVec2(0, -50.0F));
-
+    ImGui::Begin(name.c_str(), &shown, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::SetNextItemWidth(120.0F);
     if (ImGui::InputText("GW2 Api Key", &apiKey, ImGuiInputTextFlags_Password)) {
         keyChecked = false;
@@ -49,7 +47,6 @@ void ApiKeyEditor::update(Settings& settings, ItemTracker&, InfoCache&) noexcept
     }
 
     ImGui::TextWrapped("You need 'account', 'inventories' and 'wallet' enabled for this key!"); // NOLINT
-    ImGui::EndChild();
 
     if (ImGui::Button("Cancel")) {
         apiKey = settings.getApiKey();
@@ -76,11 +73,9 @@ void ApiKeyEditor::drawMainMenu() noexcept
 {
 
     if (ImGui::BeginMenu("GW2")) {
-        ImGui::Separator();
         if (ImGui::Selectable("Api Key...")) {
             shown = true;
         }
-        ImGui::Separator();
         ImGui::EndMenu();
     }
 }
