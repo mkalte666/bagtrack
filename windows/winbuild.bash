@@ -47,12 +47,23 @@ cd "$build_dir" || exit 1
   make install
 } >> build.log 2>&1 || exit 1
 
+# cleanup due to httplib doing a lot more at install than i want to patch out
+rm -rf "$package_dir/cmake"
+rm -rf "$package_dir/include"
+
 # copy and zip
 echo "Copy deps and stuff"
 cd "$package_dir"
 cp "$src_dir/LICENSE" ./LICENCE.txt
 cp "$src_dir/3rdparty/thirdPartyNotes.txt" ./
-cp "$src_dir/3rdparty/imgui-cmake-blob/imgui/LICENSE.txt" ./LICENSE.MIT.txt
+cp "$src_dir/3rdparty/cpp-httplib/LICENSE" ./LICENSE.httplib.txt
+cp "$src_dir/3rdparty/fmt/LICENSE.rst" ./LICENSE.fmt.txt
+cp "$src_dir/3rdparty/imgui-cmake-blob/imgui/LICENSE.txt" ./LICENSE.imgui.txt
+cp "$deps_dir/dl/openssl-1.1.1h/LICENSE" ./LICENSE.openssl.txt
+cp "$src_dir/3rdparty/json/LICENSE.MIT" ./LICENSE.json.txt
+cp "$src_dir/3rdparty/nativefiledialog/LICENSE" ./LICENSE.nativefiledialog.txt
+cp "$src_dir/3rdparty/LICENSE.sdl2.txt" ./LICENSE.sdl2.txt
+
 "$cpdeps" "/usr/$HOST/" bin/bagtrack.exe
 "$cpdeps" "/usr/lib/gcc/$HOST/" bin/bagtrack.exe
 "$cpdeps" "$local_root" bin/bagtrack.exe

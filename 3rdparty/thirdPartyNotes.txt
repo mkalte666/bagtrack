@@ -1,0 +1,46 @@
+# GCC, MinGW components, libs and so on
+http://mingw-w64.org
+https://gcc.gnu.org/
+All licenced GPL, see LICENCE.txt for more information
+
+# gl3w
+https://github.com/skaslev/gl3w/
+gl3w is public domain software. Praise the authors!
+
+# cpp-httplib
+https://github.com/yhirose/cpp-httplib
+Copyright (c) 2017 yhirose
+cpp-httplib is licensed under the MIT License, see LICENSE.httplib.txt for more information.
+
+# fmt
+https://github.com/fmtlib/fmt
+Copyright (c) 2012 - present, Victor Zverovich
+cpp-httplib is licensed under the MIT License, see LICENSE.fmt.txt for more information.
+
+# ImGui
+https://github.com/ocornut/imgui
+Copyright (c) 2014-2020 Omar Cornut
+Dear ImGui is licensed under the MIT License, see LICENSE.imgui.txt for more information.
+
+# nativefiledialog
+https://github.com/mlabbe/nativefiledialog
+nativefiledialog is licensed under the ZLIB Licence. See LICENSE.nativefiledialog.txt
+
+# OpenSSL
+https://www.openssl.org/
+See LICENCE.openssl.txt for more information
+
+# JSON for Modern C++
+https://github.com/nlohmann/json
+Copyright (c) 2013-2020 Niels Lohmann
+JSON for Modern C++  is licensed under the MIT License, see LICENSE.json.txt for more information.
+
+# mingw-copy-deps.sh
+https://gist.github.com/h0tw1r3/51084def72c9765a5d12
+Copyright: © 2015 Jeffrey Clark <https://github.com/h0tw1r3/>
+mingw-copy-deps.sh is licenced under GLPv3. See LICENSE.txt for more information.
+
+# SDL2
+https://www.libsdl.org/
+Copyright (C) 1997-2020 Sam Lantinga <slouken@libsdl.org>
+SDL2 is licenced under the terms of the ZLIB licence. see LICENSE.sdl2.txt for more information
