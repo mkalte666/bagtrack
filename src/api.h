@@ -18,6 +18,8 @@ bool checkApiKey(const std::string& key) noexcept;
 std::optional<ItemIdMap> getBankContents(const std::string& key) noexcept;
 std::optional<ItemIdMap> getMaterialStorageContents(const std::string& key) noexcept;
 std::optional<ItemIdMap> getCharacterContents(const std::string& key) noexcept;
+std::optional<ItemIdMap> getSharedInventory(const std::string& key) noexcept;
+
 int64_t getAccountCoins(const std::string& key) noexcept;
 
 ItemInfoMap getItemInfos(const std::set<ItemId>& ids) noexcept;

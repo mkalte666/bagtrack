@@ -222,6 +222,40 @@ std::optional<ItemIdMap> getCharacterContents(const std::string& key) noexcept
     return items;
 }
 
+std::optional<ItemIdMap> getSharedInventory(const std::string& key) noexcept
+{
+    auto result = makeRequest(key, "/v2/account/inventory");
+    if (!checkResponseForValidToken(result)) {
+        printDebug("Cannot get character list");
+        return std::nullopt;
+    }
+
+    json itemList;
+    try {
+        itemList = json::parse(result->body);
+    } catch (json::exception& e) {
+        printDebug("Json parsing failed: {}", e.what());
+        return std::nullopt;
+    }
+
+    if (!itemList.is_array()) {
+        printDebug("Unexpected character result tyoe");
+        return std::nullopt;
+    }
+
+    ItemIdMap items;
+    for (const auto& item : itemList) {
+        if (!item.is_object()) {
+            continue;
+        }
+        ItemId id = item.value("id", static_cast<ItemId>(0));
+        int64_t count = item.value("count", 0);
+        items[id] += count;
+    }
+
+    return items;
+}
+
 int64_t getAccountCoins(const std::string& key) noexcept
 {
     auto charResult = makeRequest(key, "/v2/account/wallet");
