@@ -68,11 +68,13 @@ void Settings::read()
         apiKey = j.value("apikey", DefaultApiKey);
         trackedItems = j.value("trackedItems", std::set<ItemId>());
         lastHistoryFile = j.value("lastHistoryFile", "");
+        windowShown = j.value("windowShown", std::map<std::string, bool>());
     } catch (const json::exception& e) {
         printDebug("cannot read settings file! Defaulting values.\n{}\n", e.what());
         apiKey = DefaultApiKey;
         trackedItems = std::set<ItemId>();
         lastHistoryFile = getPrefPath() / DefaultHistoryFileName;
+        windowShown = std::map<std::string, bool>();
     }
 }
 
@@ -82,6 +84,7 @@ void Settings::write() const
     j["apikey"] = apiKey;
     j["trackedItems"] = trackedItems;
     j["lastHistoryFile"] = lastHistoryFile.string();
+    j["windowShown"] = windowShown;
 
     std::ofstream o(settingsFileName());
     if (!o.good()) {
@@ -104,6 +107,21 @@ fs::path Settings::getLastHistoryFile() const noexcept
 void Settings::setLastHistoryFile(const fs::path& filename) noexcept
 {
     lastHistoryFile = filename;
+    write();
+}
+
+bool Settings::getWindowShown(const std::string& windowName) const noexcept
+{
+    if (const auto iter = windowShown.find(windowName); iter != windowShown.end()) {
+        return iter->second;
+    }
+
+    return false;
+}
+
+void Settings::setWindowShown(const std::string& windowName, bool shown) noexcept
+{
+    windowShown[windowName] = shown;
     write();
 }
 

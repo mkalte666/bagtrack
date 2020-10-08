@@ -40,10 +40,10 @@ ItemSelector::ItemSelector()
 
 void ItemSelector::update(Settings& settings, ItemTracker& tracker, InfoCache& cache) noexcept
 {
+    checkShownStateAgainstSettings(settings);
     if (!shown) {
         return;
     }
-
     editFilter(settings, tracker, cache);
 
     const auto state = tracker.getCurrentState();

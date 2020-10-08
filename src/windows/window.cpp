@@ -34,3 +34,17 @@ void Window::update(Settings&, ItemTracker&, InfoCache&) noexcept
 void Window::drawMainMenu() noexcept
 {
 }
+
+void Window::checkShownStateAgainstSettings(Settings& settings) noexcept
+{
+    if (!shownWasCheckedAlready) {
+        shownWasCheckedAlready = true;
+        shown = settings.getWindowShown(name);
+        return;
+    }
+
+    bool savedShown = settings.getWindowShown(name);
+    if (savedShown != shown) {
+        settings.setWindowShown(name, shown);
+    }
+}

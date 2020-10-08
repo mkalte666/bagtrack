@@ -12,10 +12,10 @@ GoldTracker::GoldTracker()
 {
 }
 
-void GoldTracker::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexcept
+void GoldTracker::update(Settings& settings, ItemTracker& tracker, InfoCache& cache) noexcept
 {
     using namespace std::chrono_literals;
-
+    checkShownStateAgainstSettings(settings);
     if (!shown) {
         return;
     }

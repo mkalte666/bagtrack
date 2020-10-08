@@ -3,6 +3,7 @@
 #define REMUTE_SETTINGS_H
 
 #include <filesystem>
+#include <map>
 #include <set>
 #include <string>
 namespace fs = std::filesystem;
@@ -59,6 +60,20 @@ public:
      */
     void setTrackedItems(const std::set<ItemId>& items) noexcept;
 
+    /**
+     * \brief Check if window with the name is shown
+     * \param windowName
+     * \return
+     */
+    [[nodiscard]] bool getWindowShown(const std::string& windowName) const noexcept;
+
+    /**
+     * \brief Save if with the window with the name is currently shown
+     * \param windowName
+     * \param shown
+     */
+    void setWindowShown(const std::string& windowName, bool shown) noexcept;
+
 private:
     static fs::path settingsFileName() noexcept;
     void read();
@@ -66,6 +81,7 @@ private:
     std::string apiKey = DefaultApiKey;
     fs::path lastHistoryFile = {};
     std::set<ItemId> trackedItems = {};
+    std::map<std::string, bool> windowShown = {};
 };
 
 #endif //REMUTE_SETTINGS_H

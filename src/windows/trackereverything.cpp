@@ -10,8 +10,9 @@ TrackerEverything::TrackerEverything() noexcept
 {
 }
 
-void TrackerEverything::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexcept
+void TrackerEverything::update(Settings& settings, ItemTracker& tracker, InfoCache& cache) noexcept
 {
+    checkShownStateAgainstSettings(settings);
     if (!shown) {
         return;
     }

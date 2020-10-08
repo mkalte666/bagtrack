@@ -23,8 +23,12 @@ public:
     virtual void drawMainMenu() noexcept;
 
 protected:
+    void checkShownStateAgainstSettings(Settings& settings) noexcept;
     bool shown = false; // NOLINT makes interating with imgui Begin() a lot easier
     std::string name = ""; // NOLINT makes interacting with imgui Begin() a lot easier
+
+private:
+    bool shownWasCheckedAlready = false;
 };
 
 #endif //REMUTE_WINDOW_H
