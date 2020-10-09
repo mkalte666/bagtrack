@@ -8,6 +8,7 @@
 #include <examples/imgui_impl_opengl3.h>
 #include <examples/imgui_impl_sdl.h>
 #include <GL/gl3w.h>
+#include <implot.h>
 // clang-format on
 
 #include <vector>
@@ -87,6 +88,7 @@ int main(int, char**)
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
+    ImPlot::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     std::string iniFileName = (Settings::getPrefPath() / "imgui.ini").string();
     io.IniFilename = iniFileName.c_str();

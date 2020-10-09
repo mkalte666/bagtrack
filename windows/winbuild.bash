@@ -59,6 +59,7 @@ cp "$src_dir/3rdparty/thirdPartyNotes.txt" ./
 cp "$src_dir/3rdparty/cpp-httplib/LICENSE" ./LICENSE.httplib.txt
 cp "$src_dir/3rdparty/fmt/LICENSE.rst" ./LICENSE.fmt.txt
 cp "$src_dir/3rdparty/imgui-cmake-blob/imgui/LICENSE.txt" ./LICENSE.imgui.txt
+cp "$src_dir/3rdparty/implot/LICENSE" ./LICENSE.implot.txt
 cp "$deps_dir/dl/openssl-1.1.1h/LICENSE" ./LICENSE.openssl.txt
 cp "$src_dir/3rdparty/json/LICENSE.MIT" ./LICENSE.json.txt
 cp "$src_dir/3rdparty/nativefiledialog/LICENSE" ./LICENSE.nativefiledialog.txt

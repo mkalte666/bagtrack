@@ -22,6 +22,11 @@ https://github.com/ocornut/imgui
 Copyright (c) 2014-2020 Omar Cornut
 Dear ImGui is licensed under the MIT License, see LICENSE.imgui.txt for more information.
 
+# ImPlot
+https://github.com/epezent/implot
+Copyright (c) 2020 Evan Pezent
+ImPlot is licensed under the MIT License, see LICENSE.implot.txt for more information.
+
 # nativefiledialog
 https://github.com/mlabbe/nativefiledialog
 nativefiledialog is licensed under the ZLIB Licence. See LICENSE.nativefiledialog.txt

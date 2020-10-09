@@ -47,6 +47,13 @@ else()
     target_link_libraries(nfd PUBLIC ${GTK3_LIBRARIES})
 endif()
 
+add_library(
+    implot STATIC
+    3rdparty/implot/implot.cpp 3rdparty/implot/implot.h
+    3rdparty/implot/implot_internal.h 3rdparty/implot/implot_items.cpp)
+target_include_directories(implot PUBLIC 3rdparty/implot)
+target_link_libraries(implot PRIVATE imgui gl3w)
+
 add_executable(
     bagtrack WIN32
     src/api.cpp
@@ -99,6 +106,7 @@ if(MINGW)
     target_link_libraries(
         bagtrack
         PRIVATE mingw32
+                implot
                 imgui
                 gl3w
                 nfd
@@ -122,7 +130,8 @@ if(MINGW)
 else()
     target_link_libraries(
         bagtrack
-        PRIVATE imgui
+        PRIVATE implot
+                imgui
                 gl3w
                 nfd
                 SDL2::SDL2

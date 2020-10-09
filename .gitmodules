@@ -14,3 +14,7 @@
 	path = 3rdparty/nativefiledialog
 	url = https://github.com/mlabbe/nativefiledialog
 	branch = master
+[submodule "3rdparty/implot"]
+	path = 3rdparty/implot
+	url = https://github.com/epezent/implot
+	branch = master
