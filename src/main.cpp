@@ -32,7 +32,7 @@ void debugToFile(const std::string& str)
 
 int main(int, char**)
 {
-    int sdlRes = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+    int sdlRes = SDL_Init(SDL_INIT_VIDEO);
     if (sdlRes != 0) {
         messageBox(SDL_MESSAGEBOX_ERROR, "SDL ERROR", "Could not Init SDL: {}", SDL_GetError());
         return 1;
