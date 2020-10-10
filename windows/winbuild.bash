@@ -70,7 +70,7 @@ cp "$src_dir/3rdparty/LICENSE.sdl2.txt" ./LICENSE.sdl2.txt
 "$cpdeps" "$local_root" bin/bagtrack.exe
 
 echo "Packing..."
-packname="build.win64.$(git rev-parse --short HEAD).$(date +%Y.%m.%d.%H.%M.%S)"
+packname="build.win64.$(date +%Y.%m.%d.%H.%M.%S).$(git rev-parse --short HEAD)"
 zip -r -q "$packname.zip" ./*
 mv "$packname.zip" "$root_dir"
 tar cfz "$packname.tar.gz" ./*
