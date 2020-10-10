@@ -92,6 +92,8 @@ add_executable(
     src/windows/itemselector.h
     src/windows/itemwidget.cpp
     src/windows/itemwidget.h
+    src/windows/statsgraph.cpp
+    src/windows/statsgraph.h
     src/windows/timeselector.cpp
     src/windows/timeselector.h
     src/windows/trackereverything.cpp

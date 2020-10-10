@@ -27,6 +27,8 @@ public:
     int64_t getCurrentStateId() const noexcept;
     std::set<int64_t> getStateIds() const noexcept;
 
+    std::map<int64_t, int64_t> getItemStats(ItemId id, int64_t start, int64_t end) const noexcept;
+
     void clearHistory() noexcept;
     void writeCache(const fs::path& filename) const noexcept;
     void readCache(const fs::path& filename) noexcept;

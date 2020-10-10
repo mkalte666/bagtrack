@@ -48,3 +48,8 @@ void Window::checkShownStateAgainstSettings(Settings& settings) noexcept
         settings.setWindowShown(name, shown);
     }
 }
+
+void Window::setShown(bool b)
+{
+    shown = b;
+}

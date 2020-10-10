@@ -89,6 +89,7 @@ int main(int, char**)
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
     ImPlot::CreateContext();
+    ImPlot::StyleColorsDark();
     ImGuiIO& io = ImGui::GetIO();
     std::string iniFileName = (Settings::getPrefPath() / "imgui.ini").string();
     io.IniFilename = iniFileName.c_str();

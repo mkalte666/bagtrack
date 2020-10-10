@@ -53,10 +53,17 @@ void ItemSelector::update(Settings& settings, ItemTracker& tracker, InfoCache& c
         selectorWidgetShown = !selectorWidgetShown;
     }
     referenceId = timeSelector(tracker, referenceId);
+    statsGraph.setTimeslot(referenceId, tracker.getCurrentStateId());
 
     const auto deltaState = tracker.getDeltaState(referenceId, tracker.getCurrentStateId());
-    listItems(widgetState, deltaState.items, cache, 0, settings.getTrackedItems());
+    if (ItemId id = listItems(widgetState, deltaState.items, cache, 0, settings.getTrackedItems()); id != 0) {
+        statsGraph.setShown(true);
+        statsGraph.setItem(id);
+    }
     ImGui::End();
+    ImGui::PushID("eh ");
+    statsGraph.update(settings, tracker, cache);
+    ImGui::PopID();
 }
 
 void ItemSelector::drawMainMenu() noexcept

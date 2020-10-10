@@ -4,8 +4,8 @@
 #define BAGTRACK_TRACKEREVERYTHING_H
 
 #include "itemwidget.h"
+#include "statsgraph.h"
 #include "window.h"
-
 class TrackerEverything : public Window {
 public:
     using Window::Window;
@@ -17,6 +17,7 @@ public:
 private:
     ItemWidgetState widgetState;
     int64_t referenceId = 0;
+    StatsGraph statsGraph = StatsGraph("EverythingTracker");
 };
 
 #endif //BAGTRACK_TRACKEREVERYTHING_H

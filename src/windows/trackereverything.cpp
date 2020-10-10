@@ -20,10 +20,15 @@ void TrackerEverything::update(Settings& settings, ItemTracker& tracker, InfoCac
     ImGui::SetNextWindowSize(ImVec2(400.0F, 400.0F), ImGuiCond_FirstUseEver);
     ImGui::Begin(name.c_str(), &shown);
     referenceId = timeSelector(tracker, referenceId);
-
+    statsGraph.setTimeslot(referenceId, tracker.getCurrentStateId());
     const auto deltaState = tracker.getDeltaState(referenceId, tracker.getCurrentStateId());
-    listItems(widgetState, deltaState.items, cache);
+    if (ItemId id = listItems(widgetState, deltaState.items, cache); id != 0) {
+        statsGraph.setItem(id);
+        statsGraph.setShown(true);
+    }
     ImGui::End();
+
+    statsGraph.update(settings, tracker, cache);
 }
 
 void TrackerEverything::drawMainMenu() noexcept

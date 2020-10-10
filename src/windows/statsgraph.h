@@ -1,31 +1,37 @@
 // licence note at the end of the file
 
-#ifndef BAGTRACK_ITEMSELECTOR_H
-#define BAGTRACK_ITEMSELECTOR_H
+#ifndef BAGTRACK_STATSGRAPH_H
+#define BAGTRACK_STATSGRAPH_H
 
-#include "itemwidget.h"
-#include "statsgraph.h"
 #include "window.h"
 
-class ItemSelector : public Window {
+class StatsGraph : public Window {
 public:
     using Window::Window;
-    ItemSelector();
 
     void update(Settings&, ItemTracker&, InfoCache&) noexcept override;
-    void drawMainMenu() noexcept override;
+
+    void setItem(ItemId id) noexcept;
+    void setTimeslot(int64_t start, int64_t end) noexcept;
 
 private:
-    void editFilter(Settings& settings, ItemTracker& tracker, InfoCache& cache) noexcept;
-    ItemWidgetState widgetState = {};
-    ItemWidgetState selectorWidgetState = {};
-    int64_t referenceId = 0;
-    bool selectorWidgetShown = false;
-    std::string chatLink = "";
-    StatsGraph statsGraph = StatsGraph("ItemSelector");
+    void rebuildStats() noexcept;
+    bool needRebuild = false;
+    std::map<int64_t, int64_t> statCache = {};
+    std::vector<int64_t> xVals = {};
+    std::vector<int64_t> yVals = {};
+    std::vector<std::string> tickStrings = {};
+    std::vector<const char*> tickChars = {};
+    ItemId itemId = 0;
+    int64_t idStart = 0;
+    int64_t idEnd = 0;
+
+    int64_t max = 0.0F;
+    int64_t min = 0.0F;
+    float avg = 0.0F;
 };
 
-#endif //BAGTRACK_ITEMSELECTOR_H
+#endif //BAGTRACK_STATSGRAPH_H
 /*
  * This file is part bagtrack
  * Copyright (c) 2020 Malte Kießling

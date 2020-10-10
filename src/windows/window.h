@@ -22,6 +22,8 @@ public:
     virtual void update(Settings&, ItemTracker&, InfoCache&) noexcept;
     virtual void drawMainMenu() noexcept;
 
+    void setShown(bool shown);
+
 protected:
     void checkShownStateAgainstSettings(Settings& settings) noexcept;
     bool shown = false; // NOLINT makes interating with imgui Begin() a lot easier

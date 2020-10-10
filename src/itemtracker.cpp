@@ -179,6 +179,39 @@ void ItemTracker::clearHistory() noexcept
     states.clear();
 }
 
+std::map<int64_t, int64_t> ItemTracker::getItemStats(ItemId id, int64_t start, int64_t end) const noexcept
+{
+    std::map<int64_t, int64_t> results;
+    std::lock_guard lockGuard(mutex);
+    auto iterStart = states.lower_bound(start);
+    auto iterEnd = states.lower_bound(end);
+    // make sure the iterators make sense
+    if (iterStart == states.end() || iterEnd == states.end()) {
+        return results;
+    }
+
+    // we pretend we have every value in the range
+    // so we need to save the last iter in case iter itself is invalid
+    auto lastIter = iterStart;
+    // including end - end is not end of the set!
+    for (int64_t i = start; i <= end; ++i) {
+        auto iter = states.find(i);
+        // check the iter, and maybe use last iter to make sure we always have a value
+        if (iter == states.end()) {
+            iter = lastIter;
+        }
+        const auto& itemIter = iter->second.items.find(id);
+        if (itemIter == iter->second.items.end()) {
+            results[i] = 0;
+        } else {
+            results[i] = itemIter->second;
+        }
+        lastIter = iter;
+    }
+
+    return results;
+}
+
 /*
  * This file is part bagtrack
  * Copyright (c) 2020 Malte Kießling
