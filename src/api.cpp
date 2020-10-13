@@ -308,9 +308,23 @@ ItemInfoMap getItemInfos(const std::set<ItemId>& ids) noexcept
     params["ids"] = idString;
     auto res = makeRequest("", "/v2/items", params);
     // small guard against failures
-    if (!res || (res->status != 200 && res->status != 206)) {
+    // 200 => all is well, 206 => some ids invalid, we dont care. 404 => all ids invalid, see below
+    if (!res || (res->status != 200 && res->status != 206 && res->status != 404)) {
         return results;
     }
+
+    // catch 404 differently
+    // all IDs are invalid! this is bad. Populate all items with "invalid item"
+    if (res->status == 404) {
+        for (const auto id : ids) {
+            ItemInfo info;
+            info.name = "Invalid/Unknown Item!";
+            info.flags.emplace_back("AccountBound"); // avoid requests against the trading post
+            results[id] = info;
+        }
+        return results;
+    }
+
     json j;
     try {
         j = json::parse(res->body);
