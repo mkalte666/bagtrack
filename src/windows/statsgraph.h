@@ -20,15 +20,28 @@ private:
     std::map<int64_t, int64_t> statCache = {};
     std::vector<int64_t> xVals = {};
     std::vector<int64_t> yVals = {};
+    std::vector<int64_t> y2Vals = {};
     std::vector<std::string> tickStrings = {};
     std::vector<const char*> tickChars = {};
     ItemId itemId = 0;
     int64_t idStart = 0;
     int64_t idEnd = 0;
 
-    int64_t max = 0.0F;
-    int64_t min = 0.0F;
-    float avg = 0.0F;
+    int64_t max = 0;
+    int64_t min = 0;
+    float avg = 0;
+
+    int64_t minDelta = 0;
+    int64_t maxDelta = 0;
+    int64_t last5Minutes = 0;
+
+    int64_t minDelta15Minutes = 0;
+    int64_t maxDelta15Minutes = 0;
+    int64_t last15Minutes = 0;
+
+    int64_t minDelta60Minutes = 0;
+    int64_t maxDelta60Minutes = 0;
+    int64_t last60Minutes = 0;
 };
 
 #endif //BAGTRACK_STATSGRAPH_H

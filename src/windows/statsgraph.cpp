@@ -7,6 +7,58 @@
 #include <implot.h>
 #include <misc/cpp/imgui_stdlib.h>
 
+void drawTimeStats(const char* name, int64_t current, int64_t min, int64_t max)
+{
+    ImGui::TextWrapped("%s", name);
+    ImGui::Columns(2);
+    ImGui::TextWrapped("Current");
+    ImGui::NextColumn();
+    ImGui::TextWrapped("%s", fmt::format("{}", current).c_str());
+    ImGui::NextColumn();
+    ImGui::TextWrapped("Min");
+    ImGui::NextColumn();
+    ImGui::TextWrapped("%s", fmt::format("{}", min).c_str());
+    ImGui::NextColumn();
+    ImGui::TextWrapped("Max");
+    ImGui::NextColumn();
+    ImGui::TextWrapped("%s", fmt::format("{}", max).c_str());
+    ImGui::NextColumn();
+    ImGui::Columns(1);
+}
+
+void makeTimeStats(const std::map<int64_t, int64_t>& stats, const int64_t offset, int64_t& current, int64_t& min, int64_t& max)
+{
+    current = 0;
+    min = 0;
+    max = 0;
+    // worst case, stats is empty.
+    if (stats.empty()) {
+        return;
+    }
+    // make current. lower bound, because we will use the closet we can get to our offset!
+    const auto currentIter = stats.begin();
+    const auto currentOffset = stats.lower_bound(currentIter->first - offset);
+    // not good
+    if (currentOffset == stats.end()) {
+        return;
+    }
+    current = currentIter->second - currentOffset->second;
+
+    // we give ourselfs the range using the iters, and then slide it over the data
+    auto iterStart = stats.begin();
+    auto iterOffset = stats.find(iterStart->first + offset);
+    // we dont have the data range
+    if (iterOffset != stats.end()) {
+        max = std::numeric_limits<int64_t>::min();
+        min = std::numeric_limits<int64_t>::max();
+        for (; iterStart != stats.end() && iterOffset != stats.end(); iterStart++, iterOffset++) {
+            const int64_t delta = iterOffset->second - iterStart->second;
+            min = std::min(delta, min);
+            max = std::max(delta, max);
+        }
+    }
+}
+
 void StatsGraph::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexcept
 {
     if (!shown) {
@@ -56,6 +108,7 @@ void StatsGraph::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexc
         ImGui::EndPopup();
     }
     ImGui::NextColumn();
+    // overall item stats
     ImGui::Separator();
     ImGui::TextWrapped("Min");
     ImGui::NextColumn();
@@ -70,16 +123,30 @@ void StatsGraph::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexc
     ImGui::TextWrapped("%s", fmt::format("{}", avg).c_str());
     ImGui::NextColumn();
     ImGui::Columns(1);
+    // timespan based stats
+    ImGui::Separator();
+    drawTimeStats("5 minute stats", last5Minutes, minDelta, maxDelta);
+    ImGui::Separator();
+    drawTimeStats("15 minute stats", last15Minutes, minDelta15Minutes, maxDelta15Minutes);
+    ImGui::Separator();
+    drawTimeStats("1 Hour stats", last60Minutes, minDelta60Minutes, maxDelta60Minutes);
     ImGui::EndChild();
 
     // draw plot
     ImGui::NextColumn();
-    ImPlot::SetNextPlotLimitsY(0.0, static_cast<double>(max) * 1.1);
+
+    ImPlot::SetNextPlotLimitsY(static_cast<double>(minDelta), static_cast<double>(max) * 1.1);
     ImPlot::SetNextPlotLimitsX(static_cast<double>(idStart * 300), static_cast<double>(idEnd * 300));
-    if (ImPlot::BeginPlot(title.c_str(), "Time", "Count", ImVec2(-1, -1), ImPlotFlags_None, ImPlotAxisFlags_Time)) {
+
+    if (ImPlot::BeginPlot(title.c_str(), "Time", "Count", ImVec2(-1, -1), ImPlotAxisFlags_None, ImPlotAxisFlags_Time)) {
         ImPlot::GetStyle().Use24HourClock = true;
         ImPlot::GetStyle().UseLocalTime = true;
+        ImPlot::PushStyleVar(ImPlotStyleVar_FillAlpha, .25F);
         ImPlot::PlotLine<ImS64>(info.name.c_str(), reinterpret_cast<const long long int*>(xVals.data()), reinterpret_cast<const long long int*>(yVals.data()), static_cast<int>(yVals.size()));
+        ImPlot::PlotShaded<ImS64>(info.name.c_str(), reinterpret_cast<const long long int*>(xVals.data()), reinterpret_cast<const long long int*>(yVals.data()), static_cast<int>(yVals.size()));
+        ImPlot::PopStyleVar();
+        const std::string deltaLabel = info.name + " Delta";
+        ImPlot::PlotLine<ImS64>(deltaLabel.c_str(), reinterpret_cast<const long long int*>(xVals.data()), reinterpret_cast<const long long int*>(y2Vals.data()), static_cast<int>(yVals.size()));
         ImPlot::EndPlot();
     }
     ImGui::End();
@@ -106,24 +173,43 @@ void StatsGraph::rebuildStats() noexcept
 {
     int64_t sum = 0;
     min = std::numeric_limits<int64_t>::max();
-    max = 0;
+    max = std::numeric_limits<int64_t>::min();
     xVals.clear();
     xVals.reserve(statCache.size());
     yVals.clear();
     yVals.reserve(statCache.size());
+    y2Vals.clear();
+    y2Vals.reserve(statCache.size());
     tickChars.clear(); // this order!
     tickStrings.clear();
     tickChars.reserve(statCache.size());
     tickStrings.reserve(statCache.size());
-    for (const auto& i : statCache) {
-        sum += i.second;
-        min = std::min(i.second, min);
-        max = std::max(i.second, max);
-        xVals.emplace_back(i.first * 300); // convert back to unix time
-        yVals.emplace_back(i.second);
+    int64_t lastCount = 0;
+    // make sure we do not calc a delta for the first value
+    // the next loop does both graphs
+    if (!statCache.empty()) {
+        lastCount = statCache.begin()->second;
     }
+    for (const auto& i : statCache) {
+        const int64_t id = i.first;
+        const int64_t count = i.second;
+        const int64_t delta = count - lastCount;
+        lastCount = count;
 
+        // update running things
+        sum += count;
+        min = std::min(count, min);
+        max = std::max(count, max);
+
+        // update arrays
+        xVals.emplace_back(id * 300); // convert back to unix time
+        yVals.emplace_back(count);
+        y2Vals.emplace_back(delta);
+    }
     avg = static_cast<float>(sum) / static_cast<float>(statCache.size());
+    makeTimeStats(statCache, 1, last5Minutes, minDelta, maxDelta);
+    makeTimeStats(statCache, 3, last15Minutes, minDelta15Minutes, maxDelta15Minutes);
+    makeTimeStats(statCache, 12, last60Minutes, minDelta60Minutes, maxDelta60Minutes);
 }
 
 /*
