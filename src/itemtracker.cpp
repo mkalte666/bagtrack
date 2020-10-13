@@ -87,7 +87,7 @@ TrackerState ItemTracker::getState(int64_t id) const noexcept
     return copy;
 }
 
-TrackerState ItemTracker::getDeltaState(int64_t oldId, int64_t newId) const noexcept
+TrackerState ItemTracker::getDeltaState(int64_t oldId, int64_t newId, const std::set<ItemId>& keepList) const noexcept
 {
     TrackerState delta = getState(newId);
     TrackerState oldState = getState(oldId);
@@ -102,7 +102,7 @@ TrackerState ItemTracker::getDeltaState(int64_t oldId, int64_t newId) const noex
     // calculate the item delta, dropping empty rows
     for (const auto& pair : oldState.items) {
         delta.items[pair.first] -= pair.second;
-        if (delta.items[pair.first] == 0) {
+        if (delta.items[pair.first] == 0 && keepList.find(pair.first) == keepList.end()) {
             delta.items.erase(pair.first);
         }
     }

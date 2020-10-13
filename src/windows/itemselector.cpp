@@ -55,7 +55,7 @@ void ItemSelector::update(Settings& settings, ItemTracker& tracker, InfoCache& c
     referenceId = timeSelector(tracker, referenceId);
     statsGraph.setTimeslot(referenceId, tracker.getCurrentStateId());
 
-    const auto deltaState = tracker.getDeltaState(referenceId, tracker.getCurrentStateId());
+    const auto deltaState = tracker.getDeltaState(referenceId, tracker.getCurrentStateId(), settings.getTrackedItems());
     if (ItemId id = listItems(widgetState, deltaState.items, cache, 0, settings.getTrackedItems()); id != 0) {
         statsGraph.setShown(true);
         statsGraph.setItem(id);

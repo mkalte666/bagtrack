@@ -23,7 +23,7 @@ public:
 
     TrackerState getCurrentState() const noexcept;
     TrackerState getState(int64_t id) const noexcept;
-    TrackerState getDeltaState(int64_t oldId, int64_t newId) const noexcept;
+    TrackerState getDeltaState(int64_t oldId, int64_t newId, const std::set<ItemId>& keepList = {}) const noexcept;
     int64_t getCurrentStateId() const noexcept;
     std::set<int64_t> getStateIds() const noexcept;
 
