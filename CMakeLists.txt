@@ -82,6 +82,7 @@ add_executable(
     src/tpinfo.h
     src/trackerstate.cpp
     src/trackerstate.h
+    src/version.h
     src/windows/apikeyeditor.cpp
     src/windows/apikeyeditor.h
     src/windows/filedialog.cpp
@@ -98,6 +99,8 @@ add_executable(
     src/windows/timeselector.h
     src/windows/trackereverything.cpp
     src/windows/trackereverything.h
+    src/windows/updatechecker.cpp
+    src/windows/updatechecker.h
     src/windows/window.cpp
     src/windows/window.h)
 target_include_directories(bagtrack PRIVATE ${SDL2_INCLUDE_DIR})

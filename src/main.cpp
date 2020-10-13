@@ -22,6 +22,7 @@
 #include "windows/trackereverything.h"
 #include "windows/goldtracker.h"
 #include "windows/filedialog.h"
+#include "windows/updatechecker.h"
 #include "../assets/bootleg_baggie.bmp.cpp"
 
 void debugToFile(const std::string& str)
@@ -112,6 +113,7 @@ int main(int, char**)
     windows.emplace_back(std::make_unique<ItemSelector>());
     windows.emplace_back(std::make_unique<TrackerEverything>());
     windows.emplace_back(std::make_unique<GoldTracker>());
+    windows.emplace_back(std::make_unique<UpdateChecker>());
 
     while (running) {
         SDL_Event e;
