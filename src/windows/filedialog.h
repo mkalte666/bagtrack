@@ -17,7 +17,8 @@ private:
         None,
         New,
         Open,
-        SaveAs
+        SaveAs,
+        ClearCache
     };
     NextAction nextAction = NextAction::None;
 };

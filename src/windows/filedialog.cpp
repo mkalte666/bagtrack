@@ -5,7 +5,7 @@
 
 #include <imgui.h>
 
-void FileDialog::update(Settings& settings, ItemTracker& tracker, InfoCache&) noexcept
+void FileDialog::update(Settings& settings, ItemTracker& tracker, InfoCache& cache) noexcept
 {
     switch (nextAction) {
 
@@ -54,6 +54,9 @@ void FileDialog::update(Settings& settings, ItemTracker& tracker, InfoCache&) no
         }
         break;
     }
+    case NextAction::ClearCache:
+        cache.clearCache();
+        break;
     }
 
     nextAction = NextAction::None;
@@ -72,6 +75,13 @@ void FileDialog::drawMainMenu() noexcept
             nextAction = NextAction::SaveAs;
         }
         ImGui::Separator();
+        ImGui::EndMenu();
+    }
+
+    if (ImGui::BeginMenu("GW2")) {
+        if (ImGui::MenuItem("Clear Item Cache")) {
+            nextAction = NextAction::ClearCache;
+        }
         ImGui::EndMenu();
     }
 }

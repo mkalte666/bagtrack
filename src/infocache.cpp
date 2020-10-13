@@ -127,6 +127,14 @@ int64_t InfoCache::estimateItemValue(ItemId id) noexcept
     return tpInfo.sellValue;
 }
 
+void InfoCache::clearCache() noexcept
+{
+    std::lock_guard lockGuard(mutex);
+    tpInfoCache.clear();
+    itemInfoCache.clear();
+    writeInfoCache();
+}
+
 /*
  * This file is part bagtrack
  * Copyright (c) 2020 Malte Kießling

@@ -21,6 +21,8 @@ public:
     const TpInfo& getTpInfo(ItemId id) noexcept;
     int64_t estimateItemValue(ItemId id) noexcept;
 
+    void clearCache() noexcept;
+
 private:
     void threadFun();
     void readInfoCache();
