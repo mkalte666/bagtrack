@@ -36,7 +36,7 @@ void makeTimeStats(const std::map<int64_t, int64_t>& stats, const int64_t offset
         return;
     }
     // make current. lower bound, because we will use the closet we can get to our offset!
-    const auto currentIter = stats.begin();
+    const auto currentIter = stats.rbegin();
     const auto currentOffset = stats.lower_bound(currentIter->first - offset);
     // not good
     if (currentOffset == stats.end()) {
