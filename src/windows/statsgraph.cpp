@@ -2,6 +2,7 @@
 #include "statsgraph.h"
 
 #include "../fixfmt.h"
+#include "../imgui_fmt.h"
 #include <SDL.h>
 #include <imgui.h>
 #include <implot.h>
@@ -9,19 +10,19 @@
 
 void drawTimeStats(const char* name, int64_t current, int64_t min, int64_t max)
 {
-    ImGui::TextWrapped("%s", name);
+    ImGui::TextWrappedFmt("{}", name);
     ImGui::Columns(2);
-    ImGui::TextWrapped("Current");
+    ImGui::TextWrappedFmt("Current");
     ImGui::NextColumn();
-    ImGui::TextWrapped("%s", fmt::format("{}", current).c_str());
+    ImGui::TextWrappedFmt("{}", current);
     ImGui::NextColumn();
-    ImGui::TextWrapped("Min");
+    ImGui::TextWrappedFmt("Min");
     ImGui::NextColumn();
-    ImGui::TextWrapped("%s", fmt::format("{}", min).c_str());
+    ImGui::TextWrappedFmt("{}", min);
     ImGui::NextColumn();
-    ImGui::TextWrapped("Max");
+    ImGui::TextWrappedFmt("Max");
     ImGui::NextColumn();
-    ImGui::TextWrapped("%s", fmt::format("{}", max).c_str());
+    ImGui::TextWrappedFmt("{}", max);
     ImGui::NextColumn();
     ImGui::Columns(1);
 }
@@ -87,17 +88,17 @@ void StatsGraph::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexc
     ImGui::BeginChild((title + "table area").c_str());
     ImGui::Columns(2);
     ImGui::SetColumnWidth(-1, 100.0F);
-    ImGui::TextWrapped("Name");
+    ImGui::TextWrappedFmt("Name");
     ImGui::NextColumn();
-    ImGui::TextWrapped("%s", info.name.c_str());
-    ImGui::NextColumn();
-    ImGui::Separator();
-    ImGui::TextWrapped("Description");
-    ImGui::NextColumn();
-    ImGui::TextWrapped("%s", info.description.c_str());
+    ImGui::TextWrappedFmt(info.name);
     ImGui::NextColumn();
     ImGui::Separator();
-    ImGui::TextWrapped("Chat Link");
+    ImGui::TextWrappedFmt("Description");
+    ImGui::NextColumn();
+    ImGui::TextWrappedFmt(info.description);
+    ImGui::NextColumn();
+    ImGui::Separator();
+    ImGui::TextWrappedFmt("Chat Link");
     ImGui::NextColumn();
     std::string chatLinkCopy = info.chatLink;
     ImGui::InputText("##infoclink", &chatLinkCopy, ImGuiInputTextFlags_ReadOnly);
@@ -110,17 +111,17 @@ void StatsGraph::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexc
     ImGui::NextColumn();
     // overall item stats
     ImGui::Separator();
-    ImGui::TextWrapped("Min");
+    ImGui::TextWrappedFmt("Min");
     ImGui::NextColumn();
-    ImGui::TextWrapped("%s", fmt::format("{}", min).c_str());
+    ImGui::TextWrappedFmt("{}", min);
     ImGui::NextColumn();
-    ImGui::TextWrapped("Max");
+    ImGui::TextWrappedFmt("Max");
     ImGui::NextColumn();
-    ImGui::TextWrapped("%s", fmt::format("{}", max).c_str());
+    ImGui::TextWrappedFmt("{}", max);
     ImGui::NextColumn();
-    ImGui::TextWrapped("Agv");
+    ImGui::TextWrappedFmt("Agv");
     ImGui::NextColumn();
-    ImGui::TextWrapped("%s", fmt::format("{}", avg).c_str());
+    ImGui::TextWrappedFmt("{}", avg);
     ImGui::NextColumn();
     ImGui::Columns(1);
     // timespan based stats

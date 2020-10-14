@@ -2,6 +2,7 @@
 
 #include "itemwidget.h"
 #include "../filteritems.h"
+#include "../imgui_fmt.h"
 #include "../sdlhelpers.h"
 #include <imgui.h>
 #include <misc/cpp/imgui_stdlib.h>
@@ -64,14 +65,14 @@ ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cach
     for (int i = 0; i < cols; ++i) {
         ImGui::SetColumnWidth(i, columWidth);
     }
-    ImGui::TextWrapped("Name");
+    ImGui::TextWrappedFmt("Name");
     ImGui::NextColumn();
-    ImGui::TextWrapped("Count");
+    ImGui::TextWrappedFmt("Count");
     ImGui::NextColumn();
     if (showInfos) {
-        ImGui::TextWrapped("Sell Value");
+        ImGui::TextWrappedFmt("Sell Value");
         ImGui::NextColumn();
-        ImGui::TextWrapped("Buy Value");
+        ImGui::TextWrappedFmt("Buy Value");
         ImGui::NextColumn();
     }
     ImGui::Columns(1);
@@ -105,25 +106,25 @@ ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cach
             if (const auto iter = items.find(id); iter != items.end()) {
                 count = iter->second;
             }
-            ImGui::TextWrapped("%s", fmt::format("{}", count).c_str());
+            ImGui::TextWrappedFmt("{}", count);
             ImGui::NextColumn();
             if (showInfos) {
                 if (info.checkIfBound()) {
-                    ImGui::TextWrapped("Bound Item");
+                    ImGui::TextWrappedFmt("Bound Item");
                 } else {
-                    ImGui::TextWrapped("%s", fmt::format("{}", prettyGoldValue(tpInfo.sellValue)).c_str());
+                    ImGui::TextWrappedFmt(prettyGoldValue(tpInfo.sellValue));
                 }
                 ImGui::NextColumn();
                 if (info.checkIfBound()) {
-                    ImGui::TextWrapped("Bound Item");
+                    ImGui::TextWrappedFmt("Bound Item");
                 } else {
-                    ImGui::TextWrapped("%s", fmt::format("{}", prettyGoldValue(tpInfo.buyValue)).c_str());
+                    ImGui::TextWrappedFmt(prettyGoldValue(tpInfo.buyValue));
                 }
                 ImGui::NextColumn();
             }
         }
     } else {
-        ImGui::TextWrapped("Type something to search for items!");
+        ImGui::TextWrappedFmt("Type something to search for items!");
     }
 
     ImGui::Columns(1);

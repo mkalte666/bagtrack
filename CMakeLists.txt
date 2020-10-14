@@ -63,6 +63,7 @@ add_executable(
     src/filteritems.cpp
     src/filteritems.h
     src/fixfmt.h
+    src/imgui_fmt.h
     src/infocache.cpp
     src/infocache.h
     src/iteminfo.cpp

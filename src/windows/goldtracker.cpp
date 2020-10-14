@@ -2,6 +2,7 @@
 
 #include <imgui.h>
 
+#include "../imgui_fmt.h"
 #include "../tpinfo.h"
 #include "goldtracker.h"
 #include "timeselector.h"
@@ -37,45 +38,45 @@ void GoldTracker::update(Settings& settings, ItemTracker& tracker, InfoCache& ca
 
     // table header
     ImGui::Columns(4);
-    ImGui::Text("What?");
+    ImGui::TextFmt("What?");
     ImGui::NextColumn();
-    ImGui::Text("At Start");
+    ImGui::TextFmt("At Start");
     ImGui::NextColumn();
-    ImGui::Text("Currently");
+    ImGui::TextFmt("Currently");
     ImGui::NextColumn();
-    ImGui::Text("Gain");
+    ImGui::TextFmt("Gain");
     ImGui::NextColumn();
     ImGui::Separator();
 
     // account coins
-    ImGui::Text("Coins");
+    ImGui::TextFmt("Coins");
     ImGui::NextColumn();
-    ImGui::Text("%s", prettyGoldValue(referenceState.coins).c_str());
+    ImGui::TextFmt(prettyGoldValue(referenceState.coins));
     ImGui::NextColumn();
-    ImGui::Text("%s", prettyGoldValue(currentState.coins).c_str());
+    ImGui::TextFmt(prettyGoldValue(currentState.coins));
     ImGui::NextColumn();
-    ImGui::Text("%s", prettyGoldValue(deltaState.coins).c_str());
+    ImGui::TextFmt(prettyGoldValue(deltaState.coins));
     ImGui::NextColumn();
 
     // collected value of items
-    ImGui::Text("Item Value");
+    ImGui::TextFmt("Item Value");
     ImGui::NextColumn();
-    ImGui::Text("%s", prettyGoldValue(referenceValue).c_str());
+    ImGui::TextFmt(prettyGoldValue(referenceValue));
     ImGui::NextColumn();
-    ImGui::Text("%s", prettyGoldValue(currentValue).c_str());
+    ImGui::TextFmt(prettyGoldValue(currentValue));
     ImGui::NextColumn();
-    ImGui::Text("%s", prettyGoldValue(currentValue - referenceValue).c_str());
+    ImGui::TextFmt(prettyGoldValue(currentValue - referenceValue));
     ImGui::NextColumn();
     ImGui::Separator();
 
     // total values
-    ImGui::Text("Total");
+    ImGui::TextFmt("Total");
     ImGui::NextColumn();
-    ImGui::Text("%s", prettyGoldValue(referenceValue + referenceState.coins).c_str());
+    ImGui::TextFmt(prettyGoldValue(referenceValue + referenceState.coins));
     ImGui::NextColumn();
-    ImGui::Text("%s", prettyGoldValue(currentValue + currentState.coins).c_str());
+    ImGui::TextFmt(prettyGoldValue(currentValue + currentState.coins));
     ImGui::NextColumn();
-    ImGui::Text("%s", prettyGoldValue((currentValue - referenceValue) + deltaState.coins).c_str());
+    ImGui::TextFmt(prettyGoldValue((currentValue - referenceValue) + deltaState.coins));
     ImGui::NextColumn();
 
     // done

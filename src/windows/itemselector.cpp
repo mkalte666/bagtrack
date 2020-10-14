@@ -4,6 +4,7 @@
 
 #include "../base64/base64.h"
 #include "../fixfmt.h"
+#include "../imgui_fmt.h"
 #include "../sdlhelpers.h"
 #include "timeselector.h"
 #include <imgui.h>
@@ -108,7 +109,7 @@ void ItemSelector::editFilter(Settings& settings, ItemTracker& tracker, InfoCach
     }
     ImGui::EndChild();
     ImGui::NextColumn();
-    ImGui::Text("Currently Tracked Items"); // NOLINT
+    ImGui::TextFmt("Currently Tracked Items");
     ImGui::Separator();
     ImGui::BeginChild("TrackList");
     const auto trackedItemsCopy = trackedItems;

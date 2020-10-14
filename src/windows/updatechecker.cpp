@@ -2,6 +2,7 @@
 
 #include "updatechecker.h"
 #include "../fixfmt.h"
+#include "../imgui_fmt.h"
 #include <SDL.h>
 #include <chrono>
 #include <cstdlib>
@@ -65,11 +66,11 @@ void UpdateChecker::update(Settings&, ItemTracker&, InfoCache&) noexcept
 
     if (BagtrackVersion < upstreamVersion) {
         ImGui::Begin("Update Available!", &shown, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize);
-        ImGui::TextWrapped("A New Version is available!\nPress the button below to go to the download.");
+        ImGui::TextWrappedFmt("A New Version is available!\nPress the button below to go to the download.");
         if (ImGui::Button("Go to Download")) {
             openUrl(VersionCheckDownloadURL);
         }
-        ImGui::TextWrapped("Alternatively you can copy it below");
+        ImGui::TextWrappedFmt("Alternatively you can copy it below");
         std::string url = VersionCheckDownloadURL;
         ImGui::InputText("##dlUrl", &url, ImGuiInputTextFlags_ReadOnly);
         if (ImGui::BeginPopupContextItem()) {

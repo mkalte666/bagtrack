@@ -10,7 +10,7 @@ bool ItemInfo::checkIfBound() const noexcept
 
 bool ItemInfo::checkIfPrecursor() const noexcept
 {
-    return description.find("used to craft the legendary") != std::string::npos; // NOLINT absl
+    return description.find("used to craft the legendary") != std::string::npos; // NOLINT we dont use absl
 }
 
 void from_json(const nlohmann::json& j, ItemInfo& itemInfo)

@@ -1,6 +1,7 @@
 // licence note at the end of the file
 #include "apikeyeditor.h"
 #include "../api.h"
+#include "../imgui_fmt.h"
 #include "../sdlhelpers.h"
 #include <cstdio>
 #include <imgui.h>
@@ -46,7 +47,7 @@ void ApiKeyEditor::update(Settings& settings, ItemTracker&, InfoCache&) noexcept
         keyChecked = checkApiKey(apiKey);
     }
 
-    ImGui::TextWrapped("You need 'account', 'inventories' and 'wallet' enabled for this key!"); // NOLINT
+    ImGui::TextWrappedFmt("You need 'account', 'inventories' and 'wallet' enabled for this key!"); // NOLINT
 
     if (ImGui::Button("Cancel")) {
         apiKey = settings.getApiKey();
