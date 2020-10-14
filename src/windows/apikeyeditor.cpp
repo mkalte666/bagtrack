@@ -1,11 +1,12 @@
 // licence note at the end of the file
 #include "apikeyeditor.h"
-#include "../api.h"
 #include "../imgui_fmt.h"
 #include "../sdlhelpers.h"
-#include <cstdio>
 #include <imgui.h>
 #include <misc/cpp/imgui_stdlib.h>
+
+static constexpr float KeyEditWidth = 120.0F;
+static constexpr float SaveDisabledFactor = 0.5F;
 
 ApiKeyEditor::ApiKeyEditor()
     : Window("Api Key Editor")
@@ -31,7 +32,7 @@ void ApiKeyEditor::update(Settings& settings, ItemTracker&, InfoCache&) noexcept
     }
 
     ImGui::Begin(name.c_str(), &shown, ImGuiWindowFlags_AlwaysAutoResize);
-    ImGui::SetNextItemWidth(120.0F);
+    ImGui::SetNextItemWidth(KeyEditWidth);
     if (ImGui::InputText("GW2 Api Key", &apiKey, ImGuiInputTextFlags_Password)) {
         keyChecked = false;
     }
@@ -62,7 +63,7 @@ void ApiKeyEditor::update(Settings& settings, ItemTracker&, InfoCache&) noexcept
             keyChecked = false;
         }
     } else {
-        ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * 0.5f);
+        ImGui::PushStyleVar(ImGuiStyleVar_Alpha, ImGui::GetStyle().Alpha * SaveDisabledFactor);
         ImGui::Button("Save");
         ImGui::PopStyleVar();
     }

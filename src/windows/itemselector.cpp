@@ -48,7 +48,7 @@ void ItemSelector::update(Settings& settings, ItemTracker& tracker, InfoCache& c
     editFilter(settings, tracker, cache);
 
     const auto state = tracker.getCurrentState();
-    ImGui::SetNextWindowSize(ImVec2(400.0F, 400.0F), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(DefaultSquareWindowSize, DefaultSquareWindowSize), ImGuiCond_FirstUseEver);
     ImGui::Begin(name.c_str(), &shown);
     if (ImGui::Button("Edit Filter")) {
         selectorWidgetShown = !selectorWidgetShown;
@@ -83,7 +83,7 @@ void ItemSelector::editFilter(Settings& settings, ItemTracker& tracker, InfoCach
         return;
     }
     auto trackedItems = settings.getTrackedItems();
-    ImGui::SetNextWindowSize(ImVec2(400.0F, 400.0F), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(DefaultSquareWindowSize, DefaultSquareWindowSize), ImGuiCond_FirstUseEver);
     ImGui::Begin("Edit Filter", &selectorWidgetShown);
     ImGui::Columns(2);
     ImGui::SetNextItemWidth(ImGui::GetColumnWidth(1) / 2.0F);

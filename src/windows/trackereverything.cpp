@@ -17,7 +17,7 @@ void TrackerEverything::update(Settings& settings, ItemTracker& tracker, InfoCac
         return;
     }
 
-    ImGui::SetNextWindowSize(ImVec2(400.0F, 400.0F), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(DefaultSquareWindowSize, DefaultSquareWindowSize), ImGuiCond_FirstUseEver);
     ImGui::Begin(name.c_str(), &shown);
     referenceId = timeSelector(tracker, referenceId);
     statsGraph.setTimeslot(referenceId, tracker.getCurrentStateId());

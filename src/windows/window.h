@@ -12,6 +12,7 @@
  */
 class Window {
 public:
+    constexpr static float DefaultSquareWindowSize = 400.0F;
     Window() noexcept = default;
     explicit Window(std::string name) noexcept;
     Window(const Window&) = delete;
