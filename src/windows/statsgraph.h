@@ -17,6 +17,7 @@ public:
 private:
     void rebuildStats() noexcept;
     bool needRebuild = false;
+    bool autoResize = false;
     std::map<int64_t, int64_t> statCache = {};
     std::vector<int64_t> xVals = {};
     std::vector<int64_t> yVals = {};

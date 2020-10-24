@@ -131,13 +131,21 @@ void StatsGraph::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexc
     drawTimeStats("15 minute stats", last15Minutes, minDelta15Minutes, maxDelta15Minutes);
     ImGui::Separator();
     drawTimeStats("1 Hour stats", last60Minutes, minDelta60Minutes, maxDelta60Minutes);
+
+    // plot configs
+    ImGui::Separator();
+    ImGui::Separator();
+    ImGui::TextFmt("Plot Config");
+    ImGui::Checkbox("Auto Resize", &autoResize);
+
     ImGui::EndChild();
 
     // draw plot
     ImGui::NextColumn();
     ImPlot::GetStyle().UseISO8601 = true;
-    ImPlot::SetNextPlotLimitsY(static_cast<double>(minDelta), static_cast<double>(max) * 1.1);
-    ImPlot::SetNextPlotLimitsX(static_cast<double>(idStart * 300), static_cast<double>(idEnd * 300));
+    ImGuiCond cond = autoResize ? ImGuiCond_Always : ImGuiCond_Once;
+    ImPlot::SetNextPlotLimitsY(static_cast<double>(minDelta), static_cast<double>(max) * 1.1, cond);
+    ImPlot::SetNextPlotLimitsX(static_cast<double>(idStart * 300), static_cast<double>(idEnd * 300), cond);
 
     if (ImPlot::BeginPlot(title.c_str(), "Time", "Count", ImVec2(-1, -1), ImPlotAxisFlags_None, ImPlotAxisFlags_Time)) {
         ImPlot::GetStyle().Use24HourClock = true;
