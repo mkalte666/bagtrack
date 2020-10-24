@@ -5,8 +5,8 @@
 #include <string>
 
 static constexpr int BagtrackVersionMajor = 0;
-static constexpr int BagtrackVersionMinor = 9;
-static constexpr int BagtrackVersionPatch = 1;
+static constexpr int BagtrackVersionMinor = 10;
+static constexpr int BagtrackVersionPatch = 0;
 
 struct VersionInfo {
     int major = 0;
