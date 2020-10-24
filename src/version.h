@@ -6,7 +6,7 @@
 
 static constexpr int BagtrackVersionMajor = 0;
 static constexpr int BagtrackVersionMinor = 10;
-static constexpr int BagtrackVersionPatch = 0;
+static constexpr int BagtrackVersionPatch = 1;
 
 struct VersionInfo {
     int major = 0;
