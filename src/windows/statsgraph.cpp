@@ -135,7 +135,7 @@ void StatsGraph::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexc
 
     // draw plot
     ImGui::NextColumn();
-
+    ImPlot::GetStyle().UseISO8601 = true;
     ImPlot::SetNextPlotLimitsY(static_cast<double>(minDelta), static_cast<double>(max) * 1.1);
     ImPlot::SetNextPlotLimitsX(static_cast<double>(idStart * 300), static_cast<double>(idEnd * 300));
 
