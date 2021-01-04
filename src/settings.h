@@ -8,7 +8,7 @@
 #include <string>
 namespace fs = std::filesystem;
 
-#include "iteminfo.h"
+#include "api/iteminfo.h"
 
 /**
  * \brief Settings persisting across sessions

@@ -15,7 +15,7 @@
 #include <fstream>
 
 #include "itemtracker.h"
-#include "infocache.h"
+#include "api/infocache.h"
 
 #include "windows/apikeyeditor.h"
 #include "windows/itemselector.h"

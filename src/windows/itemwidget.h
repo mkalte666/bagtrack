@@ -3,9 +3,9 @@
 #ifndef BAGTRACK_ITEMWIDGET_H
 #define BAGTRACK_ITEMWIDGET_H
 
+#include "../api/infocache.h"
+#include "../api/iteminfo.h"
 #include "../fixfmt.h"
-#include "../infocache.h"
-#include "../iteminfo.h"
 #include "../sortitems.h"
 #include <set>
 

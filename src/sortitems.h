@@ -3,7 +3,7 @@
 #ifndef BAGTRACK_SORTITEMS_H
 #define BAGTRACK_SORTITEMS_H
 
-#include "infocache.h"
+#include "api/infocache.h"
 
 enum class SortStrategy : size_t {
     None,

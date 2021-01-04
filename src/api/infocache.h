@@ -3,8 +3,8 @@
 #ifndef BAGTRACK_INFOCACHE_H
 #define BAGTRACK_INFOCACHE_H
 
+#include "../time_killer.h"
 #include "api.h"
-#include "time_killer.h"
 #include <set>
 #include <thread>
 

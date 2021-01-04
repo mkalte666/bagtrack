@@ -2,7 +2,7 @@
 #ifndef REMUTE_WINDOW_H
 #define REMUTE_WINDOW_H
 
-#include "../infocache.h"
+#include "../api/infocache.h"
 #include "../itemtracker.h"
 #include "../settings.h"
 #include <string>

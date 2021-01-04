@@ -1,6 +1,6 @@
 // licence note at the end of the file
 #include "infocache.h"
-#include "settings.h"
+#include "../settings.h"
 #include <fstream>
 
 InfoCache::InfoCache() noexcept

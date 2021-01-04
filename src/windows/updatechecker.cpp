@@ -34,7 +34,7 @@ void openUrl(const std::string& url)
  * \param tag a string in the format vMajor.Minor.Patch
  * \return Version Tag or empty version tag
  */
-VersionInfo parseTag(std::string tag)
+VersionInfo parseTag(const std::string& tag)
 {
     // release tags always start with v, and then number dot number dot number
     static std::regex VersionRegex(R"(v(\d+)\.(\d+)\.(\d+))");

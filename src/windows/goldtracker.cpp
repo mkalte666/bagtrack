@@ -2,8 +2,8 @@
 
 #include <imgui.h>
 
+#include "../api/tpinfo.h"
 #include "../imgui_fmt.h"
-#include "../tpinfo.h"
 #include "goldtracker.h"
 #include "timeselector.h"
 

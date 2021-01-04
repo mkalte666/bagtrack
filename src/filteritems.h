@@ -3,7 +3,7 @@
 #ifndef BAGTRACK_FILTERITEMS_H
 #define BAGTRACK_FILTERITEMS_H
 
-#include "infocache.h"
+#include "api/infocache.h"
 
 std::vector<ItemId> filterItems(const std::vector<ItemId>& items, InfoCache& cache, const std::string& filter) noexcept;
 

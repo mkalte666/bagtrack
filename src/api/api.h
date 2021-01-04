@@ -3,8 +3,8 @@
 #ifndef BAGTRACK_API_H
 #define BAGTRACK_API_H
 
+#include "../settings.h"
 #include "iteminfo.h"
-#include "settings.h"
 #include "tpinfo.h"
 #include <map>
 #include <optional>

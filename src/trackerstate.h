@@ -2,8 +2,8 @@
 #ifndef BAGTRACK_TRACKERSTATE_H
 #define BAGTRACK_TRACKERSTATE_H
 
-#include "api.h"
-#include "iteminfo.h"
+#include "api/api.h"
+#include "api/iteminfo.h"
 
 /**
  * \brief A snapshot for the item Tracker
