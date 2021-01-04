@@ -6,7 +6,7 @@
 
 static constexpr int BagtrackVersionMajor = 0;
 static constexpr int BagtrackVersionMinor = 10;
-static constexpr int BagtrackVersionPatch = 1;
+static constexpr int BagtrackVersionPatch = 2;
 
 struct VersionInfo {
     int major = 0;
@@ -17,6 +17,12 @@ struct VersionInfo {
     {
         return major < other.major || (major == other.major && minor < other.minor) || (major == other.major && minor == other.minor && patch < other.patch);
     }
+};
+
+struct ReleaseInfo {
+    VersionInfo version = {};
+    std::string title = {};
+    std::string text = {};
 };
 
 static constexpr VersionInfo BagtrackVersion = {

@@ -14,8 +14,8 @@ public:
     void update(Settings&, ItemTracker&, InfoCache&) noexcept override;
 
 private:
-    std::future<VersionInfo> versionInfoResult = {};
-    VersionInfo upstreamVersion = {};
+    std::future<ReleaseInfo> releaseInfoResult = {};
+    ReleaseInfo upstreamInfo = {};
 };
 
 #endif //BAGTRACK_UPDATECHECKER_H

@@ -10,10 +10,11 @@
 #include <imgui.h>
 #include <misc/cpp/imgui_stdlib.h>
 #include <nlohmann/json.hpp>
+#include <regex>
 
-static constexpr const char* VersionCheckServer = "https://mkalte.me";
-static constexpr const char* VersionCheckEndpoint = "/share/bagtrack/version.json";
-static constexpr const char* VersionCheckDownloadURL = "https://mkalte.me/share/bagtrack/current/";
+static constexpr const char* VersionCheckServer = "https://api.github.com";
+static constexpr const char* VersionCheckEndpoint = "/repos/mkalte666/bagtrack/releases/latest";
+static constexpr const char* VersionCheckDownloadURL = "https://github.com/mkalte666/bagtrack/releases/latest";
 
 #ifdef WIN32
 static constexpr const char* OpenCommand = "start";
@@ -28,11 +29,34 @@ void openUrl(const std::string& url)
     system(command.c_str()); // NOLINT find a better alternative at some point FIXME
 }
 
+/**
+ * \brief Convert a string to a version tag
+ * \param tag a string in the format vMajor.Minor.Patch
+ * \return Version Tag or empty version tag
+ */
+VersionInfo parseTag(std::string tag)
+{
+    // release tags always start with v, and then number dot number dot number
+    static std::regex VersionRegex(R"(v(\d+)\.(\d+)\.(\d+))");
+    std::smatch match;
+    if (!std::regex_match(tag, match, VersionRegex) || match.size() != 4) {
+        printDebug("Error Parsing release tag: Invalid format. Tag was '{}'", tag);
+        return VersionInfo();
+    }
+
+    VersionInfo info;
+    info.major = std::stoi(match[1]);
+    info.minor = std::stoi(match[2]);
+    info.patch = std::stoi(match[3]);
+
+    return info;
+}
+
 UpdateChecker::UpdateChecker() noexcept
     : Window("Update Checker")
 {
-    versionInfoResult = std::async(std::launch::async, [] {
-        VersionInfo info;
+    releaseInfoResult = std::async(std::launch::async, [] {
+        ReleaseInfo info;
 
         httplib::Client cli(VersionCheckServer);
         auto result = cli.Get(VersionCheckEndpoint);
@@ -42,9 +66,10 @@ UpdateChecker::UpdateChecker() noexcept
 
         try {
             auto j = nlohmann::json::parse(result->body);
-            info.major = j.value("major", 0);
-            info.minor = j.value("minor", 0);
-            info.patch = j.value("patch", 0);
+            std::string tag = j.value("tag_name", "");
+            info.version = parseTag(tag);
+            info.title = j.value("name", "");
+            info.text = j.value("body", "");
         } catch (const nlohmann::json::exception& e) {
             printDebug("Error Parsing Version Infos: {}", e.what());
         }
@@ -60,13 +85,18 @@ void UpdateChecker::update(Settings&, ItemTracker&, InfoCache&) noexcept
     }
     using namespace std::chrono_literals;
 
-    if (versionInfoResult.valid() && versionInfoResult.wait_for(0ms) == std::future_status::ready) {
-        upstreamVersion = versionInfoResult.get();
+    if (releaseInfoResult.valid() && releaseInfoResult.wait_for(0ms) == std::future_status::ready) {
+        upstreamInfo = releaseInfoResult.get();
     }
 
-    if (BagtrackVersion < upstreamVersion) {
+    if (BagtrackVersion < upstreamInfo.version) {
         ImGui::Begin("Update Available!", &shown, ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize);
-        ImGui::TextWrappedFmt("A New Version is available!\nPress the button below to go to the download.");
+        ImGui::TextWrappedFmt("A New Version (\"{}\") is available!\nPress the button below to go to the download.", upstreamInfo.title);
+        if (ImGui::CollapsingHeader("Show Release Notes")) {
+            ImGui::TreePush();
+            ImGui::TextWrappedFmt("{}", upstreamInfo.text);
+            ImGui::TreePop();
+        }
         if (ImGui::Button("Go to Download")) {
             openUrl(VersionCheckDownloadURL);
         }
