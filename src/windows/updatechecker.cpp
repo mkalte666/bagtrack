@@ -2,11 +2,11 @@
 
 #include "updatechecker.h"
 #include "../fixfmt.h"
+#include "../fixhttplib.h"
 #include "../imgui_fmt.h"
 #include <SDL.h>
 #include <chrono>
 #include <cstdlib>
-#include "../fixhttplib.h"
 #include <imgui.h>
 #include <misc/cpp/imgui_stdlib.h>
 #include <nlohmann/json.hpp>

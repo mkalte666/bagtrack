@@ -3,7 +3,6 @@
 #ifndef BAGTRACK_FIXHTTPLIB_H
 #define BAGTRACK_FIXHTTPLIB_H
 
-
 #ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshadow"
@@ -15,7 +14,6 @@
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif
-
 
 #endif //BAGTRACK_FIXHTTPLIB_H
 /*

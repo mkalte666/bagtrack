@@ -104,11 +104,9 @@ add_executable(
     src/windows/updatechecker.h
     src/windows/window.cpp
     src/windows/window.h)
-target_include_directories(bagtrack PRIVATE SYSTEM
-        ${SDL2_INCLUDE_DIR}
-        3rdparty/cpp-httplib
-        3rdparty/imgui-cmake-blob/imgui
-        3rdparty/fmt/include/)
+target_include_directories(
+    bagtrack PRIVATE SYSTEM ${SDL2_INCLUDE_DIR} 3rdparty/cpp-httplib
+                     3rdparty/imgui-cmake-blob/imgui 3rdparty/fmt/include/)
 
 if(MINGW)
     find_library(sdl2mainlib "SDL2main")
