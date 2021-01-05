@@ -59,76 +59,65 @@ ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cach
     }
 
     // draw table header
-    ImGui::BeginChild("##tableHeader", ImVec2(0, ImGui::GetTextLineHeightWithSpacing()));
-    ImGui::Columns(cols);
-    float columWidth = ImGui::GetWindowWidth() / static_cast<float>(cols);
-    for (int i = 0; i < cols; ++i) {
-        ImGui::SetColumnWidth(i, columWidth);
-    }
-    ImGui::TextWrappedFmt("Name");
-    ImGui::NextColumn();
-    ImGui::TextWrappedFmt("Count");
-    ImGui::NextColumn();
-    if (showInfos) {
-        ImGui::TextWrappedFmt("Sell Value");
-        ImGui::NextColumn();
-        ImGui::TextWrappedFmt("Buy Value");
-        ImGui::NextColumn();
-    }
-    ImGui::Columns(1);
-    ImGui::EndChild();
+    if (ImGui::BeginTable("##ItemTable", cols, ImGuiTableFlags_ScrollY | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable)) {
+        ImGui::TableSetupScrollFreeze(0, 1);
+        ImGui::TableSetupColumn("Name");
+        ImGui::TableSetupColumn("Count");
 
-    ImGui::BeginChild("##itemwidget");
-    ImGui::Columns(cols);
-    for (int i = 0; i < cols; ++i) {
-        ImGui::SetColumnWidth(i, columWidth);
-    }
-    // only display when we have something in the filter
-    if (state.filter.size() >= minFilterLetters) {
-
-        for (const auto& id : state.filtered) {
-            const ItemInfo& info = cache.getItemInfo(id);
-            if (!idFilter.empty() && idFilter.count(id) == 0 && !info.checkIfPrecursor()) {
-                continue;
-            }
-            if (info.checkIfPrecursor()) {
-                ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0x8FU, 0xFFU, 0xF8U, 0xFFU));
-            }
-            const TpInfo& tpInfo = cache.getTpInfo(id);
-            if (ImGui::Selectable(fmt::format("{}", info.name).c_str(), false)) {
-                resultId = id;
-            }
-            if (info.checkIfPrecursor()) {
-                ImGui::PopStyleColor();
-            }
-            ImGui::NextColumn();
-            int64_t count = 0;
-            if (const auto iter = items.find(id); iter != items.end()) {
-                count = iter->second;
-            }
-            ImGui::TextWrappedFmt("{}", count);
-            ImGui::NextColumn();
-            if (showInfos) {
-                if (info.checkIfBound()) {
-                    ImGui::TextWrappedFmt("Bound Item");
-                } else {
-                    ImGui::TextWrappedFmt(prettyGoldValue(tpInfo.sellValue));
-                }
-                ImGui::NextColumn();
-                if (info.checkIfBound()) {
-                    ImGui::TextWrappedFmt("Bound Item");
-                } else {
-                    ImGui::TextWrappedFmt(prettyGoldValue(tpInfo.buyValue));
-                }
-                ImGui::NextColumn();
-            }
+        if (showInfos) {
+            ImGui::TableSetupColumn("Sell Value");
+            ImGui::TableSetupColumn("Buy Value");
         }
-    } else {
-        ImGui::TextWrappedFmt("Type something to search for items!");
-    }
+        ImGui::TableHeadersRow();
 
-    ImGui::Columns(1);
-    ImGui::EndChild();
+        // only display when we have something in the filter
+        if (state.filter.size() >= minFilterLetters) {
+            for (const auto& id : state.filtered) {
+                const ItemInfo& info = cache.getItemInfo(id);
+                if (!idFilter.empty() && idFilter.count(id) == 0 && !info.checkIfPrecursor()) {
+                    continue;
+                }
+                // after filtering, or we brek our table!
+                ImGui::TableNextColumn();
+
+                if (info.checkIfPrecursor()) {
+                    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(0x8FU, 0xFFU, 0xF8U, 0xFFU));
+                }
+                const TpInfo& tpInfo = cache.getTpInfo(id);
+                if (ImGui::Selectable(fmt::format("{}", info.name).c_str(), false)) {
+                    resultId = id;
+                }
+                if (info.checkIfPrecursor()) {
+                    ImGui::PopStyleColor();
+                }
+                ImGui::TableNextColumn();
+                int64_t count = 0;
+                if (const auto iter = items.find(id); iter != items.end()) {
+                    count = iter->second;
+                }
+                ImGui::TextWrappedFmt("{}", count);
+                if (showInfos) {
+                    ImGui::TableNextColumn();
+                    if (info.checkIfBound()) {
+                        ImGui::TextWrappedFmt("Bound Item");
+                    } else {
+                        ImGui::TextWrappedFmt(prettyGoldValue(tpInfo.sellValue));
+                    }
+                    ImGui::TableNextColumn();
+                    if (info.checkIfBound()) {
+                        ImGui::TextWrappedFmt("Bound Item");
+                    } else {
+                        ImGui::TextWrappedFmt(prettyGoldValue(tpInfo.buyValue));
+                    }
+                }
+            }
+        } else {
+            ImGui::TableNextColumn();
+            ImGui::TextWrappedFmt("Type something to search for items!");
+        }
+
+        ImGui::EndTable();
+    }
     return resultId;
 }
 
