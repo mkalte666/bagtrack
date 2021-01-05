@@ -9,6 +9,7 @@
 #pragma GCC diagnostic ignored "-Weffc++"
 #pragma GCC diagnostic ignored "-Wold-style-cast"
 #pragma GCC diagnostic ignored "-Wsign-conversion"
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #endif
 #include <httplib.h>
 #ifdef __GNUC__
