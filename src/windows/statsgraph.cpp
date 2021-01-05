@@ -11,20 +11,24 @@
 void drawTimeStats(const char* name, int64_t current, int64_t min, int64_t max)
 {
     ImGui::TextWrappedFmt("{}", name);
-    ImGui::Columns(2);
-    ImGui::TextWrappedFmt("Current");
-    ImGui::NextColumn();
-    ImGui::TextWrappedFmt("{}", current);
-    ImGui::NextColumn();
-    ImGui::TextWrappedFmt("Min");
-    ImGui::NextColumn();
-    ImGui::TextWrappedFmt("{}", min);
-    ImGui::NextColumn();
-    ImGui::TextWrappedFmt("Max");
-    ImGui::NextColumn();
-    ImGui::TextWrappedFmt("{}", max);
-    ImGui::NextColumn();
-    ImGui::Columns(1);
+    std::string idTable = std::string(name) + "##timeStatsTable";
+    if (ImGui::BeginTable(idTable.c_str(), 2, ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Age");
+        ImGui::TableSetupColumn("Count");
+        ImGui::TableNextColumn();
+        ImGui::TextWrappedFmt("Current");
+        ImGui::TableNextColumn();
+        ImGui::TextWrappedFmt("{}", current);
+        ImGui::TableNextColumn();
+        ImGui::TextWrappedFmt("Min");
+        ImGui::TableNextColumn();
+        ImGui::TextWrappedFmt("{}", min);
+        ImGui::TableNextColumn();
+        ImGui::TextWrappedFmt("Max");
+        ImGui::TableNextColumn();
+        ImGui::TextWrappedFmt("{}", max);
+        ImGui::EndTable();
+    }
 }
 
 void makeTimeStats(const std::map<int64_t, int64_t>& stats, const int64_t offset, int64_t& current, int64_t& min, int64_t& max)
@@ -86,55 +90,52 @@ void StatsGraph::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexc
 
     // item info and plot stat table
     ImGui::BeginChild((title + "table area").c_str());
-    ImGui::Columns(2);
-    ImGui::SetColumnWidth(-1, 100.0F);
-    ImGui::TextWrappedFmt("Name");
-    ImGui::NextColumn();
-    ImGui::TextWrappedFmt(info.name);
-    ImGui::NextColumn();
-    ImGui::Separator();
-    ImGui::TextWrappedFmt("Description");
-    ImGui::NextColumn();
-    ImGui::TextWrappedFmt(info.description);
-    ImGui::NextColumn();
-    ImGui::Separator();
-    ImGui::TextWrappedFmt("Chat Link");
-    ImGui::NextColumn();
-    std::string chatLinkCopy = info.chatLink;
-    ImGui::InputText("##infoclink", &chatLinkCopy, ImGuiInputTextFlags_ReadOnly);
-    if (ImGui::BeginPopupContextItem()) {
-        if (ImGui::Selectable("Copy")) {
-            SDL_SetClipboardText(chatLinkCopy.c_str());
+    if (ImGui::BeginTable("Item Info Table", 2, ImGuiTableFlags_RowBg)) {
+        ImGui::TableSetupColumn("Wat");
+        ImGui::TableSetupColumn("Dat");
+        ImGui::TableNextColumn();
+        ImGui::TextWrappedFmt("Name");
+        ImGui::TableNextColumn();
+        ImGui::TextWrappedFmt(info.name);
+        ImGui::TableNextColumn();
+        ImGui::TextWrappedFmt("Description");
+        ImGui::TableNextColumn();
+        ImGui::TextWrappedFmt(info.description);
+        ImGui::TableNextColumn();
+        ImGui::TextWrappedFmt("Chat Link");
+        ImGui::TableNextColumn();
+        std::string chatLinkCopy = info.chatLink;
+        ImGui::InputText("##infoclink", &chatLinkCopy, ImGuiInputTextFlags_ReadOnly);
+        if (ImGui::BeginPopupContextItem()) {
+            if (ImGui::Selectable("Copy")) {
+                SDL_SetClipboardText(chatLinkCopy.c_str());
+            }
+            ImGui::EndPopup();
         }
-        ImGui::EndPopup();
+        ImGui::TableNextColumn();
+        ImGui::TextWrappedFmt("Min");
+        ImGui::TableNextColumn();
+        ImGui::TextWrappedFmt("{}", min);
+        ImGui::TableNextColumn();
+        ImGui::TextWrappedFmt("Max");
+        ImGui::TableNextColumn();
+        ImGui::TextWrappedFmt("{}", max);
+        ImGui::TableNextColumn();
+        ImGui::TextWrappedFmt("Agv");
+        ImGui::TableNextColumn();
+        ImGui::TextWrappedFmt("{}", avg);
+        ImGui::EndTable();
     }
-    ImGui::NextColumn();
-    // overall item stats
-    ImGui::Separator();
-    ImGui::TextWrappedFmt("Min");
-    ImGui::NextColumn();
-    ImGui::TextWrappedFmt("{}", min);
-    ImGui::NextColumn();
-    ImGui::TextWrappedFmt("Max");
-    ImGui::NextColumn();
-    ImGui::TextWrappedFmt("{}", max);
-    ImGui::NextColumn();
-    ImGui::TextWrappedFmt("Agv");
-    ImGui::NextColumn();
-    ImGui::TextWrappedFmt("{}", avg);
-    ImGui::NextColumn();
-    ImGui::Columns(1);
-    // timespan based stats
-    ImGui::Separator();
-    drawTimeStats("5 minute stats", last5Minutes, minDelta, maxDelta);
-    ImGui::Separator();
-    drawTimeStats("15 minute stats", last15Minutes, minDelta15Minutes, maxDelta15Minutes);
-    ImGui::Separator();
-    drawTimeStats("1 Hour stats", last60Minutes, minDelta60Minutes, maxDelta60Minutes);
 
-    // plot configs
-    ImGui::Separator();
-    ImGui::Separator();
+    // timespan based stats
+    ImGui::Spacing();
+    drawTimeStats("5 minute stats", last5Minutes, minDelta, maxDelta);
+    ImGui::Spacing();
+    drawTimeStats("15 minute stats", last15Minutes, minDelta15Minutes, maxDelta15Minutes);
+    ImGui::Spacing();
+    drawTimeStats("1 Hour stats", last60Minutes, minDelta60Minutes, maxDelta60Minutes);
+    ImGui::Spacing();
+
     ImGui::TextFmt("Plot Config");
     ImGui::Checkbox("Auto Resize", &autoResize);
 
