@@ -32,6 +32,10 @@
 */
 
 #include "base64.h"
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#endif
 
 //
 // Depending on the url parameter in base64_chars, one of
@@ -271,5 +275,9 @@ std::string base64_decode(std::string_view s, bool remove_linebreaks)
 {
     return decode(s, remove_linebreaks);
 }
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 #endif // __cplusplus >= 201703L

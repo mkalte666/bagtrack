@@ -1,6 +1,11 @@
 // licence note at the end of the file
 #include "filteritems.h"
 
+// toLower modies chars but this is not too nice on the compiler warnings
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
 std::string toLower(const std::string& in)
 {
     std::string result = in;
@@ -11,6 +16,10 @@ std::string toLower(const std::string& in)
     }
     return result;
 }
+
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
 std::vector<ItemId> filterItems(const std::vector<ItemId>& items, InfoCache& cache, const std::string& filter) noexcept
 {

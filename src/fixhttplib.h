@@ -1,26 +1,23 @@
 // licence note at the end of the file
 
-#ifndef BAGTRACK_TRACKEREVERYTHING_H
-#define BAGTRACK_TRACKEREVERYTHING_H
+#ifndef BAGTRACK_FIXHTTPLIB_H
+#define BAGTRACK_FIXHTTPLIB_H
 
-#include "itemwidget.h"
-#include "statsgraph.h"
-#include "window.h"
-class TrackerEverything : public Window {
-public:
-    using Window::Window;
-    TrackerEverything() noexcept;
 
-    void update(Settings&, ItemTracker&, InfoCache&) noexcept override;
-    void drawMainMenu() noexcept override;
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wshadow"
+#pragma GCC diagnostic ignored "-Weffc++"
+#pragma GCC diagnostic ignored "-Wold-style-cast"
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#endif
+#include <httplib.h>
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
-private:
-    ItemWidgetState widgetState = {};
-    int64_t referenceId = 0;
-    StatsGraph statsGraph = StatsGraph("EverythingTracker");
-};
 
-#endif //BAGTRACK_TRACKEREVERYTHING_H
+#endif //BAGTRACK_FIXHTTPLIB_H
 /*
  * This file is part bagtrack
  * Copyright (c) 2020 Malte Kießling

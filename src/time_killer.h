@@ -32,8 +32,8 @@ struct timer_killer {
     timer_killer& operator=(timer_killer const&) = delete;
 
 private:
-    mutable std::condition_variable cv;
-    mutable std::mutex m;
+    mutable std::condition_variable cv = {};
+    mutable std::mutex m = {};
     bool terminate = false;
 };
 

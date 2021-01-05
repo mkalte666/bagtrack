@@ -51,7 +51,7 @@ add_library(
     implot STATIC
     3rdparty/implot/implot.cpp 3rdparty/implot/implot.h
     3rdparty/implot/implot_internal.h 3rdparty/implot/implot_items.cpp)
-target_include_directories(implot PUBLIC 3rdparty/implot)
+target_include_directories(implot SYSTEM PUBLIC 3rdparty/implot)
 target_link_libraries(implot PRIVATE imgui gl3w)
 
 add_executable(
@@ -104,7 +104,11 @@ add_executable(
     src/windows/updatechecker.h
     src/windows/window.cpp
     src/windows/window.h)
-target_include_directories(bagtrack PRIVATE ${SDL2_INCLUDE_DIR})
+target_include_directories(bagtrack PRIVATE SYSTEM
+        ${SDL2_INCLUDE_DIR}
+        3rdparty/cpp-httplib
+        3rdparty/imgui-cmake-blob/imgui
+        3rdparty/fmt/include/)
 
 if(MINGW)
     find_library(sdl2mainlib "SDL2main")
@@ -133,6 +137,7 @@ if(MINGW)
                 dsound
                 comctl32)
     target_compile_options(bagtrack PRIVATE -mwindows)
+    enablestrictoptions(bagtrack)
 else()
     target_link_libraries(
         bagtrack
@@ -149,7 +154,6 @@ else()
                 fmt::fmt
                 nlohmann_json::nlohmann_json
                 httplib::httplib)
-    # fmt, httplib, .. break strict options on windows
     enablestrictoptions(bagtrack)
 endif()
 

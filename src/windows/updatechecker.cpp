@@ -6,7 +6,7 @@
 #include <SDL.h>
 #include <chrono>
 #include <cstdlib>
-#include <httplib.h>
+#include "../fixhttplib.h"
 #include <imgui.h>
 #include <misc/cpp/imgui_stdlib.h>
 #include <nlohmann/json.hpp>

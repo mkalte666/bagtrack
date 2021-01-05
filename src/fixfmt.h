@@ -6,6 +6,7 @@
 #ifdef __GNUC__
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshadow"
+#pragma GCC diagnostic ignored "-Weffc++"
 #endif
 
 #include <fmt/format.h>

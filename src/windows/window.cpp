@@ -22,8 +22,8 @@
 
 #include <utility>
 
-Window::Window(std::string name) noexcept
-    : name(std::move(name))
+Window::Window(std::string newname) noexcept
+    : name(std::move(newname))
 {
 }
 
