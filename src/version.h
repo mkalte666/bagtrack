@@ -4,9 +4,9 @@
 
 #include <string>
 
-static constexpr int BagtrackVersionMajor = 0; ///<
-static constexpr int BagtrackVersionMinor = 10; ///<
-static constexpr int BagtrackVersionPatch = 2; ///<
+static constexpr int BagtrackVersionMajor = 1; ///<
+static constexpr int BagtrackVersionMinor = 0; ///<
+static constexpr int BagtrackVersionPatch = 0; ///<
 
 /**
  * \brief Version infos (major.major.patch)
