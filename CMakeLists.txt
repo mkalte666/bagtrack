@@ -56,18 +56,20 @@ target_link_libraries(implot PRIVATE imgui gl3w)
 
 add_executable(
     bagtrack WIN32
-    src/api.cpp
-    src/api.h
+    src/api/api.cpp
+    src/api/api.h
+    src/api/infocache.cpp
+    src/api/infocache.h
+    src/api/iteminfo.cpp
+    src/api/iteminfo.h
+    src/api/tpinfo.cpp
+    src/api/tpinfo.h
     src/base64/base64.cpp
     src/base64/base64.h
     src/filteritems.cpp
     src/filteritems.h
     src/fixfmt.h
     src/imgui_fmt.h
-    src/infocache.cpp
-    src/infocache.h
-    src/iteminfo.cpp
-    src/iteminfo.h
     src/itemtracker.cpp
     src/itemtracker.h
     src/main.cpp
@@ -79,8 +81,6 @@ add_executable(
     src/sortitems.cpp
     src/sortitems.h
     src/time_killer.h
-    src/tpinfo.cpp
-    src/tpinfo.h
     src/trackerstate.cpp
     src/trackerstate.h
     src/version.h
