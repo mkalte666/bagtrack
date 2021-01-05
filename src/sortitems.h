@@ -6,13 +6,13 @@
 #include "api/infocache.h"
 
 enum class SortStrategy : size_t {
-    None,
-    Name,
-    Count,
-    SellValue,
-    BuyValue,
+    None, ///< Dont sort
+    Name, ///< Sort by name
+    Count, ///< sort by the count of items
+    SellValue, ///< sort by the sell-order tp price
+    BuyValue, ///< sort by the sell-instantly tp price
     // edit before here, this one always the last!
-    SortStrategyCount
+    SortStrategyCount ///< count of strat s used internally
 };
 
 /**
@@ -25,6 +25,10 @@ enum class SortStrategy : size_t {
  */
 std::vector<ItemId> sortItems(const ItemIdMap& items, InfoCache& cache, const SortStrategy& sortStrategy) noexcept;
 
+/**
+ * \brief Return a textual representation of SortStrats
+ * \return
+ */
 std::vector<std::string> getSortStrategies() noexcept;
 
 #endif //BAGTRACK_SORTITEMS_H

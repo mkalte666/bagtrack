@@ -10,19 +10,65 @@
 #include <optional>
 #include <set>
 
+/// map item ids to item counts
 using ItemIdMap = std::map<ItemId, int64_t>;
+/// map item ids to static item information
 using ItemInfoMap = std::map<ItemId, ItemInfo>;
 
+/**
+ * \brief Validate the api key
+ * \param key
+ * \return
+ */
 bool checkApiKey(const std::string& key) noexcept;
 
+/**
+ * \brief Get the contents of the account bank
+ * \param key
+ * \return
+ */
 std::optional<ItemIdMap> getBankContents(const std::string& key) noexcept;
+
+/**
+ * \brief Get the contents of the accounts inventory storage
+ * \param key
+ * \return
+ */
 std::optional<ItemIdMap> getMaterialStorageContents(const std::string& key) noexcept;
+
+/**
+ * \brief Get the inventory contents of all game characters
+ * \param key
+ * \return
+ */
 std::optional<ItemIdMap> getCharacterContents(const std::string& key) noexcept;
+
+/**
+ * \brief Get the content of the shared inventory slots
+ * \param key
+ * \return
+ */
 std::optional<ItemIdMap> getSharedInventory(const std::string& key) noexcept;
 
+/**
+ * \brief Get the number of coins in the account
+ * \param key
+ * \return
+ */
 int64_t getAccountCoins(const std::string& key) noexcept;
 
+/**
+ * \brief Get the static item information for the given set of ids
+ * \param ids
+ * \return
+ */
 ItemInfoMap getItemInfos(const std::set<ItemId>& ids) noexcept;
+
+/**
+ * \brief Get trading post infos for the given set of ids
+ * \param ids
+ * \return
+ */
 TpInfoMap getItemTpInfos(const std::set<ItemId>& ids) noexcept;
 
 #endif //BAGTRACK_API_H

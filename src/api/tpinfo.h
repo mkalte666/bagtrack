@@ -6,16 +6,27 @@
 #include "iteminfo.h"
 #include <chrono>
 
+/**
+ * \brief Trading post information from the api
+ */
 struct TpInfo {
-    ItemId id = {};
-    int64_t buyValue = 0;
-    int64_t sellValue = 0;
-    std::chrono::steady_clock::time_point age = {};
+    ItemId id = {}; /// the item id for this entry
+    int64_t buyValue = 0; /// highest buy order
+    int64_t sellValue = 0; /// lowest sell order
+    std::chrono::steady_clock::time_point age = {}; ///
 };
 
+/// Map itemIds to tp infos
 using TpInfoMap = std::map<ItemId, TpInfo>;
 
+/**
+ * \brief pretty print a gold value (XXYYZZ => xxG yyS zzC)
+ * \param value
+ * \return
+ */
 std::string prettyGoldValue(int64_t value) noexcept;
+
+/// json convert for TpInfo
 void from_json(const nlohmann::json& j, TpInfo& tpInfo);
 #endif //BAGTRACK_TPINFO_H
 /*

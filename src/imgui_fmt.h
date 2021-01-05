@@ -7,36 +7,82 @@
 #include <imgui.h>
 
 namespace ImGui {
+
+/**
+ * \brief
+ * \tparam S
+ * \tparam Args
+ * \param fmt
+ * \param args
+ */
 template <class S, class... Args>
 IMGUI_API void TextFmt(const S& fmt, Args&&... args)
 {
     Text("%s", fmt::format(fmt, std::forward<Args>(args)...).c_str());
 }
 
+/**
+ * \brief
+ * \tparam S
+ * \tparam Args
+ * \param col
+ * \param fmt
+ * \param args
+ */
 template <class S, class... Args>
 IMGUI_API void TextColoredFmt(const ImVec4& col, const S& fmt, Args&&... args)
 {
     TextColored(col, "%s", fmt::format(fmt, std::forward<Args>(args)...).c_str());
 }
 
+/**
+ * \brief
+ * \tparam S
+ * \tparam Args
+ * \param fmt
+ * \param args
+ */
 template <class S, class... Args>
 IMGUI_API void TextDisabledFmt(const S& fmt, Args&&... args)
 {
     TextDisabled("%s", fmt::format(fmt, std::forward<Args>(args)...).c_str());
 }
 
+/**
+ * \brief
+ * \tparam S
+ * \tparam Args
+ * \param fmt
+ * \param args
+ */
 template <class S, class... Args>
 IMGUI_API void TextWrappedFmt(const S& fmt, Args&&... args)
 {
     TextWrapped("%s", fmt::format(fmt, std::forward<Args>(args)...).c_str());
 }
 
+/**
+ * \brief
+ * \tparam SLabel
+ * \tparam S
+ * \tparam Args
+ * \param label
+ * \param fmt
+ * \param args
+ */
 template <class SLabel, class S, class... Args>
 IMGUI_API void LabelTextFmt(const SLabel& label, const S& fmt, Args&&... args)
 {
     LabelText(label, "%s", fmt::format(fmt, std::forward<Args>(args)...).c_str());
 }
 
+/**
+ * \brief
+ * \tparam S
+ * \tparam Args
+ * \param fmt
+ * \param args
+ */
 template <class S, class... Args>
 IMGUI_API void BulletTextFmt(const S& fmt, Args&&... args)
 {

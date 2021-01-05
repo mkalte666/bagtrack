@@ -20,7 +20,18 @@ struct TrackerState {
     int64_t coins = {};
 };
 
+/**
+ * \brief Json converter for TrackerState
+ * \param j
+ * \param state
+ */
 void from_json(const nlohmann::json& j, TrackerState& state);
+
+/**
+ * \brief Json converter for TrackerState
+ * \param j
+ * \param state
+ */
 void to_json(nlohmann::json& j, const TrackerState& state);
 
 #endif //BAGTRACK_TRACKERSTATE_H

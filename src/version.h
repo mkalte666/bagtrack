@@ -4,27 +4,35 @@
 
 #include <string>
 
-static constexpr int BagtrackVersionMajor = 0;
-static constexpr int BagtrackVersionMinor = 10;
-static constexpr int BagtrackVersionPatch = 2;
+static constexpr int BagtrackVersionMajor = 0; ///<
+static constexpr int BagtrackVersionMinor = 10; ///<
+static constexpr int BagtrackVersionPatch = 2; ///<
 
+/**
+ * \brief Version infos (major.major.patch)
+ */
 struct VersionInfo {
     int major = 0;
     int minor = 0;
     int patch = 0;
 
+    /// compare versions
     bool operator<(const VersionInfo& other) const noexcept
     {
         return major < other.major || (major == other.major && minor < other.minor) || (major == other.major && minor == other.minor && patch < other.patch);
     }
 };
 
+/**
+ * \brief Infos about a software release
+ */
 struct ReleaseInfo {
     VersionInfo version = {};
     std::string title = {};
     std::string text = {};
 };
 
+///< the version of bagtrack
 static constexpr VersionInfo BagtrackVersion = {
     BagtrackVersionMajor,
     BagtrackVersionMinor,

@@ -8,24 +8,48 @@
 #include <set>
 #include <thread>
 
+/**
+ * \brief The InfoCache caches static (non-changing) item information
+ */
 class InfoCache {
 public:
-    InfoCache() noexcept;
+    explicit InfoCache() noexcept;
     ~InfoCache() noexcept;
     InfoCache(const InfoCache&) = delete;
     InfoCache(InfoCache&&) = delete;
     InfoCache& operator=(const InfoCache&) = delete;
     InfoCache& operator=(InfoCache&&) = delete;
 
+    /**
+     * \brief Get the static item information for the id
+     * \param id
+     * \return
+     */
     const ItemInfo& getItemInfo(ItemId id) noexcept;
+    /**
+     * \brief Get the current trading post info for the id
+     * \param id
+     * \return
+     */
     const TpInfo& getTpInfo(ItemId id) noexcept;
+    /**
+     * \brief Estimate the value of item id
+     * \param id
+     * \return
+     */
     int64_t estimateItemValue(ItemId id) noexcept;
 
+    /**
+     * \brief Clean up the item info cahce
+     */
     void clearCache() noexcept;
 
 private:
+    /// thread worker
     void threadFun();
+    /// read cache from the disk
     void readInfoCache();
+    /// write cache to disk
     void writeInfoCache() const;
     std::thread fetchThread = {};
     mutable std::mutex mutex = {};

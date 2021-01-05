@@ -8,6 +8,9 @@
 
 using ItemId = uint64_t;
 
+/**
+ * \brief Api item information
+ */
 struct ItemInfo {
     ItemId id = 0;
     std::string name = "Loading...";
@@ -24,7 +27,9 @@ struct ItemInfo {
     bool checkIfPrecursor() const noexcept;
 };
 
+/// json converter for ItemInfo
 void from_json(const nlohmann::json& j, ItemInfo& itemInfo);
+/// json converter for ItemInfo
 void to_json(nlohmann::json& j, const ItemInfo& itemInfo);
 
 #endif //BAGTRACK_ITEMINFO_H

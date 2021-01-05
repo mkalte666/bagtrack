@@ -5,6 +5,10 @@
 
 #include <string>
 
+/**
+ * \brief Wrapper around SDLs get clipboard
+ * \return
+ */
 std::string getClipboard() noexcept;
 
 #endif //BAGTRACK_SDLHELPERS_H

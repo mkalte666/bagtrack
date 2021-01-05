@@ -5,6 +5,13 @@
 
 #include "api/infocache.h"
 
+/**
+ * \brief Filter an input list of items by the given string
+ * \param items
+ * \param cache
+ * \param filter
+ * \return
+ */
 std::vector<ItemId> filterItems(const std::vector<ItemId>& items, InfoCache& cache, const std::string& filter) noexcept;
 
 #endif //BAGTRACK_FILTERITEMS_H
