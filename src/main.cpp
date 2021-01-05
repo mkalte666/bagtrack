@@ -5,8 +5,8 @@
 
 // clang-format off
 #include <imgui.h>
-#include <examples/imgui_impl_opengl3.h>
-#include <examples/imgui_impl_sdl.h>
+#include <backends/imgui_impl_opengl3.h>
+#include <backends/imgui_impl_sdl.h>
 #include <GL/gl3w.h>
 #include <implot.h>
 // clang-format on
