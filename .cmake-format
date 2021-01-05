@@ -40,22 +40,3 @@ output_encoding: utf-8
 require_valid_layout: false
 per_command: {}
 layout_passes: {}
-linter:
-  _comment: Options affecting the linter
-  disabled_codes: []
-  function_pattern: '[0-9a-z_]+'
-  macro_pattern: '[0-9A-Z_]+'
-  global_var_pattern: '[0-9A-Z][0-9A-Z_]+'
-  internal_var_pattern: _[0-9A-Z_]+
-  local_var_pattern: '[0-9a-z][0-9a-z_]+'
-  private_var_pattern: _[0-9a-z_]+
-  public_var_pattern: '[0-9A-Z][0-9A-Z_]+'
-  keyword_pattern: '[0-9A-Z_]+'
-  max_conditionals_custom_parser: 2
-  min_statement_spacing: 1
-  max_statement_spacing: 1
-  max_returns: 6
-  max_branches: 12
-  max_arguments: 5
-  max_localvars: 15
-  max_statements: 50
