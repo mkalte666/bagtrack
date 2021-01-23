@@ -44,6 +44,11 @@ public:
      */
     void clearCache() noexcept;
 
+    /**
+     * \brief Cache all items.
+     */
+    void cacheAll() noexcept;
+
 private:
     /// thread worker
     void threadFun();
@@ -57,6 +62,8 @@ private:
     bool triedLoadingItemCache = false;
     ItemInfoMap itemInfoCache = {};
     std::set<ItemId> itemsToCache = {};
+    bool fillLongList = false;
+    std::set<ItemId> itemsLongList = {};
     TpInfoMap tpInfoCache = {};
     std::set<ItemId> tpInfosToCache = {};
 };

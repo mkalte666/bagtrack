@@ -290,18 +290,15 @@ int64_t getAccountCoins(const std::string& key) noexcept
     return 0;
 }
 
-ItemInfoMap getItemInfos(const std::set<ItemId>& ids) noexcept
+ItemInfoMap getItemInfos(std::set<ItemId>& ids) noexcept
 {
     constexpr size_t maxIds = 150;
     ItemInfoMap results;
     std::string idString;
     size_t count = 0;
-    for (const auto& id : ids) {
+    for (auto idIter = ids.begin(); idIter != ids.end() && count < maxIds; ++count, idIter = ids.erase(idIter)) {
+        const auto id = *idIter;
         idString += std::to_string(id) + ",";
-        ++count;
-        if (count > maxIds) {
-            break;
-        }
     }
 
     std::map<std::string, std::string> params;
@@ -345,6 +342,39 @@ ItemInfoMap getItemInfos(const std::set<ItemId>& ids) noexcept
         from_json(itemJson, item);
         results[item.id] = item;
     }
+    return results;
+}
+
+ItemIdList getAllItemIds() noexcept
+{
+    ItemIdList results;
+
+    auto res = makeRequest("", "/v2/commerce/prices");
+    if (!res || (res->status != 200 && res->status != 206)) {
+        printDebug("Item List endpoint connection failed\n");
+        return results;
+    }
+
+    json j;
+    try {
+        j = json::parse(res->body);
+    } catch (json::exception& e) {
+        printDebug("Json parsing failed: {}", e.what());
+        return results;
+    }
+    if (!j.is_array()) {
+        printDebug("Items endpoint returned wrong type - array expected, got shit\n");
+        return results;
+    }
+
+    for (const auto& itemJson : j) {
+        if (!itemJson.is_number_integer()) {
+            continue;
+        }
+
+        results.insert(itemJson.get<ItemId>());
+    }
+
     return results;
 }
 

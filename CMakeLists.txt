@@ -86,6 +86,8 @@ add_executable(
     src/version.h
     src/windows/apikeyeditor.cpp
     src/windows/apikeyeditor.h
+    src/windows/cacheallbutton.cpp
+    src/windows/cacheallbutton.h
     src/windows/filedialog.cpp
     src/windows/filedialog.h
     src/windows/goldtracker.cpp

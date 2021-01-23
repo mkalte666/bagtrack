@@ -12,6 +12,8 @@
 
 /// map item ids to item counts
 using ItemIdMap = std::map<ItemId, int64_t>;
+/// a collection of item IDs
+using ItemIdList = std::set<ItemId>;
 /// map item ids to static item information
 using ItemInfoMap = std::map<ItemId, ItemInfo>;
 
@@ -62,7 +64,14 @@ int64_t getAccountCoins(const std::string& key) noexcept;
  * \param ids
  * \return
  */
-ItemInfoMap getItemInfos(const std::set<ItemId>& ids) noexcept;
+ItemInfoMap getItemInfos(std::set<ItemId>& ids) noexcept;
+
+/**
+ * \brief Get all the item ids that are in the api
+ * \param ids
+ * \return
+ */
+ItemIdList getAllItemIds() noexcept;
 
 /**
  * \brief Get trading post infos for the given set of ids

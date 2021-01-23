@@ -17,22 +17,23 @@ InfoCache::~InfoCache() noexcept
 void InfoCache::threadFun()
 {
     using namespace std::chrono_literals;
-    while (killer.wait_for(1s)) {
+    while (killer.wait_for(100ms)) {
         std::unique_lock lock(mutex);
         if (!triedLoadingItemCache) {
             triedLoadingItemCache = true;
             readInfoCache();
         }
         // get all the new items
+        if (fillLongList) {
+            itemsToCache = getAllItemIds(); // all items is all items folks
+            fillLongList = false;
+        }
         if (!itemsToCache.empty()) {
-            const auto toCacheCopy = itemsToCache;
+            auto toCacheCopy = itemsToCache;
             lock.unlock();
             const auto newItems = getItemInfos(toCacheCopy);
             lock.lock();
-            for (const auto& pair : newItems) {
-                itemInfoCache[pair.first] = pair.second;
-            }
-            itemsToCache.clear();
+            itemsToCache = std::move(toCacheCopy);
             writeInfoCache();
         }
 
@@ -133,6 +134,12 @@ void InfoCache::clearCache() noexcept
     tpInfoCache.clear();
     itemInfoCache.clear();
     writeInfoCache();
+}
+
+void InfoCache::cacheAll() noexcept
+{
+    std::lock_guard lockGuard(mutex);
+    fillLongList = true;
 }
 
 /*
