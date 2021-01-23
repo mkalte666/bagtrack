@@ -33,6 +33,9 @@ void InfoCache::threadFun()
             lock.unlock();
             const auto newItems = getItemInfos(toCacheCopy);
             lock.lock();
+            for (const auto& pair : newItems) {
+                itemInfoCache[pair.first] = pair.second;
+            }
             itemsToCache = std::move(toCacheCopy);
             writeInfoCache();
         }
@@ -60,7 +63,7 @@ const ItemInfo& InfoCache::getItemInfo(ItemId id) noexcept
         return iter->second;
     }
 
-    itemsToCache.emplace(id);
+    itemsToCache.push_back(id);
     return fallbackInfo;
 }
 

@@ -61,9 +61,9 @@ private:
     timer_killer killer = {};
     bool triedLoadingItemCache = false;
     ItemInfoMap itemInfoCache = {};
-    std::set<ItemId> itemsToCache = {};
+    ItemIdList itemsToCache = {};
     bool fillLongList = false;
-    std::set<ItemId> itemsLongList = {};
+    ItemIdList itemsLongList = {};
     TpInfoMap tpInfoCache = {};
     std::set<ItemId> tpInfosToCache = {};
 };

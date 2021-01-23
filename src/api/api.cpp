@@ -290,16 +290,17 @@ int64_t getAccountCoins(const std::string& key) noexcept
     return 0;
 }
 
-ItemInfoMap getItemInfos(std::set<ItemId>& ids) noexcept
+ItemInfoMap getItemInfos(ItemIdList& ids) noexcept
 {
     constexpr size_t maxIds = 150;
     ItemInfoMap results;
     std::string idString;
     size_t count = 0;
-    for (auto idIter = ids.begin(); idIter != ids.end() && count < maxIds; ++count, idIter = ids.erase(idIter)) {
+    for (auto idIter = ids.rbegin(); idIter != ids.rend() && count < maxIds; ++count, ++idIter) {
         const auto id = *idIter;
         idString += std::to_string(id) + ",";
     }
+    ids.resize(ids.size() - count);
 
     std::map<std::string, std::string> params;
     params["ids"] = idString;
@@ -367,12 +368,14 @@ ItemIdList getAllItemIds() noexcept
         return results;
     }
 
+    results.reserve(j.array().size());
+
     for (const auto& itemJson : j) {
         if (!itemJson.is_number_integer()) {
             continue;
         }
 
-        results.insert(itemJson.get<ItemId>());
+        results.push_back(itemJson.get<ItemId>());
     }
 
     return results;
