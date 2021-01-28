@@ -65,7 +65,7 @@ private:
     bool fillLongList = false;
     ItemIdList itemsLongList = {};
     TpInfoMap tpInfoCache = {};
-    std::set<ItemId> tpInfosToCache = {};
+    ItemIdList tpInfosToCache = {};
 };
 
 #endif //BAGTRACK_INFOCACHE_H

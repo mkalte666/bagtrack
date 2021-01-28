@@ -51,15 +51,16 @@ void InfoCache::threadFun()
         }
 
         // check for the trading post infos
+        // we dont check for duplicates here as tp data change!
         if (!tpInfosToCache.empty()) {
-            const auto toCacheCopy = tpInfosToCache;
+            auto toCacheCopy = tpInfosToCache;
             lock.unlock();
             const auto newInfos = getItemTpInfos(toCacheCopy);
             lock.lock();
             for (const auto& pair : newInfos) {
                 tpInfoCache[pair.first] = pair.second;
             }
-            tpInfosToCache.clear();
+            tpInfosToCache = std::move(toCacheCopy);
         }
     }
 }
@@ -94,12 +95,12 @@ const TpInfo& InfoCache::getTpInfo(ItemId id) noexcept
         if (const auto iter = tpInfoCache.find(id); iter != tpInfoCache.end()) {
             const TpInfo& info = iter->second;
             if (std::chrono::steady_clock::now() - info.age > 60s) {
-                tpInfosToCache.emplace(id);
+                tpInfosToCache.push_back(id);
             }
             return info;
         }
 
-        tpInfosToCache.emplace(id);
+        tpInfosToCache.push_back(id);
     }
 
     // we dont know the item yet so do not fetch it

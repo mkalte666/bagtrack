@@ -78,7 +78,7 @@ ItemIdList getAllItemIds() noexcept;
  * \param ids
  * \return
  */
-TpInfoMap getItemTpInfos(const std::set<ItemId>& ids) noexcept;
+TpInfoMap getItemTpInfos(ItemIdList& ids) noexcept;
 
 #endif //BAGTRACK_API_H
 /*

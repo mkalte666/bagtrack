@@ -381,19 +381,17 @@ ItemIdList getAllItemIds() noexcept
     return results;
 }
 
-TpInfoMap getItemTpInfos(const std::set<ItemId>& ids) noexcept
+TpInfoMap getItemTpInfos(ItemIdList& ids) noexcept
 {
     constexpr size_t maxIds = 150;
     TpInfoMap results;
     std::string idString;
     size_t count = 0;
-    for (const auto& id : ids) {
+    for (auto idIter = ids.rbegin(); idIter != ids.rend() && count < maxIds; ++count, ++idIter) {
+        const auto id = *idIter;
         idString += std::to_string(id) + ",";
-        ++count;
-        if (count > maxIds) {
-            break;
-        }
     }
+    ids.resize(ids.size() - count);
 
     std::map<std::string, std::string> params;
     params["ids"] = idString;
