@@ -98,6 +98,8 @@ add_executable(
     src/windows/itemwidget.h
     src/windows/statsgraph.cpp
     src/windows/statsgraph.h
+    src/windows/statusbar.cpp
+    src/windows/statusbar.h
     src/windows/timeselector.cpp
     src/windows/timeselector.h
     src/windows/trackereverything.cpp
@@ -108,7 +110,7 @@ add_executable(
     src/windows/window.h)
 target_include_directories(
     bagtrack PRIVATE SYSTEM ${SDL2_INCLUDE_DIR} 3rdparty/cpp-httplib
-                     3rdparty/imgui-cmake-blob/imgui 3rdparty/fmt/include/)
+                     3rdparty/imgui-cmake-blob/imgui 3rdparty/fmt/include/ src/)
 
 if(MINGW)
     find_library(sdl2mainlib "SDL2main")

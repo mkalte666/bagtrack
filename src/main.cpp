@@ -24,6 +24,7 @@
 #include "windows/filedialog.h"
 #include "windows/updatechecker.h"
 #include "windows/cacheallbutton.h"
+#include "windows/statusbar.h"
 #include "../assets/bootleg_baggie.bmp.cpp"
 
 void debugToFile(const std::string& str)
@@ -32,6 +33,8 @@ void debugToFile(const std::string& str)
     out << str;
     out.flush();
 }
+
+constexpr float footerSize = 30.0F;
 
 int main(int, char**)
 {
@@ -108,6 +111,7 @@ int main(int, char**)
     Settings settings;
     ItemTracker tracker(settings);
     InfoCache infoCache;
+    StatusBar statusBar;
     std::vector<std::unique_ptr<Window>> windows;
     windows.emplace_back(std::make_unique<FileDialog>());
     windows.emplace_back(std::make_unique<ApiKeyEditor>());
@@ -127,7 +131,9 @@ int main(int, char**)
                 running = false;
             }
         }
-
+        int winW = 0;
+        int winH = 0;
+        SDL_GetWindowSize(window, &winW, &winH);
         glClearColor(0.0F, 0.0F, 0.0F, 1.0F); // NOLINT
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // NOLINT
 
@@ -136,8 +142,9 @@ int main(int, char**)
         ImGui::NewFrame();
 
         ImGuiViewport* viewport = ImGui::GetMainViewport();
+
         ImGui::SetNextWindowPos(viewport->Pos);
-        ImGui::SetNextWindowSize(viewport->Size);
+        ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, viewport->Size.y - footerSize));
         ImGui::SetNextWindowViewport(viewport->ID);
         ImGui::SetNextWindowBgAlpha(0.0F);
 
@@ -154,6 +161,17 @@ int main(int, char**)
         ImGuiID dockspace_id = ImGui::GetID("Dock windows here");
         ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_PassthruCentralNode | ImGuiDockNodeFlags_AutoHideTabBar;
         ImGui::DockSpace(dockspace_id, ImVec2(0.0F, 0.0F), dockspace_flags);
+        ImGui::End();
+
+        ImGui::SetNextWindowPos(ImVec2(viewport->Pos.x, viewport->Pos.y + viewport->Size.y - footerSize));
+        ImGui::SetNextWindowSize(ImVec2(viewport->Size.x, footerSize));
+        ImGui::SetNextWindowViewport(viewport->ID);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ImColor(20, 20, 20, 255).Value);
+        ImGui::Begin("FOOTER", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoSavedSettings);
+        statusBar.drawStatusBar(infoCache);
+        ImGui::PopStyleColor();
+        ImGui::PopStyleVar();
         ImGui::End();
 
         auto time = static_cast<double>(SDL_GetPerformanceCounter() - timeAtStart) / ticksPerSecond;

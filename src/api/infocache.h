@@ -49,6 +49,18 @@ public:
      */
     void cacheAll() noexcept;
 
+    /**
+     * \brief Gets the size of itemsToCache
+     * \return
+     */
+    size_t getItemQueueSize() const noexcept;
+
+    /**
+     * \brief Gets the size of tpInfosToCache
+     * \return
+     */
+    size_t getTpQueueSize() const noexcept;
+
 private:
     /// thread worker
     void threadFun();

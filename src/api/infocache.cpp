@@ -156,6 +156,18 @@ void InfoCache::cacheAll() noexcept
     fillLongList = true;
 }
 
+size_t InfoCache::getItemQueueSize() const noexcept
+{
+    std::lock_guard lockGuard(mutex);
+    return itemsToCache.size();
+}
+
+size_t InfoCache::getTpQueueSize() const noexcept
+{
+    std::lock_guard lockGuard(mutex);
+    return tpInfosToCache.size();
+}
+
 /*
  * This file is part bagtrack
  * Copyright (c) 2020 Malte Kießling
