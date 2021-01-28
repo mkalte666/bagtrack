@@ -29,8 +29,18 @@ void InfoCache::threadFun()
             fillLongList = false;
         }
         if (!itemsToCache.empty()) {
-            auto toCacheCopy = itemsToCache;
+            auto toCacheCopyBeforeFilter = itemsToCache;
             lock.unlock();
+            // this is slow, but fetching things twice is a lot slower
+            ItemIdList toCacheCopy;
+            toCacheCopy.reserve(toCacheCopyBeforeFilter.size());
+            for (const auto& item : toCacheCopyBeforeFilter) {
+                lock.lock();
+                if (itemInfoCache.find(item) == itemInfoCache.end()) {
+                    toCacheCopy.push_back(item);
+                }
+                lock.unlock();
+            }
             const auto newItems = getItemInfos(toCacheCopy);
             lock.lock();
             for (const auto& pair : newItems) {
