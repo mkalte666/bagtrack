@@ -5,6 +5,7 @@
 
 #include "../time_killer.h"
 #include "api.h"
+#include "index.h"
 #include <set>
 #include <thread>
 
@@ -78,6 +79,7 @@ private:
     ItemIdList itemsLongList = {};
     TpInfoMap tpInfoCache = {};
     ItemIdList tpInfosToCache = {};
+    Index searchIndex = {};
 };
 
 #endif //BAGTRACK_INFOCACHE_H

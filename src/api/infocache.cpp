@@ -23,8 +23,18 @@ void InfoCache::threadFun()
             triedLoadingItemCache = true;
             readInfoCache();
         }
+
+        // if the index is empty, we either just introduced it or its broked
+        // so redownload everything! (yes, i know)
+        if (!searchIndex.hasAnyData() && !itemInfoCache.empty()) {
+            itemsToCache.reserve(itemInfoCache.size());
+            for (const auto& pair : itemInfoCache) {
+                itemsToCache.push_back(pair.first);
+            }
+            itemInfoCache.clear(); //YES! broken index means we need to rebuild.
+        }
         // get all the new items
-        if (fillLongList) {
+        else if (fillLongList) {
             itemsToCache = getAllItemIds(); // all items is all items folks
             fillLongList = false;
         }
@@ -42,10 +52,13 @@ void InfoCache::threadFun()
                 lock.unlock();
             }
             const auto newItems = getItemInfos(toCacheCopy);
-            lock.lock();
             for (const auto& pair : newItems) {
+                lock.lock();
                 itemInfoCache[pair.first] = pair.second;
+                searchIndex.addItem(pair.second);
+                lock.unlock();
             }
+            lock.lock();
             itemsToCache = std::move(toCacheCopy);
             writeInfoCache();
         }

@@ -58,6 +58,8 @@ add_executable(
     bagtrack WIN32
     src/api/api.cpp
     src/api/api.h
+    src/api/index.cpp
+    src/api/index.h
     src/api/infocache.cpp
     src/api/infocache.h
     src/api/iteminfo.cpp
