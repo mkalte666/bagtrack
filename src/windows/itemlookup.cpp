@@ -1,16 +1,16 @@
 // licence note at the end of the file
 
-#include "craftingcalculator.h"
+#include "itemlookup.h"
 #include "imgui_fmt.h"
 #include <imgui.h>
 #include <misc/cpp/imgui_stdlib.h>
 
-CraftingCalculator::CraftingCalculator() noexcept
-    : Window("Crafting Calculator")
+ItemLookup::ItemLookup() noexcept
+    : Window("Item Lookup")
 {
 }
 
-void CraftingCalculator::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexcept
+void ItemLookup::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexcept
 {
     if (!shown) {
         return;
@@ -24,11 +24,12 @@ void CraftingCalculator::update(Settings&, ItemTracker& tracker, InfoCache& cach
         searchItems = cache.findItems(searchTerm);
     }
 
-    if (ImGui::BeginTable("Test Table", 2)) {
+    if (ImGui::BeginTable("Test Table", 2, ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY)) {
         ImGui::TableSetupScrollFreeze(0, 1);
         ImGui::TableSetupColumn("Name");
         ImGui::TableSetupColumn("Count");
         ImGui::TableHeadersRow();
+
         constexpr int maxCount = 150;
         int count = 0;
         for (const auto& itemId : searchItems) {
@@ -36,21 +37,25 @@ void CraftingCalculator::update(Settings&, ItemTracker& tracker, InfoCache& cach
             if (count > maxCount) {
                 break;
             }
-            ImGui::NextColumn();
+            ImGui::TableNextColumn();
             const auto item = cache.getItemInfo(itemId);
-            ImGui::TextFmt("{}", item.name);
-            ImGui::NextColumn();
-            ImGui::TextFmt("{}", tracker.getCurrentState().items[itemId]);
+            ImGui::TextWrappedFmt("{}", item.name);
+            ImGui::TableNextColumn();
+            ImGui::TextWrappedFmt("{}", tracker.getCurrentState().items[itemId]);
         }
         ImGui::EndTable();
     }
     ImGui::End();
 }
 
-void CraftingCalculator::drawMainMenu() noexcept
+void ItemLookup::drawMainMenu() noexcept
 {
-    if (ImGui::MenuItem("Crafting")) {
-        shown = true;
+    if (ImGui::BeginMenu("Items")) {
+        if (ImGui::MenuItem("Look Up")) {
+            shown = true;
+        }
+
+        ImGui::EndMenu();
     }
 }
 

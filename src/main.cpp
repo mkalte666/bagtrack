@@ -25,7 +25,7 @@
 #include "windows/updatechecker.h"
 #include "windows/cacheallbutton.h"
 #include "windows/statusbar.h"
-#include "windows/craftingcalculator.h"
+#include "windows/itemlookup.h"
 #include "../assets/bootleg_baggie.bmp.cpp"
 
 void debugToFile(const std::string& str)
@@ -121,7 +121,7 @@ int main(int, char**)
     windows.emplace_back(std::make_unique<GoldTracker>());
     windows.emplace_back(std::make_unique<UpdateChecker>());
     windows.emplace_back(std::make_unique<CacheAllButton>());
-    windows.emplace_back(std::make_unique<CraftingCalculator>());
+    windows.emplace_back(std::make_unique<ItemLookup>());
 
     while (running) {
         SDL_Event e;

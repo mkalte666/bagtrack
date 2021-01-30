@@ -90,12 +90,12 @@ add_executable(
     src/windows/apikeyeditor.h
     src/windows/cacheallbutton.cpp
     src/windows/cacheallbutton.h
-    src/windows/craftingcalculator.cpp
-    src/windows/craftingcalculator.h
     src/windows/filedialog.cpp
     src/windows/filedialog.h
     src/windows/goldtracker.cpp
     src/windows/goldtracker.h
+    src/windows/itemlookup.cpp
+    src/windows/itemlookup.h
     src/windows/itemselector.cpp
     src/windows/itemselector.h
     src/windows/itemwidget.cpp

@@ -10,16 +10,19 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"
 #endif
-std::string toLower(std::string_view in)
+std::string reduceString(const std::string_view in)
 {
-    std::string result(in);
-    for (char& c : result) {
+    std::string result;
+    result.reserve(in.size());
+    for (char c : in) {
         if (c >= 'A' && c <= 'Z') {
             c += 32;
         }
-        if (c == '\n' || c == '\t' || c == '\r') {
-            c = ' ';
+        if (c == '\n' || c == '\t' || c == '\r' || c == ' ' || c == '\'' || c == '\"') {
+            continue;
         }
+
+        result.push_back(c);
     }
     return result;
 }
@@ -48,8 +51,8 @@ void Index::addItem(const ItemInfo& info) noexcept
 
 std::vector<ItemId> Index::find(const std::string_view s) const
 {
-    const std::string lowered = toLower(s);
-    if (const auto iter = index.find(std::hash<std::string_view> {}(lowered)); iter != index.end()) {
+    const std::string reduced = reduceString(s);
+    if (const auto iter = index.find(std::hash<std::string_view> {}(reduced)); iter != index.end()) {
         return iter->second;
     }
     return std::vector<ItemId>();
@@ -57,55 +60,37 @@ std::vector<ItemId> Index::find(const std::string_view s) const
 
 void Index::indexString(const std::string_view in, const ItemId id) noexcept
 {
-    // lowercase it first
-    const std::string s = toLower(in);
-
-    if (s.size() < 3) {
-        return;
-    }
-
+    // reduced whole thing first
+    const std::string s = reduceString(in);
     indexWord(s, id);
 
-    // split this into words
-    size_t pos = 0;
-    for (size_t i = s.find_first_of(" \n\t"); pos < s.size() && i != std::string::npos; pos = i + 1, i = s.find_first_of(" \n\t", pos)) {
-        if (i == pos) {
-            continue;
-        }
-        const auto word = s.substr(pos, (i - pos));
+    // we reduce this thing into words.
+    // then push current word, and the two strings from and including the current word
+    constexpr const char* space = "\n\t\r ";
+    size_t pos = in.find_first_of(space);
+    size_t startPos = 0;
+    while (pos != std::string_view::npos) {
+        const auto word = in.substr(startPos, pos - startPos);
         indexWord(word, id);
+        const auto left = in.substr(0, pos);
+        indexWord(left, id);
+        const auto right = in.substr(startPos, in.size());
+        indexWord(right, id);
+        startPos = pos + 1;
+        pos = in.find_first_of(space, startPos);
     }
+    indexWord(in.substr(startPos, in.size()), id);
 }
 
-void Index::indexWord(const std::string_view s, const ItemId id) noexcept
+void Index::indexWord(const std::string_view in, const ItemId id) noexcept
 {
+    std::string s = reduceString(in);
     if (s.size() < 3) {
         return;
     }
 
-    // whole thing first
-    size_t wholeHash = std::hash<std::string_view> {}(s);
-    insert(wholeHash, id);
-
-    // one half.
-    for (size_t i = 3; i < s.size(); ++i) {
-        const auto view = s.substr(0, i);
-        if (view.size() < 3) {
-            break;
-        }
-        size_t h = std::hash<std::string_view> {}(view);
-        insert(h, id);
-    }
-
-    // other half. we start at 3, and increase the pos
-    for (size_t i = 0; i < s.size() - 3; ++i) {
-        const auto view = s.substr(0, i);
-        if (view.size() < 3) {
-            break;
-        }
-        size_t h = std::hash<std::string_view> {}(view);
-        insert(h, id);
-    }
+    size_t hash = std::hash<std::string> {}(s);
+    insert(hash, id);
 }
 
 void Index::insert(const size_t hash, const ItemId id)

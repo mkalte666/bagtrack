@@ -7,11 +7,13 @@ std::vector<ItemId> filterItems(const std::vector<ItemId>& items, InfoCache& cac
     if (filter.empty()) {
         return items;
     }
-
-    const ItemIdList matchingItems = cache.findItems(filter);
+    ItemIdList sortedInput = items;
+    std::sort(sortedInput.begin(), sortedInput.end());
+    ItemIdList matchingItems = cache.findItems(filter);
+    std::sort(matchingItems.begin(), matchingItems.end());
     std::vector<ItemId> filteredItems;
     filteredItems.reserve(items.size());
-    std::set_intersection(items.begin(), items.end(), matchingItems.begin(), matchingItems.end(), std::back_inserter(filteredItems));
+    std::set_intersection(sortedInput.begin(), sortedInput.end(), matchingItems.begin(), matchingItems.end(), std::back_inserter(filteredItems));
 
     return filteredItems;
 }

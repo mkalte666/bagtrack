@@ -1,14 +1,14 @@
 // licence note at the end of the file
 
-#ifndef BAGTRACK_CRAFTINGCALCULATOR_H
-#define BAGTRACK_CRAFTINGCALCULATOR_H
+#ifndef BAGTRACK_ITEMLOOKUP_H
+#define BAGTRACK_ITEMLOOKUP_H
 
 #include "window.h"
 
-class CraftingCalculator : public Window {
+class ItemLookup : public Window {
 public:
     using Window::Window;
-    CraftingCalculator() noexcept;
+    ItemLookup() noexcept;
     void update(Settings&, ItemTracker&, InfoCache&) noexcept override;
     void drawMainMenu() noexcept override;
 
@@ -17,7 +17,7 @@ private:
     ItemIdList searchItems = {};
 };
 
-#endif //BAGTRACK_CRAFTINGCALCULATOR_H
+#endif //BAGTRACK_ITEMLOOKUP_H
 /*
  * This file is part bagtrack
  * Copyright (c) 2020 Malte Kießling
