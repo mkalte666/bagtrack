@@ -1,21 +1,23 @@
 // licence note at the end of the file
-#include "filteritems.h"
-#include <algorithm>
 
-std::vector<ItemId> filterItems(const std::vector<ItemId>& items, InfoCache& cache, const std::string& filter) noexcept
-{
-    if (filter.empty()) {
-        return items;
-    }
+#ifndef BAGTRACK_CRAFTINGCALCULATOR_H
+#define BAGTRACK_CRAFTINGCALCULATOR_H
 
-    const ItemIdList matchingItems = cache.findItems(filter);
-    std::vector<ItemId> filteredItems;
-    filteredItems.reserve(items.size());
-    std::set_intersection(items.begin(), items.end(), matchingItems.begin(), matchingItems.end(), std::back_inserter(filteredItems));
+#include "window.h"
 
-    return filteredItems;
-}
+class CraftingCalculator : public Window {
+public:
+    using Window::Window;
+    CraftingCalculator() noexcept;
+    void update(Settings&, ItemTracker&, InfoCache&) noexcept override;
+    void drawMainMenu() noexcept override;
 
+private:
+    std::string searchTerm = {};
+    ItemIdList searchItems = {};
+};
+
+#endif //BAGTRACK_CRAFTINGCALCULATOR_H
 /*
  * This file is part bagtrack
  * Copyright (c) 2020 Malte Kießling
