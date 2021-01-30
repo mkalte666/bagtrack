@@ -23,15 +23,15 @@ void Index::addItem(const ItemInfo& info) noexcept
     indexString(info.rarity, info.id);
 }
 
-std::vector<ItemId> Index::find(const std::string& s) const
+std::vector<ItemId> Index::find(const std::string_view s) const
 {
-    if (const auto iter = index.find(std::hash<std::string> {}(s)); iter != index.end()) {
+    if (const auto iter = index.find(std::hash<std::string_view> {}(s)); iter != index.end()) {
         return iter->second;
     }
     return std::vector<ItemId>();
 }
 
-void Index::indexString(const std::string_view& s, ItemId id) noexcept
+void Index::indexString(const std::string_view s, const ItemId id) noexcept
 {
     if (s.size() < 3) {
         return;
@@ -50,7 +50,7 @@ void Index::indexString(const std::string_view& s, ItemId id) noexcept
     }
 }
 
-void Index::indexWord(const std::string_view& s, ItemId id) noexcept
+void Index::indexWord(const std::string_view s, const ItemId id) noexcept
 {
     if (s.size() < 3) {
         return;
@@ -81,7 +81,7 @@ void Index::indexWord(const std::string_view& s, ItemId id) noexcept
     }
 }
 
-void Index::insert(size_t hash, ItemId id)
+void Index::insert(const size_t hash, const ItemId id)
 {
     auto iter = index.find(hash);
     // if the hash does not exist, just throw it in

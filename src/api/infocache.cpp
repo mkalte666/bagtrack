@@ -181,6 +181,12 @@ size_t InfoCache::getTpQueueSize() const noexcept
     return tpInfosToCache.size();
 }
 
+ItemIdList InfoCache::findItems(const std::string_view s) const noexcept
+{
+    std::lock_guard lockGuard(mutex);
+    return searchIndex.find(s);
+}
+
 /*
  * This file is part bagtrack
  * Copyright (c) 2020 Malte Kießling

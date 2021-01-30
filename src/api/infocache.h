@@ -22,6 +22,13 @@ public:
     InfoCache& operator=(InfoCache&&) = delete;
 
     /**
+     * \brief Find all items that match s
+     * \param s
+     * \return
+     */
+    ItemIdList findItems(std::string_view s) const noexcept;
+
+    /**
      * \brief Get the static item information for the id
      * \param id
      * \return

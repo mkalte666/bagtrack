@@ -16,13 +16,13 @@ public:
     Index& operator=(Index&&) = delete;
 
     void addItem(const ItemInfo& info) noexcept;
-    [[nodiscard]] std::vector<ItemId> find(const std::string& s) const;
+    [[nodiscard]] std::vector<ItemId> find(std::string_view s) const;
 
     [[nodiscard]] bool hasAnyData() const noexcept;
 
 private:
-    void indexString(const std::string_view& s, ItemId id) noexcept;
-    void indexWord(const std::string_view& s, ItemId id) noexcept;
+    void indexString(std::string_view s, ItemId id) noexcept;
+    void indexWord(std::string_view s, ItemId id) noexcept;
     void insert(size_t hash, ItemId id);
     /// read cache from the disk
     void readCache();
