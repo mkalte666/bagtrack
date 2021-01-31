@@ -122,7 +122,11 @@ std::optional<ItemIdMap> getBankContents(const std::string& key) noexcept
         }
         ItemId id = item.value("id", static_cast<ItemId>(0));
         int64_t count = item.value("count", 0);
-        items[id] += count;
+        if (item.value("binding", "").empty()) {
+            items[id].unbound += count;
+        } else {
+            items[id].bound += count;
+        }
     }
 
     return items;
@@ -156,7 +160,11 @@ std::optional<ItemIdMap> getMaterialStorageContents(const std::string& key) noex
         }
         ItemId id = item.value("id", static_cast<ItemId>(0));
         int64_t count = item.value("count", 0);
-        items[id] += count;
+        if (item.value("binding", "").empty()) {
+            items[id].unbound += count;
+        } else {
+            items[id].bound += count;
+        }
     }
     return items;
 }
@@ -193,7 +201,11 @@ std::optional<std::map<std::string, ItemIdMap>> getCharacterContents(const std::
                     continue;
                 }
                 ItemId id = item.value("id", static_cast<ItemId>(0));
-                ++items[id];
+                if (item.value("binding", "").empty()) {
+                    ++items[id].unbound;
+                } else {
+                    ++items[id].bound;
+                }
             }
         }
         json bagList = jsonChar.value("bags", json());
@@ -203,7 +215,7 @@ std::optional<std::map<std::string, ItemIdMap>> getCharacterContents(const std::
                     continue;
                 }
                 ItemId bagId = bag.value("id", static_cast<ItemId>(0));
-                ++items[bagId];
+                ++items[bagId].unbound;
 
                 json bagInventory = bag.value("inventory", json());
                 if (!bagInventory.is_array()) {
@@ -215,7 +227,11 @@ std::optional<std::map<std::string, ItemIdMap>> getCharacterContents(const std::
                     }
                     ItemId itemId = item.value("id", static_cast<ItemId>(0));
                     int64_t count = item.value("count", 0);
-                    items[itemId] += count;
+                    if (item.value("binding", "").empty()) {
+                        items[itemId].unbound += count;
+                    } else {
+                        items[itemId].bound += count;
+                    }
                 }
             }
         }
@@ -254,7 +270,11 @@ std::optional<ItemIdMap> getSharedInventory(const std::string& key) noexcept
         }
         ItemId id = item.value("id", static_cast<ItemId>(0));
         int64_t count = item.value("count", 0);
-        items[id] += count;
+        if (item.value("binding", "").empty()) {
+            items[id].unbound += count;
+        } else {
+            items[id].bound += count;
+        }
     }
 
     return items;
@@ -428,6 +448,22 @@ TpInfoMap getItemTpInfos(ItemIdList& ids) noexcept
     }
 
     return results;
+}
+
+void from_json(const json& j, ItemCount& count)
+{
+    if (j.is_number()) {
+        count.bound = j;
+    } else {
+        count.bound = j.value("bound", 0);
+        count.unbound = j.value("unbound", 0);
+    }
+}
+
+void to_json(json& j, const ItemCount& count)
+{
+    j["bound"] = count.bound;
+    j["unbound"] = count.unbound;
 }
 
 /*

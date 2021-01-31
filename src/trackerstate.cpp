@@ -7,7 +7,7 @@ void from_json(const nlohmann::json& j, TrackerState& state)
     state.items.allItems = j.value("items", ItemIdMap());
     state.coins = j.value("coins", 0);
     state.items.itemSources = j.value("itemSources", std::vector<std::string>());
-    state.items.itemReverseLookup = j.value("itemReverseLookup", std::map<ItemId, std::map<size_t, int64_t>>());
+    state.items.itemReverseLookup = j.value("itemReverseLookup", std::map<ItemId, std::map<size_t, ItemCount>>());
 }
 
 void to_json(nlohmann::json& j, const TrackerState& state)

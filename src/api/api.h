@@ -10,8 +10,53 @@
 #include <optional>
 #include <set>
 
+/**
+ * \brief Item Counting structure that also keeps track of item binding
+ */
+struct ItemCount {
+    int64_t bound = 0;
+    int64_t unbound = 0;
+    int64_t operator()() const noexcept { return bound + unbound; }
+    ItemCount& operator+=(const ItemCount& other) noexcept
+    {
+        bound += other.bound;
+        unbound += other.unbound;
+        return *this;
+    }
+    ItemCount& operator-=(const ItemCount& other) noexcept
+    {
+        bound -= other.bound;
+        unbound -= other.unbound;
+        return *this;
+    }
+    ItemCount operator+(const ItemCount& other) const noexcept
+    {
+        ItemCount result = other;
+        result += *this;
+        return result;
+    }
+    ItemCount operator-(const ItemCount& other) const noexcept
+    {
+        ItemCount result = other;
+        result -= *this;
+        return result;
+    }
+    bool operator==(const ItemCount& other) const noexcept
+    {
+        return bound == other.bound && unbound == other.unbound;
+    }
+    bool operator!=(const ItemCount& other) const noexcept
+    {
+        return !(*this == other);
+    }
+};
+/// json converter for ItemInfo
+void from_json(const nlohmann::json& j, ItemCount& count);
+/// json converter for ItemInfo
+void to_json(nlohmann::json& j, const ItemCount& count);
+
 /// map item ids to item counts
-using ItemIdMap = std::map<ItemId, int64_t>;
+using ItemIdMap = std::map<ItemId, ItemCount>;
 /// a collection of item IDs
 using ItemIdList = std::vector<ItemId>;
 /// map item ids to static item information

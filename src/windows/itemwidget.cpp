@@ -93,7 +93,7 @@ ItemId listItems(ItemWidgetState& state, const ItemIdMap& items, InfoCache& cach
                 ImGui::TableNextColumn();
                 int64_t count = 0;
                 if (const auto iter = items.find(id); iter != items.end()) {
-                    count = iter->second;
+                    count = iter->second();
                 }
                 ImGui::TextWrappedFmt("{}", count);
                 if (showInfos) {

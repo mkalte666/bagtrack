@@ -28,7 +28,7 @@ void ItemLookup::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexc
         ImGui::TableSetupScrollFreeze(0, 1);
         ImGui::TableSetupColumn("Name");
         ImGui::TableSetupColumn("Count");
-        ImGui::TableSetupColumn("Locations");
+        ImGui::TableSetupColumn("Locations (Unbound+Bound)");
         ImGui::TableHeadersRow();
 
         constexpr int maxCount = 150;
@@ -43,15 +43,15 @@ void ItemLookup::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexc
             auto state = tracker.getCurrentState();
             ImGui::TextWrappedFmt("{}", item.name);
             ImGui::TableNextColumn();
-            ImGui::TextWrappedFmt("{}", state.items.allItems[itemId]);
+            ImGui::TextWrappedFmt("{}", state.items.allItems[itemId]());
             ImGui::TableNextColumn();
-            if (state.items.allItems[itemId] != 0) {
+            if (state.items.allItems[itemId]() != 0) {
                 std::string locationString;
                 for (const auto& locations : state.items.itemReverseLookup[itemId]) {
                     if (locations.first < state.items.itemSources.size()) {
                         const std::string_view sourceName = state.items.itemSources[locations.first];
-                        const int64_t sourceCount = locations.second;
-                        locationString += fmt::format("{}({}) ", sourceName, sourceCount);
+                        const auto sourceCount = locations.second;
+                        locationString += fmt::format("{}({}+{}) ", sourceName, sourceCount.unbound, sourceCount.bound);
                     }
                 }
                 ImGui::TextWrappedFmt("{}", locationString);

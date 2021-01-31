@@ -18,7 +18,7 @@ void sortCount(std::vector<ItemId>& itemIds, const ItemIdMap& items)
         if (iterA == items.end() || iterB == items.end()) {
             return false;
         }
-        return iterA->second > iterB->second;
+        return iterA->second() > iterB->second();
     });
 }
 

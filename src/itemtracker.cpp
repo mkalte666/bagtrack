@@ -107,7 +107,7 @@ TrackerState ItemTracker::getDeltaState(int64_t oldId, int64_t newId, const std:
     // calculate the item delta, dropping empty rows
     for (const auto& pair : oldState.items.allItems) {
         delta.items.allItems[pair.first] -= pair.second;
-        if (delta.items.allItems[pair.first] == 0 && keepList.find(pair.first) == keepList.end()) {
+        if (delta.items.allItems[pair.first]() == 0 && keepList.find(pair.first) == keepList.end()) {
             delta.items.allItems.erase(pair.first);
         }
     }
@@ -209,7 +209,7 @@ std::map<int64_t, int64_t> ItemTracker::getItemStats(ItemId id, int64_t start, i
         if (itemIter == iter->second.items.allItems.end()) {
             results[i] = 0;
         } else {
-            results[i] = itemIter->second;
+            results[i] = itemIter->second();
         }
         lastIter = iter;
     }

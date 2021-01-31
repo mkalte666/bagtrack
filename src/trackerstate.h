@@ -15,7 +15,7 @@ struct TrackerState {
     struct ItemSourceResults {
         std::vector<std::string> itemSources = {};
         ItemIdMap allItems = {};
-        std::map<ItemId, std::map<size_t, int64_t>> itemReverseLookup = {};
+        std::map<ItemId, std::map<size_t, ItemCount>> itemReverseLookup = {};
     };
 
     /**
