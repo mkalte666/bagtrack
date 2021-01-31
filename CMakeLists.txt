@@ -64,6 +64,8 @@ add_executable(
     src/api/infocache.h
     src/api/iteminfo.cpp
     src/api/iteminfo.h
+    src/api/recipe.cpp
+    src/api/recipe.h
     src/api/tpinfo.cpp
     src/api/tpinfo.h
     src/base64/base64.cpp

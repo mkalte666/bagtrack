@@ -23,8 +23,8 @@ struct ItemInfo {
     int64_t vendorValue = {};
     std::vector<std::string> flags = {};
 
-    bool checkIfBound() const noexcept;
-    bool checkIfPrecursor() const noexcept;
+    [[nodiscard]] bool checkIfBound() const noexcept;
+    [[nodiscard]] bool checkIfPrecursor() const noexcept;
 };
 
 /// json converter for ItemInfo
