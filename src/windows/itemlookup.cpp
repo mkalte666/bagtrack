@@ -51,7 +51,7 @@ void ItemLookup::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexc
                     if (locations.first < state.items.itemSources.size()) {
                         const std::string_view sourceName = state.items.itemSources[locations.first];
                         const auto sourceCount = locations.second;
-                        locationString += fmt::format("{}({}+{}) ", sourceName, sourceCount.unbound, sourceCount.bound);
+                        locationString += fmt::format("{}({}+{})\n", sourceName, sourceCount.unbound, sourceCount.bound);
                     }
                 }
                 ImGui::TextWrappedFmt("{}", locationString);
