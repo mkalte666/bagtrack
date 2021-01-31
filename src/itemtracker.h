@@ -95,7 +95,7 @@ private:
      * \param apiKey
      * \return
      */
-    static ItemIdMap collectAllItemSources(const std::string& apiKey) noexcept;
+    static TrackerState::ItemSourceResults collectAllItemSources(const std::string& apiKey) noexcept;
     std::thread updateThread = {};
     std::map<int64_t, TrackerState> states = {};
     mutable std::mutex mutex = {};

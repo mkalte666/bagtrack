@@ -161,7 +161,7 @@ std::optional<ItemIdMap> getMaterialStorageContents(const std::string& key) noex
     return items;
 }
 
-std::optional<ItemIdMap> getCharacterContents(const std::string& key) noexcept
+std::optional<std::map<std::string, ItemIdMap>> getCharacterContents(const std::string& key) noexcept
 {
     auto charResult = makeRequest(key, "/v2/characters?ids=all");
     if (!checkResponseForValidToken(charResult)) {
@@ -182,8 +182,9 @@ std::optional<ItemIdMap> getCharacterContents(const std::string& key) noexcept
         return std::nullopt;
     }
 
-    ItemIdMap items;
+    std::map<std::string, ItemIdMap> characters;
     for (const auto& jsonChar : charList) {
+        ItemIdMap items;
         json equipmentList = jsonChar.value("equipment", json());
         if (equipmentList.is_array()) {
             for (const auto& item : equipmentList) {
@@ -217,9 +218,11 @@ std::optional<ItemIdMap> getCharacterContents(const std::string& key) noexcept
                 }
             }
         }
+
+        characters[jsonChar.value("Name", "Unknown Char")];
     }
 
-    return items;
+    return characters;
 }
 
 std::optional<ItemIdMap> getSharedInventory(const std::string& key) noexcept

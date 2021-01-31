@@ -10,12 +10,21 @@
  */
 struct TrackerState {
     /**
+     * \brief Items and the place they live in
+     */
+    struct ItemSourceResults {
+        std::vector<std::string> itemSources = {};
+        ItemIdMap allItems = {};
+        std::map<ItemId, std::map<size_t, int64_t>> itemReverseLookup = {};
+    };
+
+    /**
      * \brief Point-in-time based state id.
      * every 5 minutes since unix epoch = increase by one
      */
     int64_t stateId = {};
-    /// Items in the inventory
-    ItemIdMap items = {};
+    /// Items and their locations
+    ItemSourceResults items = {};
     /// Account gold coins
     int64_t coins = {};
 };

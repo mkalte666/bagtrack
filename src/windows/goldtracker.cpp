@@ -106,8 +106,8 @@ void GoldTracker::fullValueUpdate(ItemTracker& tracker, InfoCache& cache) noexce
         return value;
     };
 
-    referenceValue = calcFun(referenceState.items);
-    currentValue = calcFun(currentState.items);
+    referenceValue = calcFun(referenceState.items.allItems);
+    currentValue = calcFun(currentState.items.allItems);
 }
 
 /*

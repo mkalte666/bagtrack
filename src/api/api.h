@@ -43,7 +43,7 @@ std::optional<ItemIdMap> getMaterialStorageContents(const std::string& key) noex
  * \param key
  * \return
  */
-std::optional<ItemIdMap> getCharacterContents(const std::string& key) noexcept;
+std::optional<std::map<std::string, ItemIdMap>> getCharacterContents(const std::string& key) noexcept;
 
 /**
  * \brief Get the content of the shared inventory slots

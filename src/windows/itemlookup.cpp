@@ -41,7 +41,7 @@ void ItemLookup::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexc
             const auto item = cache.getItemInfo(itemId);
             ImGui::TextWrappedFmt("{}", item.name);
             ImGui::TableNextColumn();
-            ImGui::TextWrappedFmt("{}", tracker.getCurrentState().items[itemId]);
+            ImGui::TextWrappedFmt("{}", tracker.getCurrentState().items.allItems[itemId]);
         }
         ImGui::EndTable();
     }

@@ -35,7 +35,7 @@ void ItemTracker::updateFunc(const Settings& settings) noexcept
         newState.coins = getAccountCoins(apiKey);
         newState.items = collectAllItemSources(apiKey);
         // error somewhere, or actually no items? move along
-        if (newState.items.empty()) {
+        if (newState.items.allItems.empty()) {
             continue;
         }
 
@@ -48,11 +48,13 @@ void ItemTracker::updateFunc(const Settings& settings) noexcept
     } while (killer.wait_for(60s));
 }
 
-ItemIdMap ItemTracker::collectAllItemSources(const std::string& apiKey) noexcept
+TrackerState::ItemSourceResults ItemTracker::collectAllItemSources(const std::string& apiKey) noexcept
 {
-    auto mergeMap = [](ItemIdMap& dst, const ItemIdMap& src) {
+    auto merge = [](TrackerState::ItemSourceResults& dst, const ItemIdMap& src, std::string_view srcName) {
+        dst.itemSources.emplace_back(srcName);
         for (const auto& pair : src) {
-            dst[pair.first] += pair.second;
+            dst.allItems[pair.first] += pair.second;
+            dst.itemReverseLookup[pair.first][dst.itemSources.size()] += pair.second;
         }
     };
 
@@ -61,14 +63,17 @@ ItemIdMap ItemTracker::collectAllItemSources(const std::string& apiKey) noexcept
     auto maybeChars = getCharacterContents(apiKey);
     auto maybeShared = getSharedInventory(apiKey);
     if (!maybeMaterials.has_value() || !maybeBank.has_value() || !maybeChars.has_value() || !maybeShared.has_value()) {
-        return ItemIdMap();
+        return TrackerState::ItemSourceResults();
     }
 
-    ItemIdMap items = maybeMaterials.value();
-    mergeMap(items, maybeBank.value());
-    mergeMap(items, maybeChars.value());
-    mergeMap(items, maybeShared.value());
-    return items;
+    TrackerState::ItemSourceResults results;
+    merge(results, maybeMaterials.value(), "Material Storage");
+    merge(results, maybeBank.value(), "Bank");
+    merge(results, maybeShared.value(), "Shared Inventory");
+    for (const auto& pair : maybeChars.value()) {
+        merge(results, pair.second, pair.first);
+    }
+    return results;
 }
 
 TrackerState ItemTracker::getCurrentState() const noexcept
@@ -92,18 +97,18 @@ TrackerState ItemTracker::getDeltaState(int64_t oldId, int64_t newId, const std:
     TrackerState delta = getState(newId);
     TrackerState oldState = getState(oldId);
     // no new state or no old state? no delta!
-    if (delta.items.empty()) {
+    if (delta.items.allItems.empty()) {
         return TrackerState();
     }
-    if (oldState.items.empty()) {
+    if (oldState.items.allItems.empty()) {
         return TrackerState();
     }
 
     // calculate the item delta, dropping empty rows
-    for (const auto& pair : oldState.items) {
-        delta.items[pair.first] -= pair.second;
-        if (delta.items[pair.first] == 0 && keepList.find(pair.first) == keepList.end()) {
-            delta.items.erase(pair.first);
+    for (const auto& pair : oldState.items.allItems) {
+        delta.items.allItems[pair.first] -= pair.second;
+        if (delta.items.allItems[pair.first] == 0 && keepList.find(pair.first) == keepList.end()) {
+            delta.items.allItems.erase(pair.first);
         }
     }
 
@@ -200,8 +205,8 @@ std::map<int64_t, int64_t> ItemTracker::getItemStats(ItemId id, int64_t start, i
         if (iter == states.end()) {
             iter = lastIter;
         }
-        const auto& itemIter = iter->second.items.find(id);
-        if (itemIter == iter->second.items.end()) {
+        const auto& itemIter = iter->second.items.allItems.find(id);
+        if (itemIter == iter->second.items.allItems.end()) {
             results[i] = 0;
         } else {
             results[i] = itemIter->second;

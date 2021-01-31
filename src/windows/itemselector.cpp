@@ -57,7 +57,7 @@ void ItemSelector::update(Settings& settings, ItemTracker& tracker, InfoCache& c
     statsGraph.setTimeslot(referenceId, tracker.getCurrentStateId());
 
     const auto deltaState = tracker.getDeltaState(referenceId, tracker.getCurrentStateId(), settings.getTrackedItems());
-    if (ItemId id = listItems(widgetState, deltaState.items, cache, 0, settings.getTrackedItems()); id != 0) {
+    if (ItemId id = listItems(widgetState, deltaState.items.allItems, cache, 0, settings.getTrackedItems()); id != 0) {
         statsGraph.setShown(true);
         statsGraph.setItem(id);
     }
@@ -103,7 +103,7 @@ void ItemSelector::editFilter(Settings& settings, ItemTracker& tracker, InfoCach
     ImGui::BeginChild("SelectorList");
     const auto state = tracker.getCurrentState();
 
-    if (auto id = listItems(selectorWidgetState, state.items, cache, 3, std::set<ItemId>(), false); id != 0) {
+    if (auto id = listItems(selectorWidgetState, state.items.allItems, cache, 3, std::set<ItemId>(), false); id != 0) {
         trackedItems.insert(id);
         settings.setTrackedItems(trackedItems);
     }

@@ -22,7 +22,7 @@ void TrackerEverything::update(Settings& settings, ItemTracker& tracker, InfoCac
     referenceId = timeSelector(tracker, referenceId);
     statsGraph.setTimeslot(referenceId, tracker.getCurrentStateId());
     const auto deltaState = tracker.getDeltaState(referenceId, tracker.getCurrentStateId());
-    if (ItemId id = listItems(widgetState, deltaState.items, cache); id != 0) {
+    if (ItemId id = listItems(widgetState, deltaState.items.allItems, cache); id != 0) {
         statsGraph.setItem(id);
         statsGraph.setShown(true);
     }
