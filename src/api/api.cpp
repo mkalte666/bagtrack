@@ -184,6 +184,7 @@ std::optional<std::map<std::string, ItemIdMap>> getCharacterContents(const std::
 
     std::map<std::string, ItemIdMap> characters;
     for (const auto& jsonChar : charList) {
+        const std::string charName = jsonChar.value("name", "Unnamed Character");
         ItemIdMap items;
         json equipmentList = jsonChar.value("equipment", json());
         if (equipmentList.is_array()) {
@@ -219,7 +220,7 @@ std::optional<std::map<std::string, ItemIdMap>> getCharacterContents(const std::
             }
         }
 
-        characters[jsonChar.value("Name", "Unknown Char")];
+        characters[charName] = items;
     }
 
     return characters;

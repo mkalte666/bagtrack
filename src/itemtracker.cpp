@@ -54,7 +54,7 @@ TrackerState::ItemSourceResults ItemTracker::collectAllItemSources(const std::st
         dst.itemSources.emplace_back(srcName);
         for (const auto& pair : src) {
             dst.allItems[pair.first] += pair.second;
-            dst.itemReverseLookup[pair.first][dst.itemSources.size()] += pair.second;
+            dst.itemReverseLookup[pair.first][dst.itemSources.size() - 1] += pair.second;
         }
     };
 

@@ -24,10 +24,11 @@ void ItemLookup::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexc
         searchItems = cache.findItems(searchTerm);
     }
 
-    if (ImGui::BeginTable("Test Table", 2, ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY)) {
+    if (ImGui::BeginTable("Test Table", 3, ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollY)) {
         ImGui::TableSetupScrollFreeze(0, 1);
         ImGui::TableSetupColumn("Name");
         ImGui::TableSetupColumn("Count");
+        ImGui::TableSetupColumn("Locations");
         ImGui::TableHeadersRow();
 
         constexpr int maxCount = 150;
@@ -39,9 +40,22 @@ void ItemLookup::update(Settings&, ItemTracker& tracker, InfoCache& cache) noexc
             }
             ImGui::TableNextColumn();
             const auto item = cache.getItemInfo(itemId);
+            auto state = tracker.getCurrentState();
             ImGui::TextWrappedFmt("{}", item.name);
             ImGui::TableNextColumn();
-            ImGui::TextWrappedFmt("{}", tracker.getCurrentState().items.allItems[itemId]);
+            ImGui::TextWrappedFmt("{}", state.items.allItems[itemId]);
+            ImGui::TableNextColumn();
+            if (state.items.allItems[itemId] != 0) {
+                std::string locationString;
+                for (const auto& locations : state.items.itemReverseLookup[itemId]) {
+                    if (locations.first < state.items.itemSources.size()) {
+                        const std::string_view sourceName = state.items.itemSources[locations.first];
+                        const int64_t sourceCount = locations.second;
+                        locationString += fmt::format("{}({}) ", sourceName, sourceCount);
+                    }
+                }
+                ImGui::TextWrappedFmt("{}", locationString);
+            }
         }
         ImGui::EndTable();
     }
