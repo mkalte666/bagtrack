@@ -5,6 +5,7 @@
 
 #include "../settings.h"
 #include "iteminfo.h"
+#include "recipe.h"
 #include "tpinfo.h"
 #include <map>
 #include <optional>
@@ -124,6 +125,20 @@ ItemIdList getAllItemIds() noexcept;
  * \return
  */
 TpInfoMap getItemTpInfos(ItemIdList& ids) noexcept;
+
+/**
+ * \brief Get recipes for the given set of ids
+ * \param recipes
+ * \return
+ */
+std::vector<Recipe> getRecipes(ItemIdList& recipes) noexcept;
+
+/**
+ * \brief Look up recipes used to craft item given with id
+ * \param id
+ * \return
+ */
+ItemIdList getRecipesForItem(ItemId id) noexcept;
 
 #endif //BAGTRACK_API_H
 /*
