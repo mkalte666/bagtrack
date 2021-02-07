@@ -12,6 +12,7 @@ InfoCache::~InfoCache() noexcept
 {
     killer.kill();
     fetchThread.join();
+    writeInfoCache();
 }
 
 void InfoCache::threadFun()
@@ -128,7 +129,15 @@ void InfoCache::readInfoCache()
     if (cacheFile.is_open()) {
         nlohmann::json j;
         cacheFile >> j;
-        nlohmann::from_json(j, itemInfoCache);
+        // old format
+        if (!j.is_object()) {
+            nlohmann::from_json(j, itemInfoCache);
+        }
+        // new format
+        else {
+            itemInfoCache = j.value("itemInfos", ItemInfoMap());
+            recipeCache = j.value("recipes", RecipeMap());
+        }
     }
 }
 
@@ -139,7 +148,8 @@ void InfoCache::writeInfoCache() const
     std::ofstream cacheFile(cacheFileName);
     if (cacheFile.good()) {
         nlohmann::json j;
-        nlohmann::to_json(j, itemInfoCache);
+        j["itemInfos"] = itemInfoCache;
+        j["recipes"] = recipeCache;
         cacheFile << j;
     }
 }
@@ -160,6 +170,7 @@ void InfoCache::clearCache() noexcept
     std::lock_guard lockGuard(mutex);
     tpInfoCache.clear();
     itemInfoCache.clear();
+    recipeCache.clear();
     writeInfoCache();
 }
 

@@ -86,6 +86,8 @@ private:
     ItemIdList itemsLongList = {};
     TpInfoMap tpInfoCache = {};
     ItemIdList tpInfosToCache = {};
+    RecipeMap recipeCache = {};
+    RecipeIdList recipeToCache = {};
     Index searchIndex = {};
 };
 

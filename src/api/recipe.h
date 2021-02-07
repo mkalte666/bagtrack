@@ -5,6 +5,8 @@
 
 #include "iteminfo.h"
 
+using RecipeId = uint64_t;
+
 struct Recipe {
     struct Ingredient {
         ItemId id = 0;
@@ -22,6 +24,11 @@ struct Recipe {
     std::vector<std::string> flags = {};
     std::string chatLink = {};
 };
+
+/// map of recipeId->recipe
+using RecipeMap = std::map<ItemId, Recipe>;
+/// list of recipe ids
+using RecipeIdList = std::vector<RecipeId>;
 
 /// json converter for Recipe
 void from_json(const nlohmann::json& j, Recipe& recipe);
