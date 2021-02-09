@@ -1,6 +1,5 @@
 // licence note at the end of the file
 #include "infocache.h"
-#include "../settings.h"
 #include <fstream>
 
 InfoCache::InfoCache() noexcept
@@ -13,70 +12,6 @@ InfoCache::~InfoCache() noexcept
     killer.kill();
     fetchThread.join();
     writeInfoCache();
-}
-
-void InfoCache::threadFun()
-{
-    using namespace std::chrono_literals;
-    while (killer.wait_for(100ms)) {
-        std::unique_lock lock(mutex);
-        if (!triedLoadingItemCache) {
-            triedLoadingItemCache = true;
-            readInfoCache();
-        }
-
-        // if the index is empty, we either just introduced it or its broked
-        // so redownload everything! (yes, i know)
-        if (!searchIndex.hasAnyData() && !itemInfoCache.empty()) {
-            itemsToCache.reserve(itemInfoCache.size());
-            for (const auto& pair : itemInfoCache) {
-                itemsToCache.push_back(pair.first);
-            }
-            itemInfoCache.clear(); //YES! broken index means we need to rebuild.
-        }
-        // get all the new items
-        else if (fillLongList) {
-            itemsToCache = getAllItemIds(); // all items is all items folks
-            fillLongList = false;
-        }
-        if (!itemsToCache.empty()) {
-            auto toCacheCopyBeforeFilter = itemsToCache;
-            lock.unlock();
-            // this is slow, but fetching things twice is a lot slower
-            ItemIdList toCacheCopy;
-            toCacheCopy.reserve(toCacheCopyBeforeFilter.size());
-            for (const auto& item : toCacheCopyBeforeFilter) {
-                lock.lock();
-                if (itemInfoCache.find(item) == itemInfoCache.end()) {
-                    toCacheCopy.push_back(item);
-                }
-                lock.unlock();
-            }
-            const auto newItems = getItemInfos(toCacheCopy);
-            for (const auto& pair : newItems) {
-                lock.lock();
-                itemInfoCache[pair.first] = pair.second;
-                searchIndex.addItem(pair.second);
-                lock.unlock();
-            }
-            lock.lock();
-            itemsToCache = std::move(toCacheCopy);
-            writeInfoCache();
-        }
-
-        // check for the trading post infos
-        // we dont check for duplicates here as tp data change!
-        if (!tpInfosToCache.empty()) {
-            auto toCacheCopy = tpInfosToCache;
-            lock.unlock();
-            const auto newInfos = getItemTpInfos(toCacheCopy);
-            lock.lock();
-            for (const auto& pair : newInfos) {
-                tpInfoCache[pair.first] = pair.second;
-            }
-            tpInfosToCache = std::move(toCacheCopy);
-        }
-    }
 }
 
 const ItemInfo& InfoCache::getItemInfo(ItemId id) noexcept
@@ -137,6 +72,7 @@ void InfoCache::readInfoCache()
         else {
             itemInfoCache = j.value("itemInfos", ItemInfoMap());
             recipeCache = j.value("recipes", RecipeMap());
+            recipeLookupCache = j.value("recipeLookupCache", std::map<ItemId, RecipeIdList>());
         }
     }
 }
@@ -150,6 +86,7 @@ void InfoCache::writeInfoCache() const
         nlohmann::json j;
         j["itemInfos"] = itemInfoCache;
         j["recipes"] = recipeCache;
+        j["recipeLookupCache"] = recipeLookupCache;
         cacheFile << j;
     }
 }
@@ -171,6 +108,7 @@ void InfoCache::clearCache() noexcept
     tpInfoCache.clear();
     itemInfoCache.clear();
     recipeCache.clear();
+    recipeLookupCache.clear();
     writeInfoCache();
 }
 
@@ -196,6 +134,173 @@ ItemIdList InfoCache::findItems(const std::string_view s) const noexcept
 {
     std::lock_guard lockGuard(mutex);
     return searchIndex.find(s);
+}
+
+const RecipeIdList& InfoCache::findRecipesForItem(ItemId id) noexcept
+{
+    static const RecipeIdList fallbackList = {};
+    std::lock_guard lockGuard(mutex);
+
+    if (const auto& iter = recipeLookupCache.find(id); iter != recipeLookupCache.end()) {
+        return iter->second;
+    }
+
+    recipeLookupsToCache.push_back(id);
+    return fallbackList;
+}
+
+const Recipe& InfoCache::getRecipe(RecipeId id) noexcept
+{
+    static const Recipe fallbackRecipe = {};
+    std::lock_guard lockGuard(mutex);
+
+    if (const auto& iter = recipeCache.find(id); iter != recipeCache.end()) {
+        return iter->second;
+    }
+
+    recipeToCache.push_back(id);
+    return fallbackRecipe;
+}
+
+void InfoCache::threadFun()
+{
+    using namespace std::chrono_literals;
+    while (killer.wait_for(100ms)) {
+        // scope for lock
+        {
+            std::unique_lock lock(mutex);
+            // loading
+            if (!triedLoadingItemCache) {
+                triedLoadingItemCache = true;
+                readInfoCache();
+            }
+
+            // if the index is empty, we either just introduced it or its broked
+            // so redownload everything! (yes, i know)
+            if (!searchIndex.hasAnyData() && !itemInfoCache.empty()) {
+                itemsToCache.reserve(itemInfoCache.size());
+                for (const auto& pair : itemInfoCache) {
+                    itemsToCache.push_back(pair.first);
+                }
+                itemInfoCache.clear(); //YES! broken index means we need to rebuild.
+            }
+            // get all the new items
+            else if (fillLongList) {
+                itemsToCache = getAllItemIds(); // all items is all items folks
+                fillLongList = false;
+            }
+        }
+
+        itemInfoWork();
+        tpInfoWork();
+        recipeWork();
+        recipeLookupWork();
+    }
+}
+
+void InfoCache::itemInfoWork() noexcept
+{
+    std::unique_lock lock(mutex);
+    if (!itemsToCache.empty()) {
+        auto toCacheCopyBeforeFilter = itemsToCache;
+        lock.unlock();
+        // this is slow, but fetching things twice is a lot slower
+        ItemIdList toCacheCopy;
+        toCacheCopy.reserve(toCacheCopyBeforeFilter.size());
+        for (const auto& item : toCacheCopyBeforeFilter) {
+            lock.lock();
+            if (itemInfoCache.find(item) == itemInfoCache.end()) {
+                toCacheCopy.push_back(item);
+            }
+            lock.unlock();
+        }
+        const auto newItems = getItemInfos(toCacheCopy);
+        for (const auto& pair : newItems) {
+            lock.lock();
+            itemInfoCache[pair.first] = pair.second;
+            searchIndex.addItem(pair.second);
+            lock.unlock();
+        }
+        lock.lock();
+        itemsToCache = std::move(toCacheCopy);
+        writeInfoCache();
+    }
+}
+
+void InfoCache::tpInfoWork() noexcept
+{
+    std::unique_lock lock(mutex);
+    // check for the trading post infos
+    // we dont check for duplicates here as tp data change!
+    if (!tpInfosToCache.empty()) {
+        auto toCacheCopy = tpInfosToCache;
+        lock.unlock();
+        const auto newInfos = getItemTpInfos(toCacheCopy);
+        lock.lock();
+        for (const auto& pair : newInfos) {
+            tpInfoCache[pair.first] = pair.second;
+        }
+        tpInfosToCache = std::move(toCacheCopy);
+    }
+}
+
+void InfoCache::recipeWork() noexcept
+{
+    std::unique_lock lock(mutex);
+    if (!recipeToCache.empty()) {
+        RecipeIdList toCacheCopyNotFiltered = recipeToCache;
+        lock.unlock();
+        RecipeIdList toCacheCopy;
+        toCacheCopy.reserve(toCacheCopyNotFiltered.size());
+        // filter out duplicates
+        for (const auto id : toCacheCopyNotFiltered) {
+            if (const auto iter = recipeCache.find(id); iter != recipeCache.end()) {
+                toCacheCopy.push_back(id);
+            }
+        }
+
+        const auto newRecipes = getRecipes(toCacheCopy);
+        lock.lock();
+        recipeToCache = std::move(toCacheCopy);
+        for (const auto& recipe : newRecipes) {
+            recipeCache[recipe.id] = recipe;
+        }
+    }
+}
+
+void InfoCache::recipeLookupWork() noexcept
+{
+    // lookup is only for one item.
+    // if the list builds up
+    // we dont wanna take forever to wait for the api
+    constexpr size_t maxRequestsPerCall = 5;
+    std::unique_lock lock(mutex);
+    if (!recipeToCache.empty()) {
+        ItemIdList lookupListCopy = recipeLookupsToCache;
+        lock.unlock();
+        size_t count = 0;
+        for (const auto lookupItemId : lookupListCopy) {
+            // check for duplicates
+            if (const auto iter = recipeLookupCache.find(lookupItemId); iter != recipeLookupCache.end()) {
+                const auto newLookups = getRecipesForItem(lookupItemId);
+                // insert needs locking
+                lock.lock();
+                recipeLookupCache[lookupItemId] = newLookups;
+                lock.unlock();
+            }
+            ++count;
+            if (count >= maxRequestsPerCall) {
+                break;
+            }
+        }
+        // remove count items from the tooLookup cache
+        lock.lock();
+        if (count >= recipeToCache.size()) {
+            recipeToCache.clear();
+        } else {
+            recipeToCache = std::vector(recipeToCache.begin() + static_cast<ptrdiff_t>(count), recipeToCache.end());
+        }
+    }
 }
 
 /*

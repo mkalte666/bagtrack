@@ -466,13 +466,13 @@ void to_json(json& j, const ItemCount& count)
     j["unbound"] = count.unbound;
 }
 
-std::vector<Recipe> getRecipes(ItemIdList& recipes) noexcept
+std::vector<Recipe> getRecipes(RecipeIdList& recipes) noexcept
 {
     static_cast<void>(recipes);
     return std::vector<Recipe>();
 }
 
-ItemIdList getRecipesForItem(ItemId id) noexcept
+RecipeIdList getRecipesForItem(ItemId id) noexcept
 {
     static_cast<void>(id);
     return ItemIdList();

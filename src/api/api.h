@@ -131,14 +131,14 @@ TpInfoMap getItemTpInfos(ItemIdList& ids) noexcept;
  * \param recipes
  * \return
  */
-std::vector<Recipe> getRecipes(ItemIdList& recipes) noexcept;
+std::vector<Recipe> getRecipes(RecipeIdList& recipes) noexcept;
 
 /**
  * \brief Look up recipes used to craft item given with id
  * \param id
  * \return
  */
-ItemIdList getRecipesForItem(ItemId id) noexcept;
+RecipeIdList getRecipesForItem(ItemId id) noexcept;
 
 #endif //BAGTRACK_API_H
 /*

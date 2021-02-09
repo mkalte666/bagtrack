@@ -27,7 +27,6 @@ public:
      * \return
      */
     ItemIdList findItems(std::string_view s) const noexcept;
-
     /**
      * \brief Get the static item information for the id
      * \param id
@@ -48,7 +47,17 @@ public:
     int64_t estimateItemValue(ItemId id) noexcept;
 
     /**
-     * \brief Clean up the item info cahce
+     * \brief Find all recipes that create the item with the given id
+     */
+    const RecipeIdList& findRecipesForItem(ItemId id) noexcept;
+
+    /**
+     * \brief Get a recipe
+     */
+    const Recipe& getRecipe(RecipeId id) noexcept;
+
+    /**
+     * \brief Clean up the item info cache
      */
     void clearCache() noexcept;
 
@@ -70,8 +79,16 @@ public:
     size_t getTpQueueSize() const noexcept;
 
 private:
-    /// thread worker
+    /// thread worker main function
     void threadFun();
+    /// work on info cache
+    void itemInfoWork() noexcept;
+    /// work on tp info cache
+    void tpInfoWork() noexcept;
+    /// work on recipes
+    void recipeWork() noexcept;
+    /// work on recipe lookups
+    void recipeLookupWork() noexcept;
     /// read cache from the disk
     void readInfoCache();
     /// write cache to disk
@@ -88,6 +105,8 @@ private:
     ItemIdList tpInfosToCache = {};
     RecipeMap recipeCache = {};
     RecipeIdList recipeToCache = {};
+    ItemIdList recipeLookupsToCache = {};
+    std::map<ItemId, RecipeIdList> recipeLookupCache = {};
     Index searchIndex = {};
 };
 

@@ -4,6 +4,7 @@
 
 void from_json(const nlohmann::json& j, Recipe& recipe)
 {
+    recipe.id = j.value("id", 0ULL);
     recipe.product = j.value("product", 0ULL);
     recipe.guildProduct = j.value("guildProduct", 0ULL);
     recipe.productCount = j.value("productCount", 0LL);
@@ -18,6 +19,7 @@ void from_json(const nlohmann::json& j, Recipe& recipe)
 
 void to_json(nlohmann::json& j, const Recipe& recipe)
 {
+    j["id"] = recipe.id;
     j["product"] = recipe.product;
     j["guildProduct"] = recipe.guildProduct;
     j["productCount"] = recipe.productCount;

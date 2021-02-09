@@ -12,6 +12,7 @@ struct Recipe {
         ItemId id = 0;
         int64_t count = 0;
     };
+    RecipeId id = 0;
     ItemId product = 0;
     ItemId guildProduct = 0;
     int64_t productCount = 0;
