@@ -145,7 +145,10 @@ const RecipeIdList& InfoCache::findRecipesForItem(ItemId id) noexcept
         return iter->second;
     }
 
-    recipeLookupsToCache.push_back(id);
+    if (const auto& iter = std::find(recipeLookupsToCache.begin(), recipeLookupsToCache.end(), id); iter == recipeLookupsToCache.end()) {
+        recipeLookupsToCache.push_back(id);
+    }
+
     return fallbackList;
 }
 
@@ -158,7 +161,9 @@ const Recipe& InfoCache::getRecipe(RecipeId id) noexcept
         return iter->second;
     }
 
-    recipeToCache.push_back(id);
+    if (const auto& iter = std::find(recipeToCache.begin(), recipeToCache.end(), id); iter == recipeToCache.end()) {
+        recipeToCache.push_back(id);
+    }
     return fallbackRecipe;
 }
 
@@ -254,7 +259,7 @@ void InfoCache::recipeWork() noexcept
         toCacheCopy.reserve(toCacheCopyNotFiltered.size());
         // filter out duplicates
         for (const auto id : toCacheCopyNotFiltered) {
-            if (const auto iter = recipeCache.find(id); iter != recipeCache.end()) {
+            if (const auto iter = recipeCache.find(id); iter == recipeCache.end()) {
                 toCacheCopy.push_back(id);
             }
         }
@@ -275,13 +280,13 @@ void InfoCache::recipeLookupWork() noexcept
     // we dont wanna take forever to wait for the api
     constexpr size_t maxRequestsPerCall = 5;
     std::unique_lock lock(mutex);
-    if (!recipeToCache.empty()) {
+    if (!recipeLookupsToCache.empty()) {
         ItemIdList lookupListCopy = recipeLookupsToCache;
         lock.unlock();
         size_t count = 0;
         for (const auto lookupItemId : lookupListCopy) {
             // check for duplicates
-            if (const auto iter = recipeLookupCache.find(lookupItemId); iter != recipeLookupCache.end()) {
+            if (const auto iter = recipeLookupCache.find(lookupItemId); iter == recipeLookupCache.end()) {
                 const auto newLookups = getRecipesForItem(lookupItemId);
                 // insert needs locking
                 lock.lock();
@@ -295,10 +300,10 @@ void InfoCache::recipeLookupWork() noexcept
         }
         // remove count items from the tooLookup cache
         lock.lock();
-        if (count >= recipeToCache.size()) {
-            recipeToCache.clear();
+        if (count >= recipeLookupsToCache.size()) {
+            recipeLookupsToCache.clear();
         } else {
-            recipeToCache = std::vector(recipeToCache.begin() + static_cast<ptrdiff_t>(count), recipeToCache.end());
+            recipeLookupsToCache = std::vector(recipeLookupsToCache.begin() + static_cast<ptrdiff_t>(count), recipeLookupsToCache.end());
         }
     }
 }

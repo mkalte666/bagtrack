@@ -10,6 +10,10 @@ public:
     CraftTool() noexcept;
     void update(Settings&, ItemTracker&, InfoCache&) noexcept override;
     void drawMainMenu() noexcept override;
+
+private:
+    std::string addItemSearchTerm = {};
+    ItemIdList lookupItems = {};
 };
 
 #endif //BAGTRACK_CRAFTTOOL_H

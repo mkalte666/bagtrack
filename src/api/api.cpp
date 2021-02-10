@@ -468,14 +468,73 @@ void to_json(json& j, const ItemCount& count)
 
 std::vector<Recipe> getRecipes(RecipeIdList& recipes) noexcept
 {
-    static_cast<void>(recipes);
-    return std::vector<Recipe>();
+    constexpr size_t maxIds = 150;
+    std::vector<Recipe> results;
+    std::string idString;
+    size_t count = 0;
+    for (auto idIter = recipes.rbegin(); idIter != recipes.rend() && count < maxIds; ++count, ++idIter) {
+        const auto id = *idIter;
+        idString += std::to_string(id) + ",";
+    }
+    recipes.resize(recipes.size() - count);
+
+    std::map<std::string, std::string> params;
+    params["ids"] = idString;
+    auto res = makeRequest("", "/v2/recipes", params);
+    // small guard against failures
+    // 200 => all is well, 206 => some ids invalid, we dont care. 404 => all ids invalid, see below
+    if (!res || (res->status != 200 && res->status != 206)) {
+        return results;
+    }
+
+    json j;
+    try {
+        j = json::parse(res->body);
+    } catch (json::exception& e) {
+        printDebug("Json parsing failed: {}", e.what());
+        return results;
+    }
+    if (!j.is_array()) {
+        printDebug("Recipe endpoint returned wrong type - array expected, got shit\n");
+        return results;
+    }
+
+    for (const auto& itemJson : j) {
+        if (!itemJson.is_object()) {
+            continue;
+        }
+        Recipe item;
+        from_json(itemJson, item);
+        results.push_back(item);
+    }
+    return results;
 }
 
 RecipeIdList getRecipesForItem(ItemId id) noexcept
 {
-    static_cast<void>(id);
-    return ItemIdList();
+    RecipeIdList results;
+    std::map<std::string, std::string> params;
+    params["output"] = fmt::format("{}", id);
+    auto res = makeRequest("", "/v2/recipes/search", params);
+    if (!res || (res->status != 200)) {
+        return results;
+    }
+
+    json j;
+    try {
+        j = json::parse(res->body);
+    } catch (json::exception& e) {
+        printDebug("Json parsing failed: {}", e.what());
+        return results;
+    }
+    if (!j.is_array()) {
+        printDebug("Recipe Search endpoint returned wrong type - array expected, got shit\n");
+        return results;
+    }
+
+    nlohmann::from_json(j, results);
+
+    return results;
 }
 
 /*
