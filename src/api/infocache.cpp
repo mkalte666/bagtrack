@@ -1,5 +1,6 @@
 // licence note at the end of the file
 #include "infocache.h"
+#include "fixfmt.h"
 #include <fstream>
 
 InfoCache::InfoCache() noexcept
@@ -70,9 +71,13 @@ void InfoCache::readInfoCache()
         }
         // new format
         else {
-            itemInfoCache = j.value("itemInfos", ItemInfoMap());
-            recipeCache = j.value("recipes", RecipeMap());
-            recipeLookupCache = j.value("recipeLookupCache", std::map<ItemId, RecipeIdList>());
+            try {
+                itemInfoCache = j.value("itemInfos", ItemInfoMap());
+                recipeCache = j.value("recipes", RecipeMap());
+                recipeLookupCache = j.value("recipeLookupCache", std::map<ItemId, RecipeIdList>());
+            } catch (const nlohmann::json::exception& e) {
+                printDebug("Error parsing cache file. Trying to recover ({})", e.what());
+            }
         }
     }
 }

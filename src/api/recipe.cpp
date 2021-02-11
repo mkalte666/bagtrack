@@ -31,7 +31,7 @@ void to_json(nlohmann::json& j, const Recipe& recipe)
     j["disciplines"] = recipe.disciplines;
     j["min_rating"] = recipe.minRating;
     j["flags"] = recipe.flags;
-    j["chat_link"] = recipe.flags;
+    j["chat_link"] = recipe.chatLink;
 }
 
 void from_json(const nlohmann::json& j, Recipe::Ingredient& ingredient)
